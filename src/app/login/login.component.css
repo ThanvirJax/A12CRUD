@@ -1,0 +1,84 @@
+@import "bourbon";
+
+body {
+  background: #f7f9fc !important;
+  font-family: 'Arial', sans-serif;
+}
+
+.wrapper {	
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+.form-signin {
+  max-width: 400px;
+  padding: 30px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  .form-signin-heading {
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-control {
+    height: 45px;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+
+    &:focus {
+      box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+      border-color: #1a73e8;
+    }
+  }
+
+  .btn {
+    height: 45px;
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+
+    &.btn-primary {
+      background-color: #1a73e8;
+      border: none;
+      transition: background-color 0.3s;
+      margin-bottom: 15px; 
+
+      &:hover {
+        background-color: #1664c4;
+      }
+    }
+
+    &.btn-outline-secondary {
+      background-color: #fff;
+      border: 1px solid #6c757d;
+      color: #6c757d;
+      transition: all 0.3s;
+
+      &:hover {
+        background-color: #6c757d;
+        color: #fff;
+      }
+    }
+  }
+
+  .forgot-password {
+    color: #1a73e8;
+    font-size: 14px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

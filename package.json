@@ -1,5 +1,5 @@
 {
-  "name": "a12-crud",
+  "name": "disaster",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -18,8 +18,12 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "ag-grid-angular": "^32.1.0",
+    "ag-grid-community": "^32.1.0",
     "bootstrap": "^5.3.3",
+    "bourbon": "^7.3.0",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.14.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },

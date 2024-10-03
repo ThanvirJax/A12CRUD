@@ -1,0 +1,84 @@
+<div class="row">
+  <div class="col-6 p-5">
+    <form [formGroup]="requestForm" (ngSubmit)="submitRequest()">
+      
+      <div class="mb-3">
+        <label for="user_name" class="form-label">User Name</label>
+        <input
+          formControlName="user_name"
+          type="text"
+          class="form-control"
+          id="user_name"
+          [ngClass]="{
+            'is-invalid': requestForm.controls['user_name'].errors && requestForm.controls['user_name'].touched,
+            'is-valid': !requestForm.controls['user_name'].errors
+          }"
+        >
+        <div class="alert alert-danger" role="alert"
+             *ngIf="requestForm.controls['user_name'].errors && requestForm.controls['user_name'].touched">
+          <span *ngIf="requestForm.controls['user_name'].errors?.['required']">Name is required.</span>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="user_email" class="form-label">Email</label>
+        <input
+          formControlName="user_email"
+          type="email"
+          class="form-control"
+          id="user_email"
+          [ngClass]="{
+            'is-invalid': requestForm.controls['user_email'].errors && requestForm.controls['user_email'].touched,
+            'is-valid': !requestForm.controls['user_email'].errors
+          }"
+        >
+        <div class="alert alert-danger" role="alert"
+             *ngIf="requestForm.controls['user_email'].errors && requestForm.controls['user_email'].touched">
+          <span *ngIf="requestForm.controls['user_email'].errors?.['required']">Email is required.</span>
+          <span *ngIf="requestForm.controls['user_email'].errors?.['email']">Invalid email format.</span>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="resource" class="form-label">Select Resource</label>
+        <select
+          formControlName="resource_id"
+          class="form-select"
+          id="resource"
+          [ngClass]="{
+            'is-invalid': requestForm.controls['resource_id'].errors && requestForm.controls['resource_id'].touched,
+            'is-valid': !requestForm.controls['resource_id'].errors
+          }"
+        >
+          <option value="">Select a resource</option>
+          <option *ngFor="let resource of resources" [value]="resource.resource_id">{{ resource.resource_name }}</option>
+        </select>
+        <div class="alert alert-danger" role="alert"
+             *ngIf="requestForm.controls['resource_id'].errors && requestForm.controls['resource_id'].touched">
+          <span *ngIf="requestForm.controls['resource_id'].errors?.['required']">Resource is required.</span>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="request-quantity" class="form-label">Request Quantity</label>
+        <input
+          formControlName="request_quantity"
+          type="number"
+          class="form-control"
+          id="request-quantity"
+          [ngClass]="{
+            'is-invalid': requestForm.controls['request_quantity'].errors && requestForm.controls['request_quantity'].touched,
+            'is-valid': !requestForm.controls['request_quantity'].errors
+          }"
+        >
+        <div class="alert alert-danger" role="alert"
+             *ngIf="requestForm.controls['request_quantity'].errors && requestForm.controls['request_quantity'].touched">
+          <span *ngIf="requestForm.controls['request_quantity'].errors?.['required']">Quantity is required.</span>
+          <span *ngIf="requestForm.controls['request_quantity'].errors?.['min']">Quantity must be at least 1.</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">{{ buttonText }}</button>
+    </form>
+  </div>
+</div>
