@@ -1,85 +1,101 @@
 import { Injectable } from '@angular/core';
-import { environment } from "../../../environments/environment";
-import { HttpClient } from "@angular/common/http";
-import { map } from "rxjs/operators";
-import { Observable } from "rxjs";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 import { Resource } from '../../models/resource';
 import { HttpResponse } from '../../models/http-response';
 import { UserRequest } from '../../models/user-request';
 import { User } from '../../models/user';
+import { LoginResponse } from '../../models/login-response';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CRUDService {
 
-  constructor(private httpClient: HttpClient) { }
+  private readonly API_ENDPOINT = environment.API_EndPoint;
+  private readonly LOGIN_URL = `${this.API_ENDPOINT}login.php`;
+
+  constructor(private httpClient: HttpClient) {}
 
   // Load all resources
   loadResources(): Observable<Resource[]> {
-    const url = environment.API_EndPoint + 'view.php';
+    const url = `${this.API_ENDPOINT}view.php`;
     return this.httpClient.get<Resource[]>(url).pipe(map(data => data));
   }
 
   // Create a new resource
   createResource(data: any): Observable<HttpResponse> {
-    const url = environment.API_EndPoint + 'create.php';
+    const url = `${this.API_ENDPOINT}create.php`;
     return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
   }
 
   // Load single resource details by ID
   loadResourceInfo(resourceId: any): Observable<Resource> {
-    const url = environment.API_EndPoint + 'view_one.php?id=' + resourceId;
+    const url = `${this.API_ENDPOINT}view_one.php?id=${resourceId}`;
     return this.httpClient.get<Resource>(url).pipe(map(data => data));
   }
 
   // Update resource details
   updateResourceDetails(data: any): Observable<HttpResponse> {
-    const url = environment.API_EndPoint + 'update.php';
+    const url = `${this.API_ENDPOINT}update.php`;
     return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
   }
 
   // Delete a resource by ID
   deleteResource(resourceId: any): Observable<HttpResponse> {
-    const url = environment.API_EndPoint + 'delete.php?id=' + resourceId;
+    const url = `${this.API_ENDPOINT}delete.php?id=${resourceId}`;
     return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
   }
 
-    // Create a new user request
-    createRequest(data: any): Observable<HttpResponse> {
-      const url = environment.API_EndPoint + 'create_user_request.php'; 
-      return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
-    }
-  
-    // Load all user requests
-    loadUserRequests(): Observable<UserRequest[]> {
-      const url = environment.API_EndPoint + 'view_user_requests.php'; 
-      return this.httpClient.get<UserRequest[]>(url).pipe(map(data => data));
-    }
+  // Create a new user request
+  createRequest(data: any): Observable<HttpResponse> {
+    const url = `${this.API_ENDPOINT}create_user_request.php`;
+    return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
+  }
 
-      // Delete a user resource by ID
+  // Load all user requests
+  loadUserRequests(): Observable<UserRequest[]> {
+    const url = `${this.API_ENDPOINT}view_user_requests.php`;
+    return this.httpClient.get<UserRequest[]>(url).pipe(map(data => data));
+  }
+
+  // Delete a user resource by ID
   deleteRequest(requestId: any): Observable<HttpResponse> {
-    const url = environment.API_EndPoint + 'delete_user_request.php?request_id=' + requestId;
+    const url = `${this.API_ENDPOINT}delete_user_request.php?request_id=${requestId}`;
     return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
   }
 
-  // Load all user 
+  // Load all users
   loadUser(): Observable<User[]> {
-    const url = environment.API_EndPoint + 'view_users.php'; 
+    const url = `${this.API_ENDPOINT}view_users.php`;
     return this.httpClient.get<User[]>(url).pipe(map(data => data));
   }
-  
-    // Create a new users
-    createUser(data: any): Observable<HttpResponse> {
-      const url = environment.API_EndPoint + 'create_user.php';
-      return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
-    }
 
-  // Delete a user User by ID
-  deleteUser(UserId: any): Observable<HttpResponse> {
-    const url = environment.API_EndPoint + 'delete_user.php?user_id=' + UserId;
+  // Create new users
+  createUser(data: any): Observable<HttpResponse> {
+    const url = `${this.API_ENDPOINT}create_user.php`;
+    return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
+  }
+
+  // Delete a user by ID
+  deleteUser(userId: any): Observable<HttpResponse> {
+    const url = `${this.API_ENDPOINT}delete_user.php?user_id=${userId}`;
     return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
   }
 
+  // Login function
+  login(loginData: { user_email: string; user_password: string }): Observable<LoginResponse> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    });
 
+    // Format the body in application/x-www-form-urlencoded style
+    const body = new URLSearchParams();
+    body.set('user_email', loginData.user_email);
+    body.set('user_password', loginData.user_password);
+
+    return this.httpClient.post<LoginResponse>(this.LOGIN_URL, body.toString(), { headers }).pipe(map(data => data));
+  }
 }
