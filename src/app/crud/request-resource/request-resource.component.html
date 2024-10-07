@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-6 p-5">
     <form [formGroup]="requestForm" (ngSubmit)="submitRequest()">
-      
+      <!-- User Name Field -->
       <div class="mb-3">
         <label for="user_name" class="form-label">User Name</label>
         <input
@@ -11,15 +11,16 @@
           id="user_name"
           [ngClass]="{
             'is-invalid': requestForm.controls['user_name'].errors && requestForm.controls['user_name'].touched,
-            'is-valid': !requestForm.controls['user_name'].errors
+            'is-valid': !requestForm.controls['user_name'].errors && requestForm.controls['user_name'].touched
           }"
-        >
+        />
         <div class="alert alert-danger" role="alert"
              *ngIf="requestForm.controls['user_name'].errors && requestForm.controls['user_name'].touched">
           <span *ngIf="requestForm.controls['user_name'].errors?.['required']">Name is required.</span>
         </div>
       </div>
 
+      <!-- Email Field -->
       <div class="mb-3">
         <label for="user_email" class="form-label">Email</label>
         <input
@@ -27,11 +28,12 @@
           type="email"
           class="form-control"
           id="user_email"
+          (change)="getUserIdByEmail()"
           [ngClass]="{
             'is-invalid': requestForm.controls['user_email'].errors && requestForm.controls['user_email'].touched,
-            'is-valid': !requestForm.controls['user_email'].errors
+            'is-valid': !requestForm.controls['user_email'].errors && requestForm.controls['user_email'].touched
           }"
-        >
+        />
         <div class="alert alert-danger" role="alert"
              *ngIf="requestForm.controls['user_email'].errors && requestForm.controls['user_email'].touched">
           <span *ngIf="requestForm.controls['user_email'].errors?.['required']">Email is required.</span>
@@ -39,6 +41,10 @@
         </div>
       </div>
 
+      <!-- Hidden Field for User ID -->
+      <input type="hidden" formControlName="user_id" />
+
+      <!-- Resource Selection -->
       <div class="mb-3">
         <label for="resource" class="form-label">Select Resource</label>
         <select
@@ -47,7 +53,7 @@
           id="resource"
           [ngClass]="{
             'is-invalid': requestForm.controls['resource_id'].errors && requestForm.controls['resource_id'].touched,
-            'is-valid': !requestForm.controls['resource_id'].errors
+            'is-valid': !requestForm.controls['resource_id'].errors && requestForm.controls['resource_id'].touched
           }"
         >
           <option value="">Select a resource</option>
@@ -59,6 +65,7 @@
         </div>
       </div>
 
+      <!-- Request Quantity Field -->
       <div class="mb-3">
         <label for="request-quantity" class="form-label">Request Quantity</label>
         <input
@@ -68,9 +75,9 @@
           id="request-quantity"
           [ngClass]="{
             'is-invalid': requestForm.controls['request_quantity'].errors && requestForm.controls['request_quantity'].touched,
-            'is-valid': !requestForm.controls['request_quantity'].errors
+            'is-valid': !requestForm.controls['request_quantity'].errors && requestForm.controls['request_quantity'].touched
           }"
-        >
+        />
         <div class="alert alert-danger" role="alert"
              *ngIf="requestForm.controls['request_quantity'].errors && requestForm.controls['request_quantity'].touched">
           <span *ngIf="requestForm.controls['request_quantity'].errors?.['required']">Quantity is required.</span>
@@ -78,6 +85,7 @@
         </div>
       </div>
 
+      <!-- Submit Button -->
       <button type="submit" class="btn btn-primary">{{ buttonText }}</button>
     </form>
   </div>

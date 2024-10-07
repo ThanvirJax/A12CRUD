@@ -24,7 +24,7 @@ export class LoginComponent {
   constructor(private crudService: CRUDService, private router: Router) {}
 
   // Login method with validation and API call
-  onLogin() {
+    onLogin() {
     if (!this.loginObj.user_email || !this.loginObj.user_password) {
       alert('Please fill in both email and password.');
       return;
@@ -36,7 +36,8 @@ export class LoginComponent {
         this.loading = false;
         if (res.result === 'success') {
           alert('Login Success');
-          this.router.navigate(['/home']); 
+          localStorage.setItem("DisasterAppLogin", this.loginObj.user_email);  // Store user email
+          this.router.navigate(['/home']);  // Navigate to home/dashboard after login
         } else {
           alert(res.message || 'Invalid Email or Password');
         }
@@ -56,6 +57,6 @@ export class LoginComponent {
 
   // Method for navigation to the registration page (no validation required)
   onCreateAccount() {
-    this.router.navigate(['../crud/user-registration']);  // Adjust the route as needed
+    this.router.navigate(['/crud/user-registration']);  // Navigate to user registration
   }
 }

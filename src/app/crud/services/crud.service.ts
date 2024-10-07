@@ -8,6 +8,7 @@ import { HttpResponse } from '../../models/http-response';
 import { UserRequest } from '../../models/user-request';
 import { User } from '../../models/user';
 import { LoginResponse } from '../../models/login-response';
+import { UserIdResponse } from '../../models/user-id-response';
 
 @Injectable({
   providedIn: 'root',
@@ -98,4 +99,10 @@ export class CRUDService {
 
     return this.httpClient.post<LoginResponse>(this.LOGIN_URL, body.toString(), { headers }).pipe(map(data => data));
   }
+
+  getUserIdByEmail(email: string): Observable<UserIdResponse> {
+    const url = `${this.API_ENDPOINT}get_user_id.php?email=${email}`;
+    return this.httpClient.get<UserIdResponse>(url).pipe(map(data => data));
+  }
+  
 }
