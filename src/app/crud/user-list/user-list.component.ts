@@ -11,7 +11,7 @@ declare const Swal: any;
   standalone: true,
   imports: [AgGridAngular],
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
+  styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) agGrid!: AgGridAngular;
@@ -27,13 +27,13 @@ export class UserListComponent implements OnInit, OnDestroy {
     },
     {
       field: 'user_email',
-      headerName: 'Description',
+      headerName: 'Email',
       sortable: true,
       headerClass: 'header-cell'
     },
     {
       field: 'user_phone',
-      headerName: 'Description',
+      headerName: 'Phone Number',
       sortable: true,
       headerClass: 'header-cell'
     },
@@ -41,11 +41,12 @@ export class UserListComponent implements OnInit, OnDestroy {
       field: 'user_password',
       headerName: 'Password',
       sortable: true,
-      headerClass: 'header-cell'
+      headerClass: 'header-cell',
+      cellRenderer: this.passwordCellRenderer.bind(this) 
     },
     {
       field: 'user_address',
-      headerName: 'Quantity',
+      headerName: 'Address',
       sortable: true,
       headerClass: 'header-cell'
     },
@@ -67,11 +68,9 @@ export class UserListComponent implements OnInit, OnDestroy {
   userListSubscribe: any;
 
   constructor(private crudService: CRUDService, private router: Router) {
-    // Subscribe to route changes
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        // Re-fetch resource list when the route changes
-        this.getUserList();
+        this.getUserList(); 
       }
     });
   }
@@ -95,6 +94,31 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.userList = res;
       this.rowData = res;
     });
+  }
+
+  passwordCellRenderer(params: any) {
+    const div = document.createElement('div');
+    let isPasswordVisible = false;
+
+    const passwordText = document.createElement('span');
+    passwordText.textContent = '*****'; 
+/*
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = 'Show';
+    toggleButton.classList.add('btn', 'btn-sm', 'btn-secondary');
+    toggleButton.style.marginLeft = '10px';
+
+    toggleButton.addEventListener('click', () => {
+      isPasswordVisible = !isPasswordVisible;
+      passwordText.textContent = isPasswordVisible ? params.value : '*****';
+      toggleButton.textContent = isPasswordVisible ? 'Hide' : 'Show';
+    });
+    */
+
+    div.appendChild(passwordText);
+    //div.appendChild(toggleButton);
+
+    return div;
   }
 
   actionRender(params: any) {
@@ -143,24 +167,23 @@ export class UserListComponent implements OnInit, OnDestroy {
       confirmButtonText: 'Yes, delete it!'
     }).then((result: any) => {
       if (result.isConfirmed) {
-        that.crudService.deleteUser(params.data.user_id).subscribe(res => {
-          if (res.result === 'success') {
-            this.gridApi.applyTransaction({ remove: [params.data] });
+        that.crudService.deleteUser(params.data.user_id).subscribe(
+          res => {
+            if (res.result === 'success') {
+              this.gridApi.applyTransaction({ remove: [params.data] });
 
-            Swal.fire(
-              'Deleted!',
-              'The resource has been deleted.',
-              'success'
-            );
+              Swal.fire(
+                'Deleted!',
+                'The user has been deleted.',
+                'success'
+              );
+            }
+          },
+          error => {
+            Swal.fire('Error', 'An error occurred while deleting the user.', 'error');
           }
-        }, error => {
-          Swal.fire('Error', 'An error occurred while deleting the user.', 'error');
-        });
+        );
       }
     });
-  }
-
-  typeCellRender(params: any) {
-    return '$ ' + params.data.resource_type;
   }
 }

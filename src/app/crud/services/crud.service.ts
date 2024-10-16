@@ -14,11 +14,14 @@ import { UserIdResponse } from '../../models/user-id-response';
   providedIn: 'root',
 })
 export class CRUDService {
+  updateRequestDetails(formData: FormData) {
+    throw new Error('Method not implemented.');
+  }
 
   private readonly API_ENDPOINT = environment.API_EndPoint;
   private readonly LOGIN_URL = `${this.API_ENDPOINT}login.php`;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   // Load all resources
   loadResources(): Observable<Resource[]> {
@@ -50,28 +53,16 @@ export class CRUDService {
     return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
   }
 
-  // Create a new user request
-  createRequest(data: any): Observable<HttpResponse> {
-    const url = `${this.API_ENDPOINT}create_user_request.php`;
-    return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
-  }
-
-  // Load all user requests
-  loadUserRequests(): Observable<UserRequest[]> {
-    const url = `${this.API_ENDPOINT}view_user_requests.php`;
-    return this.httpClient.get<UserRequest[]>(url).pipe(map(data => data));
-  }
-
-  // Delete a user resource by ID
-  deleteRequest(requestId: any): Observable<HttpResponse> {
-    const url = `${this.API_ENDPOINT}delete_user_request.php?request_id=${requestId}`;
-    return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
-  }
-
   // Load all users
   loadUser(): Observable<User[]> {
     const url = `${this.API_ENDPOINT}view_users.php`;
     return this.httpClient.get<User[]>(url).pipe(map(data => data));
+  }
+  
+  // Load single user details by ID
+  loadUserInfo(userId: any): Observable<User> {
+    const url = `${this.API_ENDPOINT}view_user.php?id=${userId}`;
+    return this.httpClient.get<User>(url).pipe(map(data => data));
   }
 
   // Create new users
@@ -79,6 +70,13 @@ export class CRUDService {
     const url = `${this.API_ENDPOINT}create_user.php`;
     return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
   }
+
+    // Update user details
+    updateUserDetails(data: any): Observable<HttpResponse> {
+      const url = `${this.API_ENDPOINT}update_user.php`;
+      return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
+    }
+  
 
   // Delete a user by ID
   deleteUser(userId: any): Observable<HttpResponse> {
@@ -99,10 +97,44 @@ export class CRUDService {
 
     return this.httpClient.post<LoginResponse>(this.LOGIN_URL, body.toString(), { headers }).pipe(map(data => data));
   }
+ // Load single resource details by ID
+ loadRequestInfo(requestId: any): Observable<UserRequest> {
+  const url = `${this.API_ENDPOINT}view_user_request.php?request_id=${requestId}`;
+  return this.httpClient.get<UserRequest>(url).pipe(map(data => data));
+}
+  
+    // Load all user requests
+    loadUserRequests(): Observable<UserRequest[]> {
+      const url = `${this.API_ENDPOINT}view_user_requests.php`;
+      return this.httpClient.get<UserRequest[]>(url).pipe(map(data => data));
+    }
+       // Create a new resource
+       createRequest(data: any): Observable<HttpResponse> {
+        const url = `${this.API_ENDPOINT}create_user_request.php`;
+        return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
+      }
 
+        // Update resource details
+  updateUserRequest(data: any): Observable<HttpResponse> {
+    const url = `${this.API_ENDPOINT}update_request.php`;
+    return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
+  }
+  
   getUserIdByEmail(email: string): Observable<UserIdResponse> {
     const url = `${this.API_ENDPOINT}get_user_id.php?email=${email}`;
     return this.httpClient.get<UserIdResponse>(url).pipe(map(data => data));
   }
+
+    // Update resource details
+    updateRequest(data: any): Observable<HttpResponse> {
+      const url = `${this.API_ENDPOINT}update_request.php`;
+      return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
+    }
   
+
+    // Delete a user resource by ID
+    deleteRequest(requestId: any): Observable<HttpResponse> {
+      const url = `${this.API_ENDPOINT}delete_user_request.php?request_id=${requestId}`;
+      return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
+    }
 }

@@ -1,1 +1,105 @@
-<p>user-registration works!</p>
+<div class="row">
+  <div class="col-6 p-5">
+    <form [formGroup]="userForm" (ngSubmit)="createOrUpdateUser()">
+
+      <!-- User Name -->
+      <div class="mb-3">
+        <label for="user-name" class="form-label">User Name</label>
+        <input
+          formControlName="user_name"
+          type="text"
+          class="form-control"
+          id="user-name"
+          [ngClass]="{
+            'is-invalid': userForm.get('user_name')?.invalid && userForm.get('user_name')?.touched,
+            'is-valid': userForm.get('user_name')?.valid && userForm.get('user_name')?.touched
+          }"
+        >
+        <div *ngIf="userForm.get('user_name')?.invalid && userForm.get('user_name')?.touched" class="alert alert-danger">
+          <span *ngIf="userForm.get('user_name')?.errors?.['required']">Name is required.</span>
+          <span *ngIf="userForm.get('user_name')?.errors?.['minlength']">Minimum 3 characters required.</span>
+          <span *ngIf="userForm.get('user_name')?.errors?.['maxlength']">Maximum 50 characters allowed.</span>
+        </div>
+      </div>
+
+      <!-- User Email -->
+      <div class="mb-3">
+        <label for="user-email" class="form-label">Email</label>
+        <input
+          formControlName="user_email"
+          type="email"
+          class="form-control"
+          id="user-email"
+          [ngClass]="{
+            'is-invalid': userForm.get('user_email')?.invalid && userForm.get('user_email')?.touched,
+            'is-valid': userForm.get('user_email')?.valid && userForm.get('user_email')?.touched
+          }"
+        >
+        <div *ngIf="userForm.get('user_email')?.invalid && userForm.get('user_email')?.touched" class="alert alert-danger">
+          <span *ngIf="userForm.get('user_email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="userForm.get('user_email')?.errors?.['email']">Invalid email address.</span>
+        </div>
+      </div>
+
+      <!-- User Phone -->
+      <div class="mb-3">
+        <label for="user-phone" class="form-label">Phone Number</label>
+        <input
+          formControlName="user_phone"
+          type="text"
+          class="form-control"
+          id="user-phone"
+          [ngClass]="{
+            'is-invalid': userForm.get('user_phone')?.invalid && userForm.get('user_phone')?.touched,
+            'is-valid': userForm.get('user_phone')?.valid && userForm.get('user_phone')?.touched
+          }"
+        >
+        <div *ngIf="userForm.get('user_phone')?.invalid && userForm.get('user_phone')?.touched" class="alert alert-danger">
+          <span *ngIf="userForm.get('user_phone')?.errors?.['required']">Phone number is required.</span>
+          <span *ngIf="userForm.get('user_phone')?.errors?.['pattern']">Invalid phone number format.</span>
+        </div>
+      </div>
+
+      <!-- User Password -->
+      <div class="mb-3">
+        <label for="user-password" class="form-label">Password</label>
+        <input
+          formControlName="user_password"
+          type="password"
+          class="form-control"
+          id="user-password"
+          [ngClass]="{
+            'is-invalid': userForm.get('user_password')?.invalid && userForm.get('user_password')?.touched,
+            'is-valid': userForm.get('user_password')?.valid && userForm.get('user_password')?.touched
+          }"
+        >
+        <div *ngIf="userForm.get('user_password')?.invalid && userForm.get('user_password')?.touched" class="alert alert-danger">
+          <span *ngIf="userForm.get('user_password')?.errors?.['required']">Password is required.</span>
+          <span *ngIf="userForm.get('user_password')?.errors?.['minlength']">Minimum 6 characters required.</span>
+        </div>
+      </div>
+
+      <!-- User Address -->
+      <div class="mb-3">
+        <label for="user-address" class="form-label">Address</label>
+        <textarea
+          formControlName="user_address"
+          class="form-control"
+          id="user-address"
+          rows="3"
+          [ngClass]="{
+            'is-invalid': userForm.get('user_address')?.invalid && userForm.get('user_address')?.touched,
+            'is-valid': userForm.get('user_address')?.valid && userForm.get('user_address')?.touched
+          }"
+        ></textarea>
+        <div *ngIf="userForm.get('user_address')?.invalid && userForm.get('user_address')?.touched" class="alert alert-danger">
+          <span *ngIf="userForm.get('user_address')?.errors?.['required']">Address is required.</span>
+          <span *ngIf="userForm.get('user_address')?.errors?.['maxlength']">Maximum 100 characters allowed.</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">{{ buttonText }}</button>
+    </form>
+  </div>
+</div>

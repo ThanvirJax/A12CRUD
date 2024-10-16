@@ -1,5 +1,7 @@
 export interface UserRequest {
   request_id: number;
+  resource_id: number;
+  user_id: number;
   user_name: string;       
   user_email: string;      
   resource_name: string;   

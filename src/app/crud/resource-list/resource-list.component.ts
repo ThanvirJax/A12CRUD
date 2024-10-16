@@ -21,7 +21,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   columnDefs = [
     {
       field: 'resource_name',
-      headerName: 'user_name',
+      headerName: 'Resource Name',
       sortable: true,
       headerClass: 'header-cell'
     },
@@ -61,10 +61,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   resourceListSubscribe: any;
 
   constructor(private crudService: CRUDService, private router: Router) {
-    // Subscribe to route changes
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        // Re-fetch resource list when the route changes
         this.getResourceList();
       }
     });
