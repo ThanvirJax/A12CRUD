@@ -20,7 +20,7 @@ declare const Swal: any;
 })
 export class ResourceFormComponent implements OnInit {
   resourceForm!: FormGroup;
-  resourceId: any; // Track ID for updating
+  resourceId: any; 
   buttonText = 'Create Resource'; 
 
   constructor(
@@ -33,7 +33,6 @@ export class ResourceFormComponent implements OnInit {
   ngOnInit(): void {
     this.createResourceForm();
 
-    // Check if 'resourceId' exists in route params
     this.resourceId = this.activatedRoute.snapshot.params['resourceId'];
     if (this.resourceId) {
       this.loadResourceDetails(this.resourceId);
@@ -53,7 +52,7 @@ export class ResourceFormComponent implements OnInit {
 
   createOrUpdateResource(): void {
     if (this.resourceForm.invalid) {
-      this.resourceForm.markAllAsTouched(); // Trigger validation messages
+      this.resourceForm.markAllAsTouched();
       return;
     }
 

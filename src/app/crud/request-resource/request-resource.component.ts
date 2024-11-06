@@ -19,9 +19,10 @@ declare const Swal: any;
   ]
 })
 export class RequestResourceComponent implements OnInit {
-  requestResource!: FormGroup;  // Ensures proper initialization
-  requestId: any;               // To store resource ID if updating
-  buttonText = 'Create Request';  // Button label changes based on action
+  requestResource!: FormGroup;
+  requestId: any;
+  buttonText = 'Create Request';
+  resources: any[] = []; // Array to hold resources
 
   constructor(
     private crudService: CRUDService,
@@ -32,8 +33,8 @@ export class RequestResourceComponent implements OnInit {
 
   ngOnInit(): void {
     this.createRequestResource();
+    this.loadResources(); // Load resources on initialization
 
-    // Check if requestId is passed through the route and load request details for update
     if (this.activatedRoute.snapshot.params['requestId']) {
       this.requestId = this.activatedRoute.snapshot.params['requestId'];
       if (this.requestId) {
@@ -42,24 +43,34 @@ export class RequestResourceComponent implements OnInit {
     }
   }
 
-  // Create the request form with validation
   createRequestResource(): void {
     this.requestResource = this.formBuilder.group({
-      user_id: ['', Validators.compose([Validators.required, Validators.min(1)])],
-      resource_id: ['', Validators.compose([Validators.required, Validators.min(1)])],
-      request_quantity: ['', Validators.compose([Validators.required, Validators.min(1), Validators.max(99999999)])]
+      user_email: ['', [Validators.required, Validators.email]],
+      resource_name: ['', [Validators.required]], // Now stores resource_id
+      request_quantity: ['', [Validators.required, Validators.min(1), Validators.max(99999999)]]
+    });
+  }
+
+  // Load available resources from the backend
+  loadResources(): void {
+    this.crudService.getResources().subscribe({
+      next: (res: any) => {
+        this.resources = res;
+      },
+      error: () => {
+        Swal.fire('Error', 'Failed to load resources.', 'error');
+      }
     });
   }
 
   createOrUpdateRequest(values: any): void {
     let formData = new FormData();
-    formData.append('user_id', values.user_id);
-    formData.append('resource_id', values.resource_id);
+    formData.append('user_email', values.user_email);
+    formData.append('resource_name', values.resource_name); // Now holds resource_id
     formData.append('request_quantity', values.request_quantity);
-    formData.append('request_status', 'pending');  // Always set 'pending' status
+    formData.append('request_status', 'Pending');
 
     if (this.requestId) {
-      // Update existing request
       formData.append('request_id', this.requestId);
       this.crudService.updateRequest(formData).subscribe({
         next: (res) => {
@@ -74,12 +85,11 @@ export class RequestResourceComponent implements OnInit {
             });
           }
         },
-        error: (err) => {
+        error: () => {
           Swal.fire('Error', 'Failed to update the request.', 'error');
         }
       });
     } else {
-      // Create new request
       this.crudService.createRequest(formData).subscribe({
         next: (res) => {
           if (res.result === 'success') {
@@ -93,25 +103,23 @@ export class RequestResourceComponent implements OnInit {
             });
           }
         },
-        error: (err) => {
+        error: () => {
           Swal.fire('Error', 'Failed to create the request.', 'error');
         }
       });
     }
   }
 
-  // Load request details if updating
   loadRequestDetails(requestId: any): void {
-    this.buttonText = 'Update Request';  // Change button text to "Update Request"
+    this.buttonText = 'Update Request';
     this.crudService.loadRequestInfo(requestId).subscribe(res => {
-      this.requestResource.controls['user_id'].setValue(res.user_id);
-      this.requestResource.controls['resource_id'].setValue(res.resource_id);
+      this.requestResource.controls['user_email'].setValue(res.user_email);
+      this.requestResource.controls['resource_name'].setValue(res.resource_id); // Updated to use resource_id
       this.requestResource.controls['request_quantity'].setValue(res.request_quantity);
       this.requestId = res.request_id;
     });
   }
 
-  // Navigate to the desired route
   navigateTo(route: any): void {
     this.router.navigate([route]);
   }

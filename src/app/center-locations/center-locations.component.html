@@ -1,1 +1,19 @@
-<p>center-locations works!</p>
+<div class="map-container">
+  <div id="map" class="map-frame" style="height: 500px; width: 100%;"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>City</th>
+        <th>Street</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let center of socialCenters">
+        <td>{{ center.name }}</td>
+        <td>{{ center.city }}</td>
+        <td>{{ center.street }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

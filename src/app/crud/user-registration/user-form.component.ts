@@ -7,20 +7,20 @@ import { NgIf, NgClass } from '@angular/common';
 declare const Swal: any;
 
 @Component({
-  selector: 'app-user-registration',
+  selector: 'app-user-form',
   standalone: true,
-  templateUrl: './user-registration.component.html',
-  styleUrls: ['./user-registration.component.scss'],
+  templateUrl: './user-form.component.html',
+  styleUrls: ['./user-form.component.scss'],
   imports: [
     ReactiveFormsModule,
     HttpClientModule,
     NgIf,
     NgClass,
-  ]
+  ],
 })
-export class UserRegistrationComponent implements OnInit {
+export class UserFormComponent implements OnInit {
   userForm!: FormGroup;
-  userId: any; // Track ID for updates
+  userId: any; 
   buttonText = 'Create User'; 
 
   constructor(
@@ -32,16 +32,15 @@ export class UserRegistrationComponent implements OnInit {
 
   ngOnInit(): void {
     this.createUserForm();
-
-    // Check if 'userId' exists in route params for updates
-    this.userId = this.activatedRoute.snapshot.params['userId'];
-    if (this.userId) {
-      this.loadUserDetails(this.userId);
-      this.buttonText = 'Update User'; 
-    }
+   
+  this.userId = this.activatedRoute.snapshot.params['userId'];
+  if (this.userId) {
+    this.loadUserDetails(this.userId);
+    this.buttonText = 'Update Resource'; 
   }
+}
 
-  // Create the user form with validation rules
+  // Initialize the user form with validation rules
   createUserForm(): void {
     this.userForm = this.formBuilder.group({
       user_name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
@@ -52,16 +51,16 @@ export class UserRegistrationComponent implements OnInit {
     });
   }
 
-  // Create or update user based on the form state
+  // Create or update user based on form state
   createOrUpdateUser(): void {
     if (this.userForm.invalid) {
-      this.userForm.markAllAsTouched(); // Trigger validation errors
+      this.userForm.markAllAsTouched(); // Show all validation errors
       return;
     }
 
+  // Build form data from form values
     const formData = new FormData();
     const values = this.userForm.value;
-
     formData.append('user_name', values.user_name);
     formData.append('user_email', values.user_email);
     formData.append('user_phone', values.user_phone);
@@ -69,35 +68,34 @@ export class UserRegistrationComponent implements OnInit {
     formData.append('user_address', values.user_address);
 
     if (this.userId) {
-      // Update existing user
+      // Update resource
       formData.append('user_id', this.userId);
       this.crudService.updateUserDetails(formData).subscribe({
         next: (res) => this.handleResponse(res, 'User Updated!'),
         error: () => Swal.fire('Error', 'Failed to update the user.', 'error')
       });
     } else {
-      // Create new user
+      // Create new resource
       this.crudService.createUser(formData).subscribe({
         next: (res) => this.handleResponse(res, 'User Created!'),
-        error: () => Swal.fire('Error', 'Failed to create the user.', 'error')
+        error: () => Swal.fire('Error', 'Failed to create the User.', 'error')
       });
     }
   }
-
-  // Load user details for updates
-  loadUserDetails(userId: any): void {
+  // Load user details for editing
+  loadUserDetails(userId: string): void {
     this.crudService.loadUserInfo(userId).subscribe((res) => {
       this.userForm.patchValue({
         user_name: res.user_name,
         user_email: res.user_email,
         user_phone: res.user_phone,
-        user_password: '', // Password not pre-filled for security reasons
         user_address: res.user_address,
+        user_password: '', // Keep password empty for security
       });
     });
   }
 
-  // Handle navigation and success/error messages
+  // Handle navigation and show success/error messages
   handleResponse(res: any, message: string): void {
     if (res.result === 'success') {
       this.router.navigate(['/crud/user-list']);
@@ -106,7 +104,7 @@ export class UserRegistrationComponent implements OnInit {
         icon: 'success',
         title: message,
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
     } else {
       Swal.fire('Error', res.message || 'An unexpected error occurred.', 'error');

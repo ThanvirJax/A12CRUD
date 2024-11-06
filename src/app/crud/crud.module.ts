@@ -9,6 +9,10 @@ import { ResourceListComponent } from './resource-list/resource-list.component';
 import { RequestResourceComponent } from './request-resource/request-resource.component';
 import { RequestListComponent } from './request-list/request-list.component';
 import { UserListComponent } from './user-list/user-list.component';
+import { ForumComponent } from './forum/forum.component';
+import { DonationFormComponent } from './donation-form/donation-form.component';
+import { UserDetailsComponent } from './user-details/user-details.component';
+import { DonationListComponent } from './donation-list/donation-list.component';
 
 @NgModule({
   declarations: [],
@@ -16,14 +20,19 @@ import { UserListComponent } from './user-list/user-list.component';
     CommonModule,
     CRUDRoutingModule,
     ResourceDetailsComponent,
+    UserDetailsComponent,
     ResourceFormComponent,
+    RequestResourceComponent,
+    DonationFormComponent,
+    DonationListComponent,
     ResourceListComponent,
     RequestListComponent,
     UserListComponent,
     RequestResourceComponent,
     AgGridModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ForumComponent
   ]
 })
 export class CRUDModule { }

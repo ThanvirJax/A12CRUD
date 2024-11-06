@@ -1,0 +1,14 @@
+<div class="row justify-content-center">    
+  <div class="col-6 p-5">      
+    <div class="card" style="width: 20rem; margin: auto;">      
+      <img src="assets/icon/user_profile.png" class="card-img-top" alt="User Avatar" style="width: 100%; height: auto;">  <!-- This makes the image responsive -->       
+      <div class="card-body text-center">         
+        <h5 class="card-title">{{ userDetails?.user_name || 'User Name' }}</h5>          
+        <p class="card-text">Email: {{ userDetails?.user_email || 'No Email Available' }}</p>          
+        <p class="card-text">Phone: {{ userDetails?.user_phone || 'No Phone Number Available' }}</p>          
+        <p class="card-text">Address: {{ userDetails?.user_address || 'No Address Available' }}</p>          
+        <a href="#" class="btn btn-primary">Take Action</a>        
+      </div>      
+    </div>    
+  </div>  
+</div>

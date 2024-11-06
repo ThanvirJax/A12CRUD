@@ -1,42 +1,42 @@
 <div class="row">
   <div class="col-6 p-5">
+    <h2 class="mb-4">Make Request For Resource</h2>
     <form [formGroup]="requestResource" (ngSubmit)="createOrUpdateRequest(requestResource.value)">
-      
-      <!-- User ID -->
+
+      <!-- User Email -->
       <div class="mb-3">
-        <label for="user_id" class="form-label">User ID</label>
+        <label for="user_email" class="form-label">User Email</label>
         <input
-          formControlName="user_id"
-          type="text"
+          formControlName="user_email"
+          type="email"
           class="form-control"
-          id="user_id"
+          id="user_email"
           [ngClass]="{
-            'is-invalid': requestResource.get('user_id')?.invalid && requestResource.get('user_id')?.touched,
-            'is-valid': requestResource.get('user_id')?.valid && requestResource.get('user_id')?.touched
+            'is-invalid': requestResource.get('user_email')?.invalid && requestResource.get('user_email')?.touched,
+            'is-valid': requestResource.get('user_email')?.valid && requestResource.get('user_email')?.touched
           }"
         />
-        <div class="alert alert-danger" role="alert" *ngIf="requestResource.get('user_id')?.invalid && requestResource.get('user_id')?.touched">
-          <span *ngIf="requestResource.get('user_id')?.errors?.['required']">User ID is required.</span>
-          <span *ngIf="requestResource.get('user_id')?.errors?.['min']">User ID must be at least 1.</span>
+        <div class="alert alert-danger" role="alert" *ngIf="requestResource.get('user_email')?.invalid && requestResource.get('user_email')?.touched">
+          <span *ngIf="requestResource.get('user_email')?.errors?.['required']">User Email is required.</span>
+          <span *ngIf="requestResource.get('user_email')?.errors?.['email']">Enter a valid email address.</span>
         </div>
       </div>
 
-      <!-- Resource ID -->
+      <!-- Resource Name -->
       <div class="mb-3">
-        <label for="resource_id" class="form-label">Resource ID</label>
+        <label for="resource_name" class="form-label">Resource Name</label>
         <input
-          formControlName="resource_id"
+          formControlName="resource_name"
           type="text"
           class="form-control"
-          id="resource_id"
+          id="resource_name"
           [ngClass]="{
-            'is-invalid': requestResource.get('resource_id')?.invalid && requestResource.get('resource_id')?.touched,
-            'is-valid': requestResource.get('resource_id')?.valid && requestResource.get('resource_id')?.touched
+            'is-invalid': requestResource.get('resource_name')?.invalid && requestResource.get('resource_name')?.touched,
+            'is-valid': requestResource.get('resource_name')?.valid && requestResource.get('resource_name')?.touched
           }"
         />
-        <div class="alert alert-danger" role="alert" *ngIf="requestResource.get('resource_id')?.invalid && requestResource.get('resource_id')?.touched">
-          <span *ngIf="requestResource.get('resource_id')?.errors?.['required']">Resource ID is required.</span>
-          <span *ngIf="requestResource.get('resource_id')?.errors?.['min']">Resource ID must be at least 1.</span>
+        <div class="alert alert-danger" role="alert" *ngIf="requestResource.get('resource_name')?.invalid && requestResource.get('resource_name')?.touched">
+          <span *ngIf="requestResource.get('resource_name')?.errors?.['required']">Resource Name is required.</span>
         </div>
       </div>
 
@@ -66,8 +66,8 @@
           type="text"
           class="form-control"
           id="request_status"
-          value="Pending"  
-          disabled         
+          value="Pending"
+          disabled
         />
       </div>
 

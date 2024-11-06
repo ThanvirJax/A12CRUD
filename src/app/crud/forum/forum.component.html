@@ -1,0 +1,25 @@
+<div class="forum-container">
+  <div *ngFor="let post of forum" class="post">
+    <div class="post-header">
+      <span class="user-name">User {{ post.user_id }}</span>
+      <span class="timestamp">{{ post.message_created | date: 'short' }}</span>
+    </div>
+    <div class="post-content">{{ post.message_content }}</div>
+
+    <div class="reply-section">
+      <div *ngFor="let reply of post.replies" class="reply">
+        <div class="post-header">
+          <span class="user-name">User {{ reply.user_id }}</span>
+          <span class="timestamp">{{ reply.message_created | date: 'short' }}</span>
+        </div>
+        <div class="post-content">{{ reply.message_content }}</div>
+      </div>
+
+      <!-- Reply Input -->
+      <div class="reply-input">
+        <textarea [(ngModel)]="newReplyContent[post.message_id]" rows="2" placeholder="Write a reply..."></textarea>
+        <button class="reply-btn" (click)="addReply(post.message_id)">Reply</button>
+      </div>
+    </div>
+  </div>
+</div>

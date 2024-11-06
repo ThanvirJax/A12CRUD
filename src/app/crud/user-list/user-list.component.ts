@@ -113,12 +113,12 @@ export class UserListComponent implements OnInit, OnDestroy {
       passwordText.textContent = isPasswordVisible ? params.value : '*****';
       toggleButton.textContent = isPasswordVisible ? 'Hide' : 'Show';
     });
-    */
+    
 
     div.appendChild(passwordText);
     //div.appendChild(toggleButton);
 
-    return div;
+    return div;*/
   }
 
   actionRender(params: any) {

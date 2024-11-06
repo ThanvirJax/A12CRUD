@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common'; // Import Location
 import { FormsModule } from '@angular/forms'; 
 import { HttpClientModule } from '@angular/common/http';
 import { CRUDService } from '../crud/services/crud.service';
 import { LoginResponse } from '../models/login-response';
-import { UserRegistrationComponent } from '../crud/user-registration/user-registration.component';
+import { UserFormComponent } from '../crud/user-registration/user-form.component';
+import { AuthService } from '../auth.service'; // Import AuthService
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, HttpClientModule, RouterLink, UserRegistrationComponent], 
+  imports: [FormsModule, HttpClientModule, UserFormComponent], 
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -21,10 +23,15 @@ export class LoginComponent {
 
   loading = false;
 
-  constructor(private crudService: CRUDService, private router: Router) {}
+  constructor(
+    private crudService: CRUDService, 
+    private router: Router,
+    private location: Location, // Inject Location service
+    private authService: AuthService // Inject AuthService
+  ) {}
 
   // Login method with validation and API call
-    onLogin() {
+  onLogin() {
     if (!this.loginObj.user_email || !this.loginObj.user_password) {
       alert('Please fill in both email and password.');
       return;
@@ -36,8 +43,13 @@ export class LoginComponent {
         this.loading = false;
         if (res.result === 'success') {
           alert('Login Success');
-          localStorage.setItem("DisasterAppLogin", this.loginObj.user_email);  // Store user email
-          this.router.navigate(['/home']);  // Navigate to home/dashboard after login
+          this.authService.login(res.user);  // Store user data using AuthService
+          
+          // Navigate to home, then force a page reload
+          this.router.navigate(['/home']).then(() => {
+            this.location.go('/home'); // Update location without reloading
+            window.location.reload(); // Force page reload
+          });
         } else {
           alert(res.message || 'Invalid Email or Password');
         }
@@ -57,6 +69,6 @@ export class LoginComponent {
 
   // Method for navigation to the registration page (no validation required)
   onCreateAccount() {
-    this.router.navigate(['/crud/user-registration']);  // Navigate to user registration
+    this.router.navigate(['/crud/user-form']);  // Navigate to user registration
   }
 }
