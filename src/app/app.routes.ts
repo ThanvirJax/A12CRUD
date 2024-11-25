@@ -2,8 +2,6 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { RequestResourceComponent } from './crud/request-resource/request-resource.component';
 import { LoginComponent } from './login/login.component';
-import { LayoutComponent } from './layout/layout.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserFormComponent } from './crud/user-registration/user-form.component';
 import { RequestListComponent } from './crud/request-list/request-list.component';
 import { ForecastComponent } from './forecast/forecast.component';
@@ -16,6 +14,9 @@ import { PrecautionsComponent } from './precautions/precautions.component';
 import { UserDetailsComponent } from './crud/user-details/user-details.component';
 import { DonationListComponent } from './crud/donation-list/donation-list.component';
 import { CenterActionsComponent } from './center-actions/center-actions.component';
+import { CDonationFormComponent } from './c-donation-form/c-donation-form.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { CRequestFormComponent } from './crud/c-request-form/c-request-form.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent},
@@ -28,7 +29,9 @@ export const routes: Routes = [
 
   // Specific components that aren't part of lazy-loaded modules
   { path: 'crud/request-resource', component: RequestResourceComponent },
+  { path: 'crud/c-request-form', component: CRequestFormComponent },
   { path: 'crud/donation-form', component: DonationFormComponent },
+  { path: 'crud/c-donation-form', component: CDonationFormComponent },
   { path: 'crud/resource-details', component: ResourceDetailsComponent },
   { path: 'crud/user-details', component: UserDetailsComponent },
   { path: 'crud/user-form', component: UserFormComponent },
@@ -41,6 +44,7 @@ export const routes: Routes = [
   { path: 'precaution', component: PrecautionsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'center-actions', component: CenterActionsComponent },
+  { path: 'admin-dashboard', component: AdminDashboardComponent },
 
 
 ];

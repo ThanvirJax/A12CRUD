@@ -1,0 +1,73 @@
+<div class="row">
+  <div class="col-6 p-5">
+    <!-- Title -->
+    <h2 class="mb-4">Request Resource for Center</h2>
+    <form [formGroup]="requestForm" (ngSubmit)="createOrUpdateRequest()">
+
+      <!-- Center Name -->
+      <div class="mb-3">
+        <label for="center-name" class="form-label">Center Name</label>
+        <input
+          formControlName="center_name"
+          type="text"
+          class="form-control"
+          id="center-name"
+          [ngClass]="{
+            'is-invalid': requestForm.get('center_name')?.invalid && requestForm.get('center_name')?.touched,
+            'is-valid': requestForm.get('center_name')?.valid && requestForm.get('center_name')?.touched
+          }"
+        >
+        <div *ngIf="requestForm.get('center_name')?.invalid && requestForm.get('center_name')?.touched" class="alert alert-danger">
+          <span *ngIf="requestForm.get('center_name')?.errors?.['required']">Center name is required.</span>
+        </div>
+      </div>
+
+      <!-- Resource Name (Dropdown) -->
+      <div class="mb-3">
+        <label for="resource-name" class="form-label">Resource Name</label>
+        <select
+          formControlName="resource_name"
+          class="form-select"
+          id="resource-name"
+          [ngClass]="{
+            'is-invalid': requestForm.get('resource_name')?.invalid && requestForm.get('resource_name')?.touched,
+            'is-valid': requestForm.get('resource_name')?.valid && requestForm.get('resource_name')?.touched
+          }"
+        >
+          <option value="" disabled selected>Select a Resource</option>
+          <option *ngFor="let resource of availableResources" [value]="resource.resource_name">
+            {{ resource.resource_name }}
+          </option>
+        </select>
+        <div *ngIf="requestForm.get('resource_name')?.invalid && requestForm.get('resource_name')?.touched" class="alert alert-danger">
+          <span *ngIf="requestForm.get('resource_name')?.errors?.['required']">Resource name is required.</span>
+        </div>
+      </div>
+
+      <!-- Requested Quantity -->
+      <div class="mb-3">
+        <label for="requested-quantity" class="form-label">Requested Quantity</label>
+        <input
+          formControlName="requested_quantity"
+          type="number"
+          class="form-control"
+          id="requested-quantity"
+          [ngClass]="{
+            'is-invalid': requestForm.get('requested_quantity')?.invalid && requestForm.get('requested_quantity')?.touched,
+            'is-valid': requestForm.get('requested_quantity')?.valid && requestForm.get('requested_quantity')?.touched
+          }"
+        >
+        <div *ngIf="requestForm.get('requested_quantity')?.invalid && requestForm.get('requested_quantity')?.touched" class="alert alert-danger">
+          <span *ngIf="requestForm.get('requested_quantity')?.errors?.['required']">Quantity is required.</span>
+          <span *ngIf="requestForm.get('requested_quantity')?.errors?.['min']">Minimum quantity should be 1.</span>
+          <span *ngIf="requestForm.get('requested_quantity')?.errors?.['max']">Maximum quantity is 99,999,999.</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary w-100" [disabled]="requestForm.invalid">
+        {{ buttonText }}
+      </button>
+    </form>
+  </div>
+</div>

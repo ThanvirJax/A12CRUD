@@ -12,7 +12,7 @@ import L from 'leaflet';
 export class CenterLocationsComponent implements OnInit {
 
   private map!: L.Map;
-  private centroid: L.LatLngExpression = [-20.3484, 57.5522]; // Coordinates for Mauritius
+  private centroid: L.LatLngExpression = [-20.2484, 57.5522]; // Coordinates for Mauritius
 
   // Coordinates for social welfare centers in Mauritius
   public socialCenters: { name: string, city: string, street: string, coords: L.LatLngExpression }[] = [
@@ -55,7 +55,7 @@ export class CenterLocationsComponent implements OnInit {
   private initMap(): void {
     this.map = L.map('map', {
       center: this.centroid,
-      zoom: 11
+      zoom: 5
     });
 
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

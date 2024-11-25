@@ -1,17 +1,16 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common'; // Import Location
+import { Location, NgIf } from '@angular/common'; // Import Location
 import { FormsModule } from '@angular/forms'; 
 import { HttpClientModule } from '@angular/common/http';
 import { CRUDService } from '../crud/services/crud.service';
 import { LoginResponse } from '../models/login-response';
-import { UserFormComponent } from '../crud/user-registration/user-form.component';
 import { AuthService } from '../auth.service'; // Import AuthService
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, HttpClientModule, UserFormComponent], 
+  imports: [FormsModule, HttpClientModule, NgIf], 
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -36,15 +35,25 @@ export class LoginComponent {
       alert('Please fill in both email and password.');
       return;
     }
-
+  
     this.loading = true;
     this.crudService.login(this.loginObj).subscribe(
       (res: LoginResponse) => {
         this.loading = false;
         if (res.result === 'success') {
           alert('Login Success');
-          this.authService.login(res.user);  // Store user data using AuthService
-          
+          console.log('User Role:', res.role);  // Log the role here
+
+          // Update the login() method to pass the full response, not just res.user
+          const loginData = {
+            result: res.result,
+            user: res.user,  // user object
+            role: res.role,  // role field
+            token: res.token  // token field
+          };
+
+          this.authService.login(loginData);  // Pass the full login response
+
           // Navigate to home, then force a page reload
           this.router.navigate(['/home']).then(() => {
             this.location.go('/home'); // Update location without reloading
@@ -66,7 +75,7 @@ export class LoginComponent {
       }
     );
   }
-
+  
   // Method for navigation to the registration page (no validation required)
   onCreateAccount() {
     this.router.navigate(['/crud/user-form']);  // Navigate to user registration

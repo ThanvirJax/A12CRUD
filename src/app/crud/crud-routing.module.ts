@@ -20,6 +20,7 @@ const routes: Routes = [
   {path: 'request-resource', component: RequestResourceComponent},
   {path: 'create-resource', component: ResourceFormComponent},
   {path: 'update-resource/:resourceId', component: ResourceFormComponent},
+  {path: 'update-request/:requestId', component: RequestResourceComponent},
   {path: 'create-user', component: UserFormComponent},
   {path: 'update-user/:userId', component: UserFormComponent},
   {path: 'view-resource-details/:resourceId', component: ResourceDetailsComponent},

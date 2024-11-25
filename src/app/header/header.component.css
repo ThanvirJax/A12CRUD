@@ -5,15 +5,15 @@
   .btn-outline-light.active,
   .btn-outline-light:focus,
   .btn-outline-light:active {
-    background-color: #ffc107;
-    color: rgb(0, 0, 0); 
-    border-color: #ffc107; 
+    background-color: #0478d8;
+    color: #FFF; 
+    border-color: #b0b0b0; 
   }
 
   .btn-outline-light:hover {
-    background-color: #c89704; 
-    color: #2c6aac; 
-    border-color: #0056b3; 
+    background-color: #65baff; 
+    color: #010101c1; 
+    border-color: #d5d4d4a2; 
   }
   .search-container {
     position: relative; 
@@ -31,7 +31,6 @@
 
   }
   
-  /* From Uiverse.io by vinodjangid07 */ 
 .Btn {
   display: flex;
   align-items: center;

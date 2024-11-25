@@ -1,0 +1,113 @@
+.dashboard-container {
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  background: linear-gradient(135deg, #f0f4ff, #d9e6ff);
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 2.8em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 1.8em;
+  color: #555;
+  margin-bottom: 30px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.highlight {
+  color: #0056b3;
+  font-weight: bold;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  position: relative;
+}
+
+.cards .card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 230px;
+  width: 200px;
+  border-radius: 20px;
+  color: white;
+  text-align: center;
+  font-size: 1em;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
+}
+
+.cards .card:hover {
+  transform: scale(1.15);
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.cards:hover > .card:not(:hover) {
+  filter: blur(1.5px) brightness(0.8);
+  transform: scale(0.9);
+}
+
+.cards .card p.tip {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.cards .card p.second-text {
+  font-size: 1em;
+  opacity: 0.9;
+}
+
+.cards .blue {
+  background-color: #201658;
+}
+
+.cards .cyan {
+  background-color: #1D24CA;
+}
+
+.cards .orange {
+  background-color: #f8aa19;
+}
+
+.cards .green {
+  background-color: #98ABEE;
+}
+
+.cards .grey {
+  background-color: #b4b4b4 ;
+}
+
+.user-section .user-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.action-btn {
+  padding: 12px 25px;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.action-btn:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+}

@@ -1,46 +1,59 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../auth.service'; 
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule, NgIf, FormsModule], // Add FormsModule here
+  imports: [RouterModule, NgIf, FormsModule],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
   userName: string | null = null;
+  adminName: string | null = null;
+  userRole: 'admin' | 'user' | null = null;
   searchQuery: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.loadUserName();
+    this.loadUserData();
   }
 
-  private loadUserName(): void {
-    const user = localStorage.getItem("DisasterAppUser");
+  private loadUserData(): void {
+    const user = this.authService.getUser();
     if (user) {
-      try {
-        this.userName = JSON.parse(user).user_name || null;
-      } catch (error) {
-        console.error('Error parsing user data', error);
-      }
+      this.userName = user.user_name || null;
+      this.adminName = user.admin_name || null;
+      this.userRole = this.authService.getRole() as 'admin' | 'user';
+      console.log('User data loaded:', { userName: this.userName, adminName: this.adminName, userRole: this.userRole });
+    } else {
+      console.warn('No user data found in localStorage.');
     }
   }
 
   onLogout(): void {
-    localStorage.removeItem("DisasterAppToken");
-    localStorage.removeItem("DisasterAppUser");
+    this.authService.logout();
     this.userName = null;
+    this.adminName = null;
+    this.userRole = null;
     this.router.navigate(['/login']);
   }
 
   onSearch(event: Event): void {
-    event.preventDefault(); // Prevent default form submission behavior
-    // Add your search logic here if needed
+    event.preventDefault(); 
+    console.log('Search query:', this.searchQuery);
+    // Add search logic if necessary
   }
-  
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
 }

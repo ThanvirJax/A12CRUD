@@ -1,25 +1,27 @@
 <div class="forum-container">
+  <!-- Display forum posts -->
   <div *ngFor="let post of forum" class="post">
     <div class="post-header">
-      <span class="user-name">User {{ post.user_id }}</span>
+      <!-- Display user name, assume `user_name` is part of the ChatMessage model -->
+      <span class="user-name">{{ post.user_name || 'Anonymous' }}</span>
       <span class="timestamp">{{ post.message_created | date: 'short' }}</span>
     </div>
     <div class="post-content">{{ post.message_content }}</div>
+  </div>
 
-    <div class="reply-section">
-      <div *ngFor="let reply of post.replies" class="reply">
-        <div class="post-header">
-          <span class="user-name">User {{ reply.user_id }}</span>
-          <span class="timestamp">{{ reply.message_created | date: 'short' }}</span>
-        </div>
-        <div class="post-content">{{ reply.message_content }}</div>
-      </div>
+  <!-- New Message Section (Visible only if user is logged in) -->
+  <div *ngIf="userLoggedIn" class="new-message-container">
+    <textarea 
+      [(ngModel)]="newMessageContent" 
+      rows="3" 
+      placeholder="Write a new message..." 
+      class="new-message-textbox">
+    </textarea>
+    <button class="send-message-btn" (click)="addMessage()">Send</button>
+  </div>
 
-      <!-- Reply Input -->
-      <div class="reply-input">
-        <textarea [(ngModel)]="newReplyContent[post.message_id]" rows="2" placeholder="Write a reply..."></textarea>
-        <button class="reply-btn" (click)="addReply(post.message_id)">Reply</button>
-      </div>
-    </div>
+  <!-- If not logged in, show a prompt to log in -->
+  <div *ngIf="!userLoggedIn" class="login-prompt">
+    <p>You must be logged in to write a message.</p>
   </div>
 </div>

@@ -1,8 +1,7 @@
-<main>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm"
     style="background: linear-gradient(90deg, #072444 0%, #0056b3 100%);">
     <div class="container-fluid">
-      <!-- Replace RescueLink text with an image logo -->
+      <!-- Logo -->
       <a class="navbar-brand fw-bold fs-3 text-white" href="/" style="letter-spacing: 2px;">
         <img src="assets/icon/Logo.png" alt="RescueLink Logo" style="height: 80px;">
       </a>
@@ -12,7 +11,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
+          <!-- Navigation Buttons -->
           <li class="nav-item">
             <button type="button" class="btn btn-outline-light rounded-pill px-3 py-2 me-3 transition"
               [routerLinkActive]="'active'" [routerLink]="'../forecast'">
@@ -37,7 +36,8 @@
               Donation
             </button>
           </li>
-          <!-- Dropdown menu with modern hover effect -->
+
+          <!-- Dropdown menu -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white fw-bold" href="#" id="navbarDropdown" role="button"
               data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,16 +49,13 @@
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" [routerLink]="'/crud/user-list'">Users List</a></li>
-              <li><a class="dropdown-item" [routerLink]="'/crud/request-list'">Request List</a></li>
-              <li><a class="dropdown-item" [routerLink]="'/crud/create-resource'">Create Resource</a></li>
               <li><a class="dropdown-item" [routerLink]="'/crud/resource-list'">Available Resource</a></li>
-              <li><a class="dropdown-item" [routerLink]="'/crud/donation-list'">List of Donations</a></li>
               <li><a class="dropdown-item" [routerLink]="'/center-actions'">Centers Resource Actions</a></li>
             </ul>
           </li>
         </ul>
 
+        <!-- Search section -->
         <div class="search-container">
           <form (submit)="onSearch($event)" class="d-flex">
             <input [(ngModel)]="searchQuery" name="search" class="form-control rounded-pill px-4 py-2 me-3"
@@ -70,36 +67,46 @@
           </form>
         </div>
 
-
+        <!-- User/Logout Profile section -->
         <div class="d-flex align-items-center">
           <button type="button" class="btn btn-outline-light rounded-pill px-3 py-2 me-3 transition"
-            [routerLinkActive]="'active'" [routerLink]="'../dashboard'">
+            [routerLinkActive]="'active'" [routerLink]="'../admin-dashboard'">
             Dashboard
           </button>
-          <ng-container *ngIf="userName; else loginButton">
-            <button type="button" class="btn bg-success btn-outline-light rounded-pill px-3 py-2 me-3 transition"
-              aria-label="User Profile" title="{{ userName }}">
-              {{ userName.charAt(0).toUpperCase() }}
+
+          <!-- Check if user is logged in -->
+          <ng-container *ngIf="isLoggedIn(); else loginButton">
+            <!-- Admin Profile -->
+            <button *ngIf="isAdmin()" type="button" class="btn btn-primary rounded-pill px-3 py-2 me-3 transition"
+              title="Admin: {{ adminName }}">
+              {{ adminName ? adminName.charAt(0).toUpperCase() : '' }} (Admin)
             </button>
+
+            <!-- User Profile -->
+            <button *ngIf="!isAdmin()" type="button" class="btn btn-success rounded-pill px-3 py-2 me-3 transition"
+              title="{{ userName }}">
+              {{ userName ? userName.charAt(0).toUpperCase() : '' }}
+            </button>
+
             <!-- Logout button -->
-            <button class="Btn">
+            <button class="Btn" (click)="onLogout()">
               <div class="sign"><svg viewBox="0 0 512 512">
                   <path
                     d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
                   </path>
                 </svg></div>
-              <div class="text" (click)="onLogout()">Logout</div>
+              <div class="text">Logout</div>
             </button>
-
           </ng-container>
+
+          <!-- Login button if not logged in -->
           <ng-template #loginButton>
             <button type="button" class="btn btn-outline-light rounded-pill px-3 py-2 me-3 transition"
-              [routerLinkActive]="'active'" [routerLink]="'../login'" aria-label="Login" title="Sign In">
-              <i class="fas fa-user-plus"></i>
+              [routerLinkActive]="'active'" [routerLink]="'../login'" title="Sign In">
+              Login
             </button>
           </ng-template>
         </div>
       </div>
     </div>
   </nav>
-</main>

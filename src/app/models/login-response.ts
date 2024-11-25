@@ -1,8 +1,12 @@
-import { User } from "./user";
-
 export interface LoginResponse {
-  result: string; // 'success' or 'failure'
-  message?: string; // Optional message (e.g., 'Invalid credentials')
-  user?: User; // Optionally include the user object if the login is successful
-  token?: string; // Include the authentication token if needed
+  result: string;
+  message?: string;
+  user: {
+    user_name: string;
+    admin_name: string;
+    email: string;
+    adminSpecificField?: string;
+  };
+  role: 'admin' | 'user';
+  token: string;
 }

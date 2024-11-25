@@ -5,15 +5,16 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-precautions',
   standalone: true,
-  imports: [FormsModule, NgFor],
   templateUrl: './precautions.component.html',
-  styleUrls: ['./precautions.component.css']
+  styleUrls: ['./precautions.component.css'],
+  imports: [FormsModule, NgFor]
 })
 export class PrecautionsComponent {
-  searchQuery: string = ''; // Property to hold the search query
-  precautions: { title: string; items: string[] }[] = [
+  searchQuery: string = '';
+  precautions = [
     {
       title: 'Before the Disaster',
+      color: '#010f5f',
       items: [
         'Prepare an emergency kit with essentials.',
         'Develop a family communication plan.',
@@ -25,6 +26,7 @@ export class PrecautionsComponent {
     },
     {
       title: 'During the Disaster',
+      color: '#3b4b92',
       items: [
         'Follow evacuation orders from authorities.',
         'Move to higher ground or designated shelters.',
@@ -36,6 +38,7 @@ export class PrecautionsComponent {
     },
     {
       title: 'After the Disaster',
+      color: '#454852',
       items: [
         'Check for injuries and provide first aid if needed.',
         'Stay away from downed power lines and floodwater.',
@@ -48,17 +51,11 @@ export class PrecautionsComponent {
   ];
 
   get filteredPrecautions() {
-    if (!this.searchQuery) {
-      return this.precautions;
-    }
+    if (!this.searchQuery) return this.precautions;
     const query = this.searchQuery.toLowerCase();
     return this.precautions.map(precaution => ({
       ...precaution,
       items: precaution.items.filter(item => item.toLowerCase().includes(query)),
     })).filter(precaution => precaution.items.length > 0);
-  }
-
-  onSearch(event: Event): void {
-    event.preventDefault(); // Prevent default form submission behavior
   }
 }

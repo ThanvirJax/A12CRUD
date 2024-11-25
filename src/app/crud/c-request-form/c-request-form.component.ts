@@ -10,8 +10,8 @@ declare const Swal: any;
 @Component({
   selector: 'app-request-resource',
   standalone: true,
-  templateUrl: './request-resource.component.html',
-  styleUrls: ['./request-resource.component.css'],
+  templateUrl: './c-request-form.component.html',
+  styleUrls: ['./c-request-form.component.css'],
   imports: [
     ReactiveFormsModule,
     HttpClientModule,
@@ -20,7 +20,7 @@ declare const Swal: any;
     CommonModule  
   ]
 })
-export class RequestResourceComponent implements OnInit {
+export class CRequestFormComponent implements OnInit {
   requestForm!: FormGroup;
   requestId: any;
   buttonText = 'Create Request';
@@ -47,8 +47,8 @@ export class RequestResourceComponent implements OnInit {
   // Create the request form with validation rules
   createRequestForm(): void {
     this.requestForm = this.formBuilder.group({
-      user_email: ['', [Validators.required, Validators.email]],
-      resource_name: ['', [Validators.required]], // Resource name is now a dropdown
+      center_name: ['', [Validators.required]], // Center name field for centers
+      resource_name: ['', [Validators.required]], // Resource name is a dropdown
       requested_quantity: ['', [Validators.required, Validators.min(1), Validators.max(99999999)]],
     });
   }
@@ -83,8 +83,8 @@ export class RequestResourceComponent implements OnInit {
       requested_quantity: values.requested_quantity,
     }];
 
-    // Append the user email and resources array to formData
-    formData.append('user_email', values.user_email);
+    // Append the center name and resources array to formData
+    formData.append('center_name', values.center_name);
 
     // Dynamically append the resources array to FormData
     resources.forEach((resource, index) => {
@@ -108,7 +108,7 @@ export class RequestResourceComponent implements OnInit {
       this.crudService.createRequest(formData).subscribe(
         (response) => {
           Swal.fire('Success', 'Request created successfully!', 'success');
-          this.router.navigate(['home']);
+          this.router.navigate(['crud/request-list']);
         },
         (error) => {
           Swal.fire('Error', 'Failed to create request.', 'error');
@@ -122,7 +122,7 @@ export class RequestResourceComponent implements OnInit {
     this.crudService.loadRequestInfo(requestId).subscribe(
       (data) => {
         this.requestForm.patchValue({
-          user_email: data.user_email,
+          center_name: data.center_name,
           resource_name: data.resource_name,
           requested_quantity: data.requested_quantity,
         });

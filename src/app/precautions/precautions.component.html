@@ -1,142 +1,42 @@
-<div class="container noselect">
+<div class="search-container">
+  <div class="wrapper">
+    <div class="cloud">
+      <div class="cloud_left"></div>
+      <div class="cloud_right"></div>
+    </div>
+    <div class="rain">
+      <div class="drop"></div>
+      <div class="drop"></div>
+      <div class="drop"></div>
+      <div class="drop"></div>
+      <div class="drop"></div>
+    </div>
+    <div class="surface">
+      <div class="hit"></div>
+      <div class="hit"></div>
+      <div class="hit"></div>
+      <div class="hit"></div>
+      <div class="hit"></div>
+    </div>
+  </div>
+  <input [(ngModel)]="searchQuery" placeholder="Search precautions..." class="search-bar" />
+</div>
+
+<div *ngFor="let precaution of filteredPrecautions" class="container noselect">
   <div class="canvas">
     <!-- Trackers for 3D hover effect -->
-    <div class="tracker tr-1"></div>
-    <div class="tracker tr-2"></div>
-    <div class="tracker tr-3"></div>
-    <div class="tracker tr-4"></div>
-    <div class="tracker tr-5"></div>
-    <div class="tracker tr-6"></div>
-    <div class="tracker tr-7"></div>
-    <div class="tracker tr-8"></div>
-    <div class="tracker tr-9"></div>
-    <div class="tracker tr-10"></div>
-    <div class="tracker tr-11"></div>
-    <div class="tracker tr-12"></div>
-    <div class="tracker tr-13"></div>
-    <div class="tracker tr-14"></div>
-    <div class="tracker tr-15"></div>
-    <div class="tracker tr-16"></div>
-    <div class="tracker tr-17"></div>
-    <div class="tracker tr-18"></div>
-    <div class="tracker tr-19"></div>
-    <div class="tracker tr-20"></div>
-    <div class="tracker tr-21"></div>
-    <div class="tracker tr-22"></div>
-    <div class="tracker tr-23"></div>
-    <div class="tracker tr-24"></div>
-    <div class="tracker tr-25"></div>
+    <div *ngFor="let tracker of [].constructor(25); let i = index" [class]="'tracker tr-' + (i + 1)"></div>
 
-    <!-- Before the Disaster Card -->
-    <div class="card">
-      <p class="prompt">Before the Disaster</p>
+    <!-- Precaution Card -->
+    <div class="card" [style.backgroundColor]="precaution.color">
+      <p class="prompt">{{ precaution.title }}</p>
       <div class="title">
         <ul>
-          Before the Disaster
-          <li>Prepare an emergency kit with essentials.</li>
-          <li>Develop a family communication plan.</li>
-          <li>Identify safe spots and evacuation routes.</li>
-          <li>Secure important documents in a safe place.</li>
-          <li>Stay informed with local alerts.</li>
-          <li>Keep your vehicle fueled for emergency evacuations.</li>
+          <li *ngFor="let item of precaution.items">{{ item }}</li>
         </ul>
       </div>
     </div>
   </div>
 </div>
 
-<div class="container noselect">
-  <div class="canvas">
-    <!-- Trackers for 3D hover effect -->
-    <!-- Repeat the trackers here for the second card -->
-    <div class="tracker tr-1"></div>
-    <div class="tracker tr-2"></div>
-    <div class="tracker tr-3"></div>
-    <div class="tracker tr-4"></div>
-    <div class="tracker tr-5"></div>
-    <div class="tracker tr-6"></div>
-    <div class="tracker tr-7"></div>
-    <div class="tracker tr-8"></div>
-    <div class="tracker tr-9"></div>
-    <div class="tracker tr-10"></div>
-    <div class="tracker tr-11"></div>
-    <div class="tracker tr-12"></div>
-    <div class="tracker tr-13"></div>
-    <div class="tracker tr-14"></div>
-    <div class="tracker tr-15"></div>
-    <div class="tracker tr-16"></div>
-    <div class="tracker tr-17"></div>
-    <div class="tracker tr-18"></div>
-    <div class="tracker tr-19"></div>
-    <div class="tracker tr-20"></div>
-    <div class="tracker tr-21"></div>
-    <div class="tracker tr-22"></div>
-    <div class="tracker tr-23"></div>
-    <div class="tracker tr-24"></div>
-    <div class="tracker tr-25"></div>
 
-    <!-- During the Disaster Card -->
-    <div class="card" id="second">
-      <p class="prompt">During the Disaster</p>
-      <div class="title">
-        <ul>
-          During the Disaster
-          <li>Follow evacuation orders from authorities.</li>
-          <li>Move to higher ground or designated shelters.</li>
-          <li>Stay indoors, away from windows and glass.</li>
-          <li>Listen to emergency broadcasts for updates.</li>
-          <li>Check on family members and neighbors if safe.</li>
-          <li>Avoid driving or walking through floodwaters.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="container noselect">
-  <div class="canvas">
-    <!-- Trackers for 3D hover effect -->
-    <!-- Repeat the trackers here for the third card -->
-    <div class="tracker tr-1"></div>
-    <div class="tracker tr-2"></div>
-    <div class="tracker tr-3"></div>
-    <div class="tracker tr-4"></div>
-    <div class="tracker tr-5"></div>
-    <div class="tracker tr-6"></div>
-    <div class="tracker tr-7"></div>
-    <div class="tracker tr-8"></div>
-    <div class="tracker tr-9"></div>
-    <div class="tracker tr-10"></div>
-    <div class="tracker tr-11"></div>
-    <div class="tracker tr-12"></div>
-    <div class="tracker tr-13"></div>
-    <div class="tracker tr-14"></div>
-    <div class="tracker tr-15"></div>
-    <div class="tracker tr-16"></div>
-    <div class="tracker tr-17"></div>
-    <div class="tracker tr-18"></div>
-    <div class="tracker tr-19"></div>
-    <div class="tracker tr-20"></div>
-    <div class="tracker tr-21"></div>
-    <div class="tracker tr-22"></div>
-    <div class="tracker tr-23"></div>
-    <div class="tracker tr-24"></div>
-    <div class="tracker tr-25"></div>
-
-    <!-- After the Disaster Card -->
-    <div class="card" id="third">
-      <p class="prompt">After the Disaster</p>
-      <div class="title">
-        <ul>
-          After the Disaster
-          <li>Check for injuries and provide first aid if needed.</li>
-          <li>Stay away from downed power lines and floodwater.</li>
-          <li>Inspect your home for structural damage carefully.</li>
-          <li>Contact family to let them know you're safe.</li>
-          <li>Follow local alerts about safe water and food.</li>
-          <li>Take photos of damage for insurance claims.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
