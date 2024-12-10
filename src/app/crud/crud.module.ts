@@ -13,7 +13,8 @@ import { ForumComponent } from './forum/forum.component';
 import { DonationFormComponent } from './donation-form/donation-form.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { DonationListComponent } from './donation-list/donation-list.component';
-import { CDonationFormComponent } from '../c-donation-form/c-donation-form.component';
+import { UserFormComponent } from './user-registration/user-form.component';
+import { CDonationFormComponent } from './c-donation-form/c-donation-form.component';
 
 @NgModule({
   declarations: [],
@@ -22,6 +23,7 @@ import { CDonationFormComponent } from '../c-donation-form/c-donation-form.compo
     CRUDRoutingModule,
     ResourceDetailsComponent,
     UserDetailsComponent,
+    UserFormComponent,
     ResourceFormComponent,
     DonationFormComponent,
     RequestResourceComponent,

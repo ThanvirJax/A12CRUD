@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CRUDService } from "../services/crud.service";
-import { ActivatedRoute } from "@angular/router";
 import { CommonModule } from '@angular/common';  
 import { User } from '../../models/user';  
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-user-details',
@@ -12,27 +11,18 @@ import { User } from '../../models/user';
   styleUrls: ['./user-details.component.css']
 })
 export class UserDetailsComponent implements OnInit {
-  userDetails: User | undefined; 
+  userDetails: User | null = null; 
 
-  constructor(private crudService: CRUDService,
-              private activatedRoute: ActivatedRoute) { }
+  constructor(private authService: AuthService) { }  
 
   ngOnInit(): void {
-    const userId = this.activatedRoute.snapshot.params['userId'];  // Get user ID from route
-    if (userId) {
-      this.loadUserDetails(userId);  // Load user details
+    this.loadUserDetails();  
+  }
+
+  loadUserDetails() {
+    this.userDetails = this.authService.getUser();  
+    if (!this.userDetails) {
+      console.error('No logged-in user found!');
     }
   }
-  
-  loadUserDetails(UserId: string) {
-    this.crudService.loadUserInfo(UserId).subscribe(
-      (res: User) => {
-        this.userDetails = res;
-      },
-      (error) => {
-        console.error('Failed to load user details:', error);
-      }
-    );
-  }
 }
-

@@ -18,6 +18,7 @@ declare const Swal: any;
     NgClass,
   ],
 })
+
 export class UserFormComponent implements OnInit {
   userForm!: FormGroup;
   userId: any; 
@@ -39,7 +40,6 @@ export class UserFormComponent implements OnInit {
     this.buttonText = 'Update Resource'; 
   }
 }
-
   // Initialize the user form with validation rules
   createUserForm(): void {
     this.userForm = this.formBuilder.group({
@@ -51,14 +51,12 @@ export class UserFormComponent implements OnInit {
     });
   }
 
-  // Create or update user based on form state
   createOrUpdateUser(): void {
     if (this.userForm.invalid) {
-      this.userForm.markAllAsTouched(); // Show all validation errors
+      this.userForm.markAllAsTouched(); 
       return;
     }
 
-  // Build form data from form values
     const formData = new FormData();
     const values = this.userForm.value;
     formData.append('user_name', values.user_name);
@@ -68,35 +66,38 @@ export class UserFormComponent implements OnInit {
     formData.append('user_address', values.user_address);
 
     if (this.userId) {
-      // Update resource
       formData.append('user_id', this.userId);
       this.crudService.updateUserDetails(formData).subscribe({
         next: (res) => this.handleResponse(res, 'User Updated!'),
         error: () => Swal.fire('Error', 'Failed to update the user.', 'error')
       });
     } else {
-      // Create new resource
+
       this.crudService.createUser(formData).subscribe({
         next: (res) => this.handleResponse(res, 'User Created!'),
         error: () => Swal.fire('Error', 'Failed to create the User.', 'error')
       });
     }
   }
-  // Load user details for editing
+
   loadUserDetails(userId: string): void {
-    this.crudService.loadUserInfo(userId).subscribe((res) => {
+  this.crudService.loadUserInfo(userId).subscribe({
+    next: (res) => {
       this.userForm.patchValue({
         user_name: res.user_name,
         user_email: res.user_email,
         user_phone: res.user_phone,
         user_address: res.user_address,
-        user_password: '', // Keep password empty for security
+        user_password: res.user_password || '', 
       });
-    });
-  }
+    },
+    error: () => {
+      Swal.fire('Error', 'Failed to load user details.', 'error');
+    },
+  });
+}
 
-  // Handle navigation and show success/error messages
-  handleResponse(res: any, message: string): void {
+handleResponse(res: any, message: string): void {
     if (res.result === 'success') {
       this.router.navigate(['/crud/user-list']);
       Swal.fire({

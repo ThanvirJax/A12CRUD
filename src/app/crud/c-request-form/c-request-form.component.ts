@@ -108,7 +108,7 @@ export class CRequestFormComponent implements OnInit {
       this.crudService.createRequest(formData).subscribe(
         (response) => {
           Swal.fire('Success', 'Request created successfully!', 'success');
-          this.router.navigate(['crud/request-list']);
+          this.router.navigate(['dashboard']);
         },
         (error) => {
           Swal.fire('Error', 'Failed to create request.', 'error');

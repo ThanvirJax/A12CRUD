@@ -1,1 +1,109 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <!-- Admin Section -->
+  <div *ngIf="isAdmin()" class="admin-section">
+    <h1>Welcome, <span class="highlight">{{ adminName }}</span></h1>
+    <h2>Admin Dashboard</h2>
+    <div class="cards">
+      <div class="card blue" [routerLink]="'/crud/create-resource'">
+        <p class="tip">Resources</p>
+        <p class="second-text">Create new resource</p>
+      </div>
+      <div class="card cyan" [routerLink]="'/crud/resource-list'">
+        <p class="tip">Manage Resources</p>
+        <p class="second-text">Manage resource list</p>
+      </div>
+      <div class="card orange" [routerLink]="'/crud/request-list'">
+        <p class="tip">Manage Requests</p>
+        <p class="second-text">View list of requests</p>
+      </div>
+      <div class="card green" [routerLink]="'/crud/donation-list'">
+        <p class="tip">Manage Donations</p>
+        <p class="second-text">View list of donations</p>
+      </div>
+      <div class="card grey" [routerLink]="'/crud/user-list'">
+        <p class="tip">Manage Users</p>
+        <p class="second-text">View list of users</p>
+      </div>
+      <div class="card lime" [routerLink]="'/crud/delivery-status'">
+        <p class="tip">Manage Deliveries</p>
+        <p class="second-text">View list of resource deliveries</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Section -->
+  <div *ngIf="!isAdmin() && !isCenter()" class="user-section">
+    <h1>Welcome, <span class="highlight">{{ userName }}</span></h1>
+    <h2>User Dashboard</h2>
+    <div class="cards user-actions">
+      <div class="card1" (click)="requestResource()">
+        <div class="front-content1">
+          <p>Make a Request</p>
+        </div>
+        <div class="content1">
+          <p class="heading1">Request Resources</p>
+          <p>Submit a request for the resources you need in disaster management.</p>
+        </div>
+      </div>
+      
+      <div class="card1" [routerLink]="'/crud/donation-form'">
+        <div class="front-content1">
+          <p>Donate Resources</p>
+        </div>
+        <div class="content1">
+          <p class="heading1">Contribute to Relief</p>
+          <p>Provide essential resources to aid in disaster recovery efforts.</p>
+        </div>
+      </div>
+      
+      <div class="card1" (click)="editProfile()">
+        <div class="front-content1">
+          <p>Update Profile</p>
+        </div>
+        <div class="content1">
+          <p class="heading1">Profile Management</p>
+          <p>Update your personal details and manage your profile information.</p>
+        </div>
+      </div>
+
+      <div class="card1" [routerLink]="'../donate-fund'">
+        <div class="front-content1">
+          <p>Donate Fund</p>
+        </div>
+        <div class="content1">
+          <p class="heading1">Offer your contribution</p>
+          <p>Provide essential fund to aid in disaster recovery efforts.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Center Section -->
+  <div *ngIf="isCenter()" class="center-section">
+    <h1>Welcome, <span class="highlight">{{ centerName }}</span></h1>
+    <h2>Center Dashboard</h2>
+    <div class="cards user-actions">
+      <div class="card1"  [routerLink]="'/center-actions'">
+        <div class="front-content1">
+          <p>Center actions</p>
+        </div>
+        <div class="content1">
+          <p class="heading1">Aids or Requests From Center</p>
+          <p>Center can donate or request resources</p>
+        </div>
+      </div>
+      
+      <div class="card1" [routerLink]="'/center-locations'">
+        <div class="front-content1">
+          <p>Center Location</p>
+        </div>
+        <div class="content1">
+          <p class="heading1">Locations of centers</p>
+          <p>Provide essential resources to aid in disaster recovery efforts.</p>
+        </div>
+      </div>
+     
+    </div>
+  </div>
+</div>

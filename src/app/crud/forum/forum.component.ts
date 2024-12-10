@@ -4,8 +4,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../auth.service';  // Import AuthService
-import { ChatMessage } from '../../models/message';  // Import ChatMessage model
+import { AuthService } from '../../auth.service';
+import { ChatMessage } from '../../models/message';
 
 @Component({
   selector: 'app-forum',
@@ -15,16 +15,19 @@ import { ChatMessage } from '../../models/message';  // Import ChatMessage model
   styleUrls: ['./forum.component.css'],
 })
 export class ForumComponent implements OnInit, OnDestroy {
-  forum: ChatMessage[] = [];  // Use the ChatMessage type here
-  routerSubscription: Subscription;
-  newMessageContent: string = '';  // Store the new message content
-  userLoggedIn: boolean = false;  // Track if user is logged in
+  forum: ChatMessage[] = [];
+  routerSubscription: Subscription = new Subscription();
+  newMessageContent: string = '';
+  userLoggedIn: boolean = false;
+  loading: boolean = false;
+  errorMessage: string = ''; // For better user feedback
 
   constructor(
     private crudService: CRUDService,
     private router: Router,
-    private authService: AuthService  // Inject AuthService
+    private authService: AuthService
   ) {
+    // Update messages on route changes
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.getForumMessages();
@@ -34,7 +37,7 @@ export class ForumComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getForumMessages();
-    this.checkUserLoginStatus();  // Check login status on initialization
+    this.checkUserLoginStatus();
   }
 
   ngOnDestroy(): void {
@@ -43,61 +46,68 @@ export class ForumComponent implements OnInit, OnDestroy {
     }
   }
 
-  getForumMessages() {
-    // Load messages from the backend
+  // Load forum messages from the API
+  getForumMessages(): void {
     this.crudService.loadChatMessages().subscribe(
       (res: ChatMessage[]) => {
-        this.forum = res;  // Assuming the response is an array of ChatMessage
+        this.forum = res; // Populate forum with messages
+        this.errorMessage = ''; // Clear error message if successful
       },
       (error) => {
         console.error('Error loading messages:', error);
-        alert('Error loading forum messages.');
+        this.errorMessage = 'Failed to load forum messages. Please try again later.'; // Set error message
       }
     );
   }
 
-  checkUserLoginStatus() {
-    // Check if user is logged in via AuthService
+  // Check if the user is logged in
+  checkUserLoginStatus(): void {
     this.userLoggedIn = this.authService.isLoggedIn();
   }
 
   addMessage(): void {
-    if (!this.authService.isLoggedIn()) {
-      console.error('User is not logged in.');
+    if (!this.userLoggedIn) {
       alert('Please log in to send a message.');
-      return;  // Exit early if the user is not logged in
+      return;
     }
   
+    // Check if the message is not empty
     if (this.newMessageContent.trim()) {
+      if (this.newMessageContent.length > 255) {
+        alert('Message too long. Limit to 255 characters.');
+        return;
+      }
+  
+      // Get the user details from AuthService
       const user = this.authService.getUser();
-      console.log('Current User:', user);  // Log user for inspection
-  
-      if (user && user.email) {
-        const userEmail = user.email;
-        const userName = user.user_name || 'Anonymous';
-  
+      console.log('User:', user);  // Log the user object
+      
+      if (user && user.user_id) {
         const newMessage: ChatMessage = {
-          user_email: userEmail,
-          user_name: userName,
-          message_content: this.newMessageContent,
-          message_created: new Date().toISOString(),
+          user_id: user.user_id, // Access the user_id from the user object
+          message_content: this.newMessageContent.trim(),
         };
-  
+        
+        this.loading = true; // Show loading spinner
         this.crudService.createMessage(newMessage).subscribe(
           (res: ChatMessage) => {
-            this.forum.push(res);  // Add the new message to the forum
-            this.newMessageContent = '';  // Clear input after sending message
+            this.forum.push(res); // Add the new message to the forum
+            this.newMessageContent = ''; // Reset the input field
+            this.loading = false; // Hide the loading spinner
           },
           (error) => {
             console.error('Error sending message:', error);
-            alert('There was an error sending your message.');
+            this.errorMessage = 'Failed to send message. Try again.'; // Display error message
+            this.loading = false; // Hide the loading spinner on error
           }
         );
       } else {
-        console.error('User email is not available.');
-        alert('User is not logged in. Please log in to send messages.');
+        alert('User identification failed. Please log in again.');
       }
+    } else {
+      alert('Message content cannot be empty.');
     }
   }
   
-}  
+  
+}

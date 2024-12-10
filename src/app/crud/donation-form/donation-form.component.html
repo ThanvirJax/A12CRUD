@@ -17,6 +17,7 @@
             'is-valid': donationForm.get('user_email')?.valid && donationForm.get('user_email')?.touched
           }"
         >
+        <small id="user-email-help" class="form-text text-muted">Enter your registered email address.</small>
         <div *ngIf="donationForm.get('user_email')?.invalid && donationForm.get('user_email')?.touched" class="alert alert-danger">
           <span *ngIf="donationForm.get('user_email')?.errors?.['required']">Email is required.</span>
           <span *ngIf="donationForm.get('user_email')?.errors?.['email']">Invalid email format.</span>
@@ -36,6 +37,7 @@
             'is-valid': donationForm.get('resource_name')?.valid && donationForm.get('resource_name')?.touched
           }"
         >
+        <small id="resource-name-help" class="form-text text-muted">Enter the name of resource to donate</small>
         <div *ngIf="donationForm.get('resource_name')?.invalid && donationForm.get('resource_name')?.touched" class="alert alert-danger">
           <span *ngIf="donationForm.get('resource_name')?.errors?.['required']">Name is required.</span>
           <span *ngIf="donationForm.get('resource_name')?.errors?.['minlength']">Minimum 3 characters required.</span>
@@ -56,6 +58,7 @@
             'is-valid': donationForm.get('resource_description')?.valid && donationForm.get('resource_description')?.touched
           }"
         ></textarea>
+        <small id="resource-desc-help" class="form-text text-muted">Enter the description of the resource you want to donate</small>
         <div *ngIf="donationForm.get('resource_description')?.invalid && donationForm.get('resource_description')?.touched" class="alert alert-danger">
           <span *ngIf="donationForm.get('resource_description')?.errors?.['required']">Description is required.</span>
           <span *ngIf="donationForm.get('resource_description')?.errors?.['minlength']">Minimum 3 characters required.</span>
@@ -100,6 +103,8 @@
             'is-valid': donationForm.get('donation_quantity')?.valid && donationForm.get('donation_quantity')?.touched
           }"
         >
+        <small id="resource-quantity-help" class="form-text text-muted">Enter the amount of the resource you want to donate</small>
+
         <div *ngIf="donationForm.get('donation_quantity')?.invalid && donationForm.get('donation_quantity')?.touched" class="alert alert-danger">
           <span *ngIf="donationForm.get('donation_quantity')?.errors?.['required']">Quantity is required.</span>
           <span *ngIf="donationForm.get('donation_quantity')?.errors?.['min']">Minimum quantity should be 1.</span>

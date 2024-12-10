@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Resource } from '../../models/resource';
 import { HttpResponse } from '../../models/http-response';
@@ -11,6 +11,7 @@ import { LoginResponse } from '../../models/login-response';
 import { UserIdResponse } from '../../models/user-id-response';
 import { ChatMessage } from '../../models/message';
 import { Donation } from '../../models/donation';
+import { Tracking } from '../../models/tracking';  
 
 @Injectable({
   providedIn: 'root',
@@ -70,7 +71,7 @@ export class CRUDService {
 
   // Load single user details by ID
   loadUserInfo(userId: any): Observable<User> {
-    const url = `${this.API_ENDPOINT}view_user.php?id=${userId}`;
+    const url = `${this.API_ENDPOINT}view_user.php?user_id=${userId}`;
     return this.httpClient.get<User>(url).pipe(map(data => data));
   }
 
@@ -169,7 +170,6 @@ updateRequestStatus(requestId: number, newStatus: string, requestedQuantity: num
   );
 }
 
-
   getUserIdByEmail(email: string): Observable<UserIdResponse> {
     const url = `${this.API_ENDPOINT}get_user_id.php?email=${email}`;
     return this.httpClient.get<UserIdResponse>(url).pipe(map(data => data));
@@ -193,39 +193,27 @@ updateRequestStatus(requestId: number, newStatus: string, requestedQuantity: num
     return this.httpClient.get<ChatMessage[]>(url).pipe(map(data => data));
   }
 
+ 
+  // Create a new message
   createMessage(newMessage: ChatMessage): Observable<ChatMessage> {
-    // Retrieve the logged-in user's data from localStorage
-    const user = localStorage.getItem('DisasterAppUser');
-
-    if (!user) {
-      return throwError(() => new Error('User not logged in'));
-    }
-
-    const parsedUser = JSON.parse(user);
-
-    // Ensure the user data has the expected structure
-    const userEmail = parsedUser.email;
-    const userName = parsedUser.user_name || 'Anonymous';  // Provide a fallback name
-    const role = parsedUser.role;
-
-    if (!userEmail) {
-      return throwError(() => new Error('User email is missing'));
-    }
-
-    const data = {
-      user_email: userEmail,
-      user_name: userName,
-      role: role,
-      message_content: newMessage.message_content,
-    };
-
     const url = `${this.API_ENDPOINT}create_message.php`;
+    
+    // Make the HTTP POST request to create a new message
+    return this.httpClient.post<ChatMessage>(url, newMessage).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error creating message:', error);
+        let errorMessage = 'An unknown error occurred!';
 
-    // Send data with user_email, user_name, role, and message_content
-    return this.httpClient.post<ChatMessage>(url, data).pipe(
-      catchError(error => {
-        console.error('Error sending message:', error);
-        return throwError(() => new Error('Error sending message: ' + error.message));
+        // Handle client-side errors (e.g., network issues, browser-related)
+        if (error.error instanceof ErrorEvent) {
+          errorMessage = `Client-side error: ${error.error.message}`;
+        } else {
+          // Handle server-side errors (e.g., 404, 500)
+          errorMessage = `Server-side error: ${error.status} - ${error.message}`;
+        }
+
+        // Return a user-friendly error message
+        return throwError(() => new Error(errorMessage));
       })
     );
   }
@@ -253,7 +241,7 @@ updateRequestStatus(requestId: number, newStatus: string, requestedQuantity: num
         if (response.result === 'success') {
           return response;  // return the success response
         } else {
-          throw new Error(response.message || 'Failed to create donation');  // throw an error if not success
+          throw new Error(response.message || 'Failed to create donation');  
         }
       }),
       catchError(error => {
@@ -297,4 +285,54 @@ updateRequestStatus(requestId: number, newStatus: string, requestedQuantity: num
       })
     );
   }
+
+  // Create a new tracking record when a request is approved
+createTracking(data: any): Observable<HttpResponse> {
+  const url = `${this.API_ENDPOINT}create_tracking.php`; // Ensure this points to the correct backend script
+  return this.httpClient.post<HttpResponse>(url, data).pipe(
+    map(response => {
+      // Optionally, you can process the response here if needed
+      return response;
+    }),
+    catchError(this.handleError) // Handle any errors that occur during the request
+  );
 }
+
+// Updated CRUD Service returning status and data
+loadTracking(): Observable<{ status: string; data: Tracking[] }> {
+  const url = `${this.API_ENDPOINT}view_status.php`;
+  return this.httpClient.get<{ status: string; data: Tracking[] }>(url).pipe(
+    catchError(this.handleError)
+  );
+}
+
+loadTrackingInfo(trackingId: number): Observable<Tracking> {
+  const url = `${this.API_ENDPOINT}view_status.php?tracking_id=${trackingId}`;
+  return this.httpClient.get<{ status: string; data: Tracking }>(url).pipe(
+    map(response => response.data), // Extract only the 'data' field
+    catchError(this.handleError)
+  );
+}
+
+  // Update tracking status
+  updateTrackingStatus(trackingId: number, trackingStatus: string): Observable<any> {
+    const url = `${this.API_ENDPOINT}update_tracking_status.php`;
+    const payload = { tracking_id: trackingId, tracking_status: trackingStatus };
+
+    return this.httpClient.post<any>(url, payload, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    }).pipe(
+      catchError(err => {
+        console.error('Update Tracking Status Error:', err); // Debugging line
+        return throwError(() => new Error('Failed to update tracking status.'));
+      })
+    );
+  }
+
+  // Handle errors
+  private handleError(error: any): Observable<never> {
+    console.error('HTTP error', error);
+    return throwError(() => new Error('An error occurred while processing your request.'));
+  }
+}
+  

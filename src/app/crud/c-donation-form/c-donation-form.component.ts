@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgIf, NgClass } from '@angular/common';
-import { CRUDService } from '../crud/services/crud.service';
+import { CRUDService } from '../services/crud.service';
 declare const Swal: any;
 
 @Component({
@@ -98,7 +98,7 @@ export class CDonationFormComponent implements OnInit {
       this.crudService.createDonation(formData).subscribe(
         (response) => {
           Swal.fire('Success', 'Donation created successfully!', 'success');
-          this.router.navigate(['/crud/donation-list']);
+          this.router.navigate(['/dashboard']);
         },
         (error) => {
           Swal.fire('Error', 'Failed to create donation.', 'error');

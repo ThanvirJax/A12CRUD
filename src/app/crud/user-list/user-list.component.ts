@@ -125,7 +125,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     let div = document.createElement('div');
     let htmlCode = `
       <button type="button" class="btn btn-success">View</button>
-      <button type="button" class="btn btn-danger">Delete</button>
+      <button type="button" class="btn btn-danger">Remove</button>
       <button type="button" class="btn btn-warning">Edit</button>`;
     div.innerHTML = htmlCode;
 
@@ -158,13 +158,13 @@ export class UserListComponent implements OnInit, OnDestroy {
   deleteUser(params: any) {
     const that = this;
     Swal.fire({
-      title: 'Are you sure?',
+      title: 'Are you sure you want to remove user?',
       text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonText: 'Yes, remove!'
     }).then((result: any) => {
       if (result.isConfirmed) {
         that.crudService.deleteUser(params.data.user_id).subscribe(

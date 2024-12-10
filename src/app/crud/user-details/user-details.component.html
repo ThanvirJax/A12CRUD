@@ -1,14 +1,29 @@
-<div class="row justify-content-center">    
-  <div class="col-6 p-5">      
-    <div class="card" style="width: 20rem; margin: auto;">      
-      <img src="assets/icon/user_profile.png" class="card-img-top" alt="User Avatar" style="width: 100%; height: auto;">  <!-- This makes the image responsive -->       
-      <div class="card-body text-center">         
-        <h5 class="card-title">{{ userDetails?.user_name || 'User Name' }}</h5>          
-        <p class="card-text">Email: {{ userDetails?.user_email || 'No Email Available' }}</p>          
-        <p class="card-text">Phone: {{ userDetails?.user_phone || 'No Phone Number Available' }}</p>          
-        <p class="card-text">Address: {{ userDetails?.user_address || 'No Address Available' }}</p>          
-        <a href="#" class="btn btn-primary">Take Action</a>        
-      </div>      
-    </div>    
-  </div>  
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm rounded border-light">
+        <!-- User Avatar -->
+        <img src="assets/icon/user_profile.png" class="card-img-top rounded-circle mx-auto d-block" alt="User Avatar" style="width: 150px; height: 150px; object-fit: cover;">
+        
+        <div class="card-body text-center">
+          <h1 class="card-title font-weight-bold mb-3">{{ userDetails?.user_name || 'User Name' }}</h1>
+          
+          <div class="list-group list-group-flush">
+            <div class="list-group-item">
+              <strong>Email:</strong> {{ userDetails?.user_email || 'No Email Available' }}
+            </div>
+            <div class="list-group-item">
+              <strong>Phone:</strong> {{ userDetails?.user_phone || 'No Phone Number Available' }}
+            </div>
+            <div class="list-group-item">
+              <strong>Address:</strong> {{ userDetails?.user_address || 'No Address Available' }}
+            </div>
+          </div>
+          
+          <!-- Take Action Button -->
+          <a href="#" class="btn btn-primary btn-block mt-4" >Take Action</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

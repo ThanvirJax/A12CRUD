@@ -10,6 +10,7 @@ import { UserFormComponent } from './user-registration/user-form.component';
 import { ForumComponent } from './forum/forum.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { DonationListComponent } from './donation-list/donation-list.component';
+import { DeliveryStatusComponent } from './delivery-status/delivery-status.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'resource-list', pathMatch: 'full'},
@@ -17,9 +18,10 @@ const routes: Routes = [
   {path: 'user-list', component: UserListComponent},
   {path: 'request-list', component: RequestListComponent},
   {path: 'donation-list', component: DonationListComponent},
-  {path: 'request-resource', component: RequestResourceComponent},
+  {path: 'delivery-status', component: DeliveryStatusComponent},
+  { path: 'request-resource/:userId', component: RequestResourceComponent },
   {path: 'create-resource', component: ResourceFormComponent},
-  {path: 'update-resource/:resourceId', component: ResourceFormComponent},
+  {path: 'update-resource/:resourceId', loadComponent: () => import('./resource-form/resource-form.component').then(m => m.ResourceFormComponent)},
   {path: 'update-request/:requestId', component: RequestResourceComponent},
   {path: 'create-user', component: UserFormComponent},
   {path: 'update-user/:userId', component: UserFormComponent},

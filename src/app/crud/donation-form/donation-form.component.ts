@@ -53,36 +53,35 @@ export class DonationFormComponent implements OnInit {
 
   // Create or update the donation entry
   createOrUpdateDonation(): void {
-    this.donationForm.markAllAsTouched(); 
-
+    this.donationForm.markAllAsTouched();
+  
     if (this.donationForm.invalid) {
       Swal.fire('Error', 'Please fill all required fields correctly.', 'error');
       return;
     }
-
+  
     const formData = new FormData();
     const values = this.donationForm.value;
-
-    // Prepare resources array to be sent in the correct format (matching Postman request)
+  
+    // Append user email
+    formData.append('user_email', values.user_email);
+  
+    // Prepare resources array to be sent in the correct format
     const resources = [{
       resource_name: values.resource_name,
       resource_description: values.resource_description,
       resource_type: values.resource_type,
       donation_quantity: values.donation_quantity
     }];
-
-    // Append the user email and the resources array to formData
-    formData.append('user_email', values.user_email);
-
-    // Dynamically append the resources array to FormData
+  
     resources.forEach((resource, index) => {
       formData.append(`resources[${index}][resource_name]`, resource.resource_name);
       formData.append(`resources[${index}][resource_description]`, resource.resource_description);
       formData.append(`resources[${index}][resource_type]`, resource.resource_type);
       formData.append(`resources[${index}][donation_quantity]`, resource.donation_quantity.toString());
     });
-
-    // Proceed with API call based on whether this is an update or a new donation
+  
+    // Update or Create donation
     if (this.donationId) {
       formData.append('donation_id', this.donationId);
       this.crudService.updateDonationDetails(formData).subscribe(
@@ -97,16 +96,20 @@ export class DonationFormComponent implements OnInit {
     } else {
       this.crudService.createDonation(formData).subscribe(
         (response) => {
-          Swal.fire('Success', 'Donation created successfully!', 'success');
-          this.router.navigate(['/crud/donation-list']);
+          if (response.error && response.error === 'User does not exist.') {
+            Swal.fire('Error', 'User not registered or found. Please check your email.', 'error');
+          } else {
+            Swal.fire('Success', 'Donation created successfully!', 'success');
+            this.router.navigate(['home']);
+          }
         },
         (error) => {
-          Swal.fire('Error', 'Failed to create donation.', 'error');
+          Swal.fire('Error', 'User not found. Please check your email or register.', 'error');
         }
       );
     }
   }
-
+  
   // Load donation details for editing
   loadDonationDetails(donationId: number): void {
     this.crudService.loadDonationInfo(donationId).subscribe(

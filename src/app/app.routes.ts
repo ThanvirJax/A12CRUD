@@ -14,9 +14,11 @@ import { PrecautionsComponent } from './precautions/precautions.component';
 import { UserDetailsComponent } from './crud/user-details/user-details.component';
 import { DonationListComponent } from './crud/donation-list/donation-list.component';
 import { CenterActionsComponent } from './center-actions/center-actions.component';
-import { CDonationFormComponent } from './c-donation-form/c-donation-form.component';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { CRequestFormComponent } from './crud/c-request-form/c-request-form.component';
+import { CDonationFormComponent } from './crud/c-donation-form/c-donation-form.component';
+import { DeliveryStatusComponent } from './crud/delivery-status/delivery-status.component';
+import { DonateFundComponent } from './donate-fund/donate-fund.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent},
@@ -44,7 +46,8 @@ export const routes: Routes = [
   { path: 'precaution', component: PrecautionsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'center-actions', component: CenterActionsComponent },
-  { path: 'admin-dashboard', component: AdminDashboardComponent },
-
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'crud/delivery-status', component: DeliveryStatusComponent },
+  { path: 'donate-fund', component: DonateFundComponent }
 
 ];

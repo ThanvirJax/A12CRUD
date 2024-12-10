@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../auth.service'; 
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +14,7 @@ import { AuthService } from '../auth.service';
 export class HeaderComponent implements OnInit {
   userName: string | null = null;
   adminName: string | null = null;
+  centerName: string | null = null;  // For center name
   userRole: 'admin' | 'user' | null = null;
   searchQuery: string = '';
 
@@ -28,25 +29,27 @@ export class HeaderComponent implements OnInit {
     if (user) {
       this.userName = user.user_name || null;
       this.adminName = user.admin_name || null;
+      this.centerName = user.center_name || null;  
       this.userRole = this.authService.getRole() as 'admin' | 'user';
-      console.log('User data loaded:', { userName: this.userName, adminName: this.adminName, userRole: this.userRole });
+      console.log('User data loaded:', { userName: this.userName, adminName: this.adminName, centerName: this.centerName, userRole: this.userRole });
     } else {
       console.warn('No user data found in localStorage.');
     }
   }
 
+
   onLogout(): void {
     this.authService.logout();
     this.userName = null;
     this.adminName = null;
+    this.centerName = null;  // Reset centerName on logout
     this.userRole = null;
     this.router.navigate(['/login']);
   }
 
   onSearch(event: Event): void {
-    event.preventDefault(); 
+    event.preventDefault();
     console.log('Search query:', this.searchQuery);
-    // Add search logic if necessary
   }
 
   isAdmin(): boolean {
@@ -55,5 +58,10 @@ export class HeaderComponent implements OnInit {
 
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
+  }
+
+  // Check if user is not logged in and is a guest
+  isGuest(): boolean {
+    return !this.isLoggedIn();
   }
 }

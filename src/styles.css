@@ -10,7 +10,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(100deg, #f2f3fa, #7e94bd);
+  background: linear-gradient(100deg, #f2f3fa, #5674a7);
 
 }
 
@@ -19,3 +19,6 @@ code {
     monospace;
 }
 
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

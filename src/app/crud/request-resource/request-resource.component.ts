@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { CRUDService } from '../services/crud.service';
 import { HttpClientModule } from '@angular/common/http';
-import { NgIf, NgClass, CommonModule } from '@angular/common';  
+import { NgIf, NgClass, CommonModule } from '@angular/common';
 
 declare const Swal: any;
 
@@ -17,8 +17,8 @@ declare const Swal: any;
     HttpClientModule,
     NgIf,
     NgClass,
-    CommonModule  
-  ]
+    CommonModule
+  ],
 })
 export class RequestResourceComponent implements OnInit {
   requestForm!: FormGroup;
@@ -35,7 +35,15 @@ export class RequestResourceComponent implements OnInit {
 
   ngOnInit(): void {
     this.createRequestForm();
-    this.fetchAvailableResources(); // Fetch the available resources when the component loads
+    this.fetchAvailableResources();
+
+    // Retrieve the user email from the query parameters
+    this.activatedRoute.queryParams.subscribe(params => {
+      const userEmail = params['email'];
+      if (userEmail) {
+        this.requestForm.patchValue({ user_email: userEmail });
+      }
+    });
 
     this.requestId = this.activatedRoute.snapshot.params['requestId'];
     if (this.requestId) {
@@ -44,20 +52,18 @@ export class RequestResourceComponent implements OnInit {
     }
   }
 
-  // Create the request form with validation rules
   createRequestForm(): void {
     this.requestForm = this.formBuilder.group({
       user_email: ['', [Validators.required, Validators.email]],
-      resource_name: ['', [Validators.required]], // Resource name is now a dropdown
+      resource_name: ['', [Validators.required]],
       requested_quantity: ['', [Validators.required, Validators.min(1), Validators.max(99999999)]],
     });
   }
 
-  // Fetch available resources from the backend
   fetchAvailableResources(): void {
     this.crudService.loadAllResources().subscribe(
       (response: any) => {
-        this.availableResources = response; // Assume response contains an array of resources
+        this.availableResources = response;
       },
       (error) => {
         Swal.fire('Error', 'Failed to load available resources.', 'error');
@@ -65,34 +71,29 @@ export class RequestResourceComponent implements OnInit {
     );
   }
 
-  // Create or update the request entry
   createOrUpdateRequest(): void {
     this.requestForm.markAllAsTouched();
-
+  
     if (this.requestForm.invalid) {
       Swal.fire('Error', 'Please fill all required fields correctly.', 'error');
       return;
     }
-
+  
     const formData = new FormData();
     const values = this.requestForm.value;
-
-    // Prepare resources array to be sent in the correct format
-    const resources = [{
-      resource_name: values.resource_name,
-      requested_quantity: values.requested_quantity,
-    }];
-
-    // Append the user email and resources array to formData
+    const resources = [
+      {
+        resource_name: values.resource_name,
+        requested_quantity: values.requested_quantity,
+      },
+    ];
+  
     formData.append('user_email', values.user_email);
-
-    // Dynamically append the resources array to FormData
     resources.forEach((resource, index) => {
       formData.append(`resources[${index}][resource_name]`, resource.resource_name);
       formData.append(`resources[${index}][requested_quantity]`, resource.requested_quantity.toString());
     });
-
-    // Proceed with API call based on whether this is an update or a new request
+  
     if (this.requestId) {
       formData.append('request_id', this.requestId);
       this.crudService.updateRequest(formData).subscribe(
@@ -107,17 +108,21 @@ export class RequestResourceComponent implements OnInit {
     } else {
       this.crudService.createRequest(formData).subscribe(
         (response) => {
-          Swal.fire('Success', 'Request created successfully!', 'success');
-          this.router.navigate(['home']);
+          if (response.error && response.error === 'User does not exist.') {
+            Swal.fire('Error', 'User not registered or found. Please check your email.', 'error');
+          } else {
+            Swal.fire('Success', 'Request created successfully!', 'success');
+            this.router.navigate(['home']);
+          }
         },
         (error) => {
-          Swal.fire('Error', 'Failed to create request.', 'error');
+          Swal.fire('Error', 'Failed to create request. Please try again.', 'error');
         }
       );
     }
   }
+  
 
-  // Load request details for editing
   loadRequestDetails(requestId: number): void {
     this.crudService.loadRequestInfo(requestId).subscribe(
       (data) => {

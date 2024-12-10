@@ -55,7 +55,7 @@
 
 .card:hover {
   transform: scale(1.1);
-  background-color: #2b9bf6;
+  background: linear-gradient(135deg, #f89b29, #ff0f7b);
   color: #ffffff;
 }
 

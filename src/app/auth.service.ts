@@ -21,6 +21,7 @@ export class AuthService {
     console.log('User logged in:', this.getUser());
     console.log('Login state:', this.isLoggedIn() ? 'Logged in' : 'Not logged in');
     console.log('Is Admin:', this.isAdmin());
+    console.log('Is Center:', this.isCenter());
   }
 
   logout(): void {
@@ -40,7 +41,7 @@ export class AuthService {
 
   getUser(): any {
     const user = localStorage.getItem(this.userKey);
-    const parsedUser = user ? JSON.parse(user) : undefined;  // Returning undefined for consistency
+    const parsedUser = user ? JSON.parse(user) : undefined;  
     console.log('Retrieved user:', parsedUser);
     return parsedUser;
   }
@@ -50,6 +51,13 @@ export class AuthService {
     const isAdmin = role === 'admin';
     console.log('Checking if user is admin:', isAdmin);
     return isAdmin;
+  }
+
+  isCenter(): boolean {
+    const role = this.getRole();
+    const isCenter = role === 'center';
+    console.log('Checking if user is center:', isCenter);
+    return isCenter;
   }
 
   getToken(): string | null {

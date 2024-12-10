@@ -1,0 +1,80 @@
+<style>
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .donation-container {
+      background-color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 1rem;
+      padding: 2rem;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .pp-F9TXXP4V38AD4 {
+      text-align: center;
+      border: none;
+      border-radius: 1.5rem;
+      min-width: 11.625rem;
+      padding: 0 2rem;
+      height: 3.125rem;
+      font-weight: bold;
+      background-color: #FFD140;
+      color: #000000;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 1.125rem;
+      line-height: 1.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .pp-F9TXXP4V38AD4:hover {
+      background-color: #ffc107;
+    }
+
+    .cards-image {
+      margin: 1rem 0;
+      max-width: 100%;
+    }
+
+    .powered-by {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      color: #555555;
+    }
+
+    .powered-by img {
+      height: 0.875rem;
+      margin-left: 0.25rem;
+    }
+
+    @media (max-width: 500px) {
+      .pp-F9TXXP4V38AD4 {
+        min-width: 9.625rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+<body>
+  <div class="donation-container">
+    <form action="https://www.sandbox.paypal.com/ncp/payment/F9TXXP4V38AD4" method="post" target="_top">
+      <h1 style="font-size: 1.5rem; color: #333333; margin-bottom: 1rem;">Support Our Cause</h1>
+      <p style="font-size: 1rem; color: #666666; margin-bottom: 1.5rem;">Make a donation to help us continue our work.</p>
+      <input class="pp-F9TXXP4V38AD4" type="submit" value="Donate Now" />
+      <img src="https://www.paypalobjects.com/images/Debit_Credit.svg" alt="Accepted Cards" class="cards-image" />
+      <div class="powered-by">
+        Powered by 
+        <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="PayPal">
+      </div>
+    </form>
+  </div>

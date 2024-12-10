@@ -1,6 +1,7 @@
 export interface ChatMessage {
-  user_email: string;  
-  user_name: string;  
+  user_id: number;
   message_content: string;
-  message_created: string;  
+  user_name?: string; 
+  user_email?: string; 
+  message_created?: string; 
 }

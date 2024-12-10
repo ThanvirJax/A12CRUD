@@ -1,26 +1,50 @@
 <div class="forum-container">
-  <!-- Display forum posts -->
-  <div *ngFor="let post of forum" class="post">
-    <div class="post-header">
-      <!-- Display user name, assume `user_name` is part of the ChatMessage model -->
-      <span class="user-name">{{ post.user_name || 'Anonymous' }}</span>
-      <span class="timestamp">{{ post.message_created | date: 'short' }}</span>
+  <!-- Forum Posts -->
+  <div *ngIf="forum.length > 0; else noPosts" class="posts">
+    <div *ngFor="let post of forum" class="post">
+      <div class="post-header">
+        <span class="user-name">{{ post.user_name || 'Anonymous' }}</span>
+        <span class="timestamp">{{ post.message_created | date: 'short' }}</span>
+      </div>
+      <div class="post-content">{{ post.message_content }}</div>
     </div>
-    <div class="post-content">{{ post.message_content }}</div>
   </div>
 
-  <!-- New Message Section (Visible only if user is logged in) -->
+  <!-- No Posts Available -->
+  <ng-template #noPosts>
+    <p class="no-posts-message">No posts available. Be the first to write a message!</p>
+  </ng-template>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- New Message Form -->
   <div *ngIf="userLoggedIn" class="new-message-container">
-    <textarea 
-      [(ngModel)]="newMessageContent" 
-      rows="3" 
-      placeholder="Write a new message..." 
-      class="new-message-textbox">
-    </textarea>
-    <button class="send-message-btn" (click)="addMessage()">Send</button>
+    <textarea
+      [(ngModel)]="newMessageContent"
+      rows="3"
+      placeholder="Write a new message..."
+      maxlength="255"
+      class="new-message-textbox"
+    ></textarea>
+    <div class="char-counter">{{ newMessageContent.length }}/255</div>
+    <button
+      class="send-message-btn"
+      [disabled]="!newMessageContent.trim() || loading"
+      (click)="addMessage()"
+    >
+      Send
+    </button>
   </div>
 
-  <!-- If not logged in, show a prompt to log in -->
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="loading-indicator">
+    <span class="spinner"></span> Sending...
+  </div>
+
+  <!-- Login Prompt -->
   <div *ngIf="!userLoggedIn" class="login-prompt">
     <p>You must be logged in to write a message.</p>
   </div>

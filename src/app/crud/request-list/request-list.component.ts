@@ -229,12 +229,6 @@ export class RequestListComponent implements OnInit, OnDestroy {
     );
   }
   
-  
- 
-  editRequestDetails(params: any) {
-    this.router.navigate(['/crud/update-request/' + params.data.request_id]);
-  }
-
   deleteRequest(params: any) {
     Swal.fire({
       title: 'Are you sure?',

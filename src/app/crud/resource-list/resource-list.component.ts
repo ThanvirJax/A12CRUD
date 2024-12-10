@@ -120,7 +120,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   }
 
   editResourceDetails(params: any) {
-    this.router.navigate(['/crud/update-resource/' + params.data.resource_id], { queryParams: { reload: true } });
+    this.router.navigate(['/crud/update-resource/' + params.data.resource_id]);
   }
 
   deleteResource(params: any) {

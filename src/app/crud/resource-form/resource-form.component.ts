@@ -38,6 +38,10 @@ export class ResourceFormComponent implements OnInit {
       this.loadResourceDetails(this.resourceId);
       this.buttonText = 'Update Resource'; 
     }
+    
+  }
+
+  ngAfterContentInit(): void {
   }
 
   // Create the resource form with validation rules
