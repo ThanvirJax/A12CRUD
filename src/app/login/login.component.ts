@@ -30,7 +30,6 @@ export class LoginComponent {
     private authService: AuthService
   ) {}
 
-  // Login method with validation and API call
   onLogin() {
     if (!this.loginObj.user_email || !this.loginObj.user_password) {
       Swal.fire({
@@ -46,7 +45,6 @@ export class LoginComponent {
       (res: LoginResponse) => {
         this.loading = false;
         if (res.result === 'success') {
-          // Show SweetAlert success message
           Swal.fire({
             icon: 'success',
             title: 'Login Success',
@@ -59,7 +57,7 @@ export class LoginComponent {
               token: res.token,
             };
 
-            this.authService.login(loginData);  // Pass the full login response
+            this.authService.login(loginData);  
 
             this.router.navigate(['/dashboard']).then(() => {
               this.location.go('/dashboard');
@@ -99,8 +97,7 @@ export class LoginComponent {
     );
   }
   
-  // Method for navigation to the registration page
   onCreateAccount() {
-    this.router.navigate(['/crud/user-form']);  // Navigate to user registration page
+    this.router.navigate(['/crud/user-form']); 
   }
 }

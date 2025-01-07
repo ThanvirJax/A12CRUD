@@ -23,8 +23,8 @@ export class DeliveryStatusComponent implements OnInit, OnDestroy {
     { field: 'request_status', headerName: 'Request Status', sortable: true, headerClass: 'header-cell' },
     { field: 'requested_quantity', headerName: 'Requested Quantity', sortable: true, headerClass: 'header-cell' },
     { field: 'requester_name', headerName: 'Requester Name', sortable: true, headerClass: 'header-cell' },
-    { field: 'tracking_status', headerName: ' Delivery Status', sortable: true, headerClass: 'header-cell' },
-    { field: 'remarks', headerName: 'Remarks', sortable: true, headerClass: 'header-cell' },
+    { field: 'tracking_status', headerName: ' Delivery Status', sortable: true, headerClass: 'header-cell', width: 150 },
+    { field: 'remarks', headerName: 'Remarks', sortable: true, headerClass: 'header-cell', width: 250 },
     { field: 'tracking_created', headerName: 'Created At', sortable: true, headerClass: 'header-cell' },
     { field: 'tracking_updated', headerName: 'Updated At', sortable: true, headerClass: 'header-cell' },
     {
@@ -66,7 +66,6 @@ export class DeliveryStatusComponent implements OnInit, OnDestroy {
     this.crudService.loadTracking().subscribe({
       next: (response) => {
         if (Array.isArray(response)) {
-          // Flatten the response and extract necessary data from resources
           this.rowData = response.flatMap((tracking: any) =>
             tracking.resources.map((resource: any) => ({
               tracking_id: tracking.tracking_id,
@@ -134,7 +133,7 @@ export class DeliveryStatusComponent implements OnInit, OnDestroy {
 
   showStatusDropdown(params: any) {
     const currentStatus = params.data.tracking_status;
-    const statusOptions = ['Pending', 'Delivered', 'Collected'];
+    const statusOptions = ['Pending', 'Delivered', 'Collected', 'Cancelled'];
 
     Swal.fire({
       title: 'Update Tracking Status',
@@ -168,14 +167,32 @@ export class DeliveryStatusComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   updateTrackingStatus(params: any, newStatus: string) {
     const trackingId = params.data.tracking_id;
+
+    let remarks = '';
+    switch (newStatus) {
+      case 'Pending':
+        remarks = 'The request is pending and awaiting processing.';
+        break;
+      case 'Collected':
+        remarks = 'The resources have been collected by the user.';
+        break;
+      case 'Delivered':
+        remarks = 'The resources have been successfully delivered.';
+        break;
+      case 'Cancelled':
+        remarks = 'The request has been cancelled.';
+        break;
+    }
   
-    this.crudService.updateTrackingStatus(trackingId, newStatus).subscribe({
+    this.crudService.updateTrackingStatus(trackingId, newStatus, remarks).subscribe({
       next: (response) => {
         if (response.message === 'Tracking status updated successfully.') {
-          // Update the status in the grid data
+          // Update the status and remarks in the grid data
           params.data.tracking_status = newStatus;
+          params.data.remarks = remarks;
           this.gridApi.redrawRows({ rowNodes: [params.node] });
           Swal.fire('Success', `Tracking status updated to ${newStatus}.`, 'success');
         } else {
@@ -188,4 +205,4 @@ export class DeliveryStatusComponent implements OnInit, OnDestroy {
       }
     });
   }
-  }
+}

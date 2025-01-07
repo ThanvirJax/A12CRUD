@@ -1,0 +1,64 @@
+<div class="container d-flex flex-column align-items-center py-4">
+  <!-- Chat Messages Section -->
+  <div class="col-8 mb-5">
+    <h3 class="text-center mb-4">Chat Messages</h3>
+    <div *ngIf="messages.length > 0; else noMessages" class="chat-list" style="max-height: 400px; overflow-y: auto;">
+      <!-- Reverse the order of messages -->
+      <div *ngFor="let message of messages.reverse()" class="card mb-3 shadow-sm"
+           [ngClass]="{'align-self-start': message.user_id !== userId, 'align-self-end': message.user_id === userId}">
+        <div class="card-body">
+          <div class="d-flex flex-column">
+            <h5 class="card-title text-primary">{{ message.user_name }}</h5>
+            <p class="card-text" [ngClass]="{'bg-primary text-white': message.user_id === userId, 'bg-light text-dark': message.user_id !== userId}">
+              {{ message.message_content }}
+            </p>
+            <p class="card-text text-muted text-right">
+              <small>Created: {{ message.message_created | date: 'short' }}</small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noMessages>
+      <p class="text-muted text-center">No messages available.</p>
+    </ng-template>
+  </div>
+  
+
+  <!-- Form for Message -->
+  <div class="col-6">
+    <h3 class="text-center mb-4">{{ buttonText }} a Message</h3>
+    <form [formGroup]="messageForm" (ngSubmit)="createOrUpdateMessage()" class="p-4 border rounded shadow-sm">
+      <!-- Hidden User ID Field -->
+      <input type="hidden" formControlName="user_id" [value]="userId" />
+
+      <!-- Message Content -->
+      <div class="mb-3">
+        <label for="message-content" class="form-label">Type your message</label>
+        <textarea
+          formControlName="message_content"
+          class="form-control"
+          id="message-content"
+          rows="5"
+          placeholder="Write a message..."
+          [ngClass]="{
+            'is-invalid': messageForm.get('message_content')?.invalid && messageForm.get('message_content')?.touched,
+            'is-valid': messageForm.get('message_content')?.valid && messageForm.get('message_content')?.touched
+          }"
+        ></textarea>
+        <div *ngIf="messageForm.get('message_content')?.invalid && messageForm.get('message_content')?.touched" class="alert alert-danger">
+          <span *ngIf="messageForm.get('message_content')?.errors?.['required']">Message content is required.</span>
+          <span *ngIf="messageForm.get('message_content')?.errors?.['minlength']">Minimum 3 characters required.</span>
+          <span *ngIf="messageForm.get('message_content')?.errors?.['maxlength']">Maximum 500 characters allowed.</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary w-50">
+          <i class="bi bi-send"></i> Send
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

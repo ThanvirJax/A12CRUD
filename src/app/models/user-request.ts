@@ -13,7 +13,15 @@ export interface UserRequest {
   resource_description: string;  
   requested_quantity: number;
   center_name: string;
+  tracking_status:string;
   request_resources: RequestResource[];  
   request_status: string;
   request_date: Date;  
+  tracking: {
+    tracking_status: string;
+    remarks?: string;
+    tracking_created_at: string;
+    tracking_updated_at: string;
+  };
 }
+

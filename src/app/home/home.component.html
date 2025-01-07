@@ -11,7 +11,7 @@
         <img src="https://www.caritas.org.au/media/uw3hqwqz/overflowing-comoro-river-swept-away-houses-photographer-dan-convoy-crs.jpg?width=1152&height=768&v=1dae48229114510"
           class="d-block w-100" alt="...">
         <div class="carousel-caption d-none d-md-block">
-          <h5>Be a hero</h5>
+          <h2>Be a hero</h2>
           <p>These people need your help.</p>
         </div>
       </div>
@@ -19,7 +19,7 @@
         <img src="https://www.nrcs.usda.gov/sites/default/files/styles/hero/public/2022-10/ERP.jpg?h=be670e54&itok=TxZfAdKo"
           class="d-block w-100" alt="...">
         <div class="carousel-caption d-none d-md-block">
-          <h5>We never know when you might be a victim yourself!</h5>
+          <h2>We never know when you might be a victim yourself!</h2>
           <p>You can request for help from us</p>
         </div>
       </div>
@@ -27,7 +27,7 @@
         <img src="https://www.tahd.org/uploads/1/2/9/2/129247634/emergency-prepardness-resources-and-quicklinks-banner_orig.png"
           class="d-block w-100" alt="...">
         <div class="carousel-caption d-none d-md-block">
-          <h5>Disaster relief</h5>
+          <h2>Disaster relief</h2>
           <p>We collect donations and help victims of disasters.</p>
         </div>
       </div>
@@ -41,16 +41,21 @@
       <span class="visually-hidden">Next</span>
     </button>
   </div>
-  <!-- Alert Box Section -->
-  <div class="alert-box">
-    <h4>⚠ Important Alerts ⚠</h4>
-    <p>Stay tuned for the latest updates on disaster relief efforts and safety guidelines.</p>
-    <p>Current Weather Alert: Severe thunderstorm expected in the area. Stay indoors and avoid unnecessary travel.</p>
-  </div>
+<!-- Alert Box Section -->
+<div class="alert-box" *ngIf="alert">
+  <h4>⚠ Important {{ alert.alert_type }} ⚠</h4>
+  <p>Stay tuned for the latest updates on disaster relief efforts and safety guidelines.</p>
+  <p *ngIf="alert.alert_message">Current Alert: {{ alert.alert_message }}</p>
+  <p *ngIf="alert.alert_description">Description: {{ alert.alert_description }}</p>
+  <p *ngIf="alert.alert_created">Updated On: {{ alert.alert_created | date:'medium' }}</p> 
+</div>
+
+
   <!-- Cards Section -->
   <div class="cards-section">
     <!-- Donation Card -->
     <a href="/crud/donation-form" class="card">
+      <div class="card-title">Donation</div>
       <div class="first-content">
         <img src="assets/icon/donate.png" alt="Donation Icon">
       </div>
@@ -59,7 +64,9 @@
       </div>
     </a>
     <!-- Request Help Card -->
+     
     <a href="/crud/request-resource" class="card">
+      <div class="card-title">Request Help</div>
       <div class="first-content">
         <img src="assets/icon/help.png" alt="Request Help Icon">
       </div>
@@ -71,8 +78,9 @@
     </a>
     <!-- Weather Card -->
     <a href="/forecast" class="card">
+      <div class="card-title">Weather</div>
       <div class="first-content">
-        <img src="https://cdn-icons-png.flaticon.com/128/1163/1163661.png" alt="Weather Icon">
+        <img src="assets/icon/weather.png" alt="Weather Icon">
       </div>
       <div class="second-content">
         <span>Check the latest weather forecast</span>
@@ -80,11 +88,22 @@
     </a>
     <!-- Precaution Card -->
     <a href="/precaution" class="card">
+      <div class="card-title">Precautions</div>
       <div class="first-content">
         <img src="assets/icon/safety.png" alt="Safety Icon">
       </div>
       <div class="second-content">
         <span>Safety precautions to take during a disaster</span>
+      </div>
+    </a>
+     <!-- Funds Card -->
+     <a href="/donate-fund" class="card">
+      <div class="card-title">Funds</div>
+      <div class="first-content">
+        <img src="assets/icon/fund.png" alt="Fund Icon">
+      </div>
+      <div class="second-content">
+        <span>Donate Fundings to help others</span>
       </div>
     </a>
   </div>
@@ -101,6 +120,7 @@
         <li><strong>During Flood:</strong> Avoid walking or driving through flood waters, and move to higher ground if safe to do so.</li>
         <li><strong>After Flood:</strong> Avoid flood-affected areas, disinfect items that were in contact with floodwater, and listen for emergency information.</li>
         <li><strong>Stay Informed:</strong> Monitor weather alerts and updates from local authorities.</li>
+        <li><strong>Note: </strong><p>The darker the colour is, the riskier these areas</p></li>
       </ul>
     </div>
   </div>

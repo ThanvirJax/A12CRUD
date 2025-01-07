@@ -33,7 +33,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     },
     {
       field: 'resource_type',
-      headerName: 'type',
+      headerName: 'Type',
       sortable: true,
       headerClass: 'header-cell'
     },
@@ -44,15 +44,22 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       headerClass: 'header-cell'
     },
     {
+      field: 'resource_status',
+      headerName: 'Status',
+      sortable: true,
+      headerClass: 'header-cell',
+    },
+    {
       field: '',
       headerName: 'Actions',
       headerClass: 'header-cell',
-      width: 250,
+      width: 300,
       cellRenderer: this.actionRender.bind(this)
     }
   ];
 
-  rowData: any = [];
+  rowDataAvailable: any = [];
+  rowDataUnavailable: any = [];
   gridOptions = {
     rowHeight: 50
   };
@@ -85,35 +92,49 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   getResourceList() {
     this.resourceListSubscribe = this.crudService.loadResources().subscribe(res => {
       this.resourceList = res;
-      this.rowData = res;
+      
+      // Separate available and unavailable resources
+      this.rowDataAvailable = res.filter((resource: any) => resource.resource_status === 'Available');
+      this.rowDataUnavailable = res.filter((resource: any) => resource.resource_status === 'Unavailable');
     });
   }
 
+  statusRenderer(params: any): string {
+    const status = params.data.resource_status;
+    const statusClass = status === 'Available' ? 'badge-success' : 'badge-danger';
+    return `<span class="badge ${statusClass}">${status}</span>`;
+  }
+
   actionRender(params: any) {
+    // Create container for buttons
     let div = document.createElement('div');
     let htmlCode = `
       <button type="button" class="btn btn-success">View</button>
-      <button type="button" class="btn btn-danger">Delete</button>
-      <button type="button" class="btn btn-warning">Edit</button>`;
+      <button type="button" class="btn btn-warning">Edit</button>
+      <button type="button" class="btn btn-secondary" id="toggle-status-button">${params.data.resource_status === 'Available' ? 'Mark Unavailable' : 'Mark Available'}</button>
+    `;
     div.innerHTML = htmlCode;
-
+  
+    // Add event listeners to buttons
     let viewButton = div.querySelector('.btn-success');
     viewButton?.addEventListener('click', () => {
       this.viewResourceDetails(params);
     });
-
+  
     let editButton = div.querySelector('.btn-warning');
     editButton?.addEventListener('click', () => {
       this.editResourceDetails(params);
     });
+  
+    let toggleStatusButton = div.querySelector('.btn-secondary') as HTMLElement;
 
-    let deleteButton = div.querySelector('.btn-danger');
-    deleteButton?.addEventListener('click', () => {
-      this.deleteResource(params);
+    toggleStatusButton?.addEventListener('click', () => {
+      this.toggleResourceStatus(params, toggleStatusButton); // Pass the button for dynamic updates
     });
-
+  
     return div;
   }
+  
 
   viewResourceDetails(params: any) {
     this.router.navigate(['/crud/view-resource-details/' + params.data.resource_id]);
@@ -124,7 +145,6 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   }
 
   deleteResource(params: any) {
-    const that = this;
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -135,24 +155,42 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       confirmButtonText: 'Yes, delete it!'
     }).then((result: any) => {
       if (result.isConfirmed) {
-        that.crudService.deleteResource(params.data.resource_id).subscribe(res => {
-          if (res.result === 'success') {
-            this.gridApi.applyTransaction({ remove: [params.data] });
-
-            Swal.fire(
-              'Deleted!',
-              'The resource has been deleted.',
-              'success'
-            );
+        this.crudService.deleteResource(params.data.resource_id).subscribe({
+          next: (res) => {
+            if (res.result === 'success') {
+              this.gridApi.applyTransaction({ remove: [params.data] });
+              Swal.fire('Deleted!', 'The resource has been deleted.', 'success');
+            }
+          },
+          error: () => {
+            Swal.fire('Error', 'An error occurred while deleting the resource.', 'error');
           }
-        }, error => {
-          Swal.fire('Error', 'An error occurred while deleting the resource.', 'error');
         });
       }
     });
   }
 
-  typeCellRender(params: any) {
-    return '$ ' + params.data.resource_type;
+  toggleResourceStatus(params: any, toggleStatusButton: HTMLElement) {
+    const newStatus = params.data.resource_status === 'Available' ? 'Unavailable' : 'Available';
+    const formData = new FormData();
+    formData.append('resource_id', params.data.resource_id);
+    formData.append('resource_status', newStatus);
+  
+    this.crudService.updateResourceDetails(formData).subscribe({
+      next: (res) => {
+        if (res.result === 'success') {
+          toggleStatusButton.textContent = newStatus === 'Available' ? 'Mark Unavailable' : 'Mark Available';
+  
+          // Show success message
+          Swal.fire('Updated!', `Resource status changed to ${newStatus}.`, 'success').then(() => {
+            window.location.reload();
+          });
+        }
+      },
+      error: () => {
+        Swal.fire('Error', 'Failed to update resource status.', 'error');
+      }
+    });
   }
+  
 }

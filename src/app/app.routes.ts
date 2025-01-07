@@ -7,7 +7,6 @@ import { RequestListComponent } from './crud/request-list/request-list.component
 import { ForecastComponent } from './forecast/forecast.component';
 import { CenterLocationsComponent } from './center-locations/center-locations.component';
 import { ResourceDetailsComponent } from './crud/resource-details/resource-details.component';
-import { ForumComponent } from './crud/forum/forum.component';
 import { UserListComponent } from './crud/user-list/user-list.component';
 import { DonationFormComponent } from './crud/donation-form/donation-form.component';
 import { PrecautionsComponent } from './precautions/precautions.component';
@@ -19,6 +18,13 @@ import { CRequestFormComponent } from './crud/c-request-form/c-request-form.comp
 import { CDonationFormComponent } from './crud/c-donation-form/c-donation-form.component';
 import { DeliveryStatusComponent } from './crud/delivery-status/delivery-status.component';
 import { DonateFundComponent } from './donate-fund/donate-fund.component';
+import { ForumMessageFormComponent } from './forum-message-form/forum-message-form.component';
+import { AlertFormComponent } from './crud/alert-form/alert-form.component';
+import { AlertListComponent } from './crud/alert-list/alert-list.component';
+import { TaskFormComponent } from './crud/task-form/task-form.component';
+import { TaskListComponent } from './crud/task-list/task-list.component';
+import { CenterFormComponent } from './crud/center-form/center-form.component';
+import { CenterListComponent } from './crud/center-list/center-list.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent},
@@ -40,14 +46,20 @@ export const routes: Routes = [
   { path: 'crud/user-list', component: UserListComponent },
   { path: 'crud/request-list', component: RequestListComponent },
   { path: 'crud/donation-list', component: DonationListComponent },
+  { path: 'crud/task-list', component: TaskListComponent },
   { path: 'forecast', component: ForecastComponent },
   { path: 'center-locations', component: CenterLocationsComponent },
-  { path: 'forum', component: ForumComponent },
+  { path: 'forum', component: ForumMessageFormComponent },
   { path: 'precaution', component: PrecautionsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'center-actions', component: CenterActionsComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'crud/delivery-status', component: DeliveryStatusComponent },
-  { path: 'donate-fund', component: DonateFundComponent }
+  { path: 'donate-fund', component: DonateFundComponent },
+  { path: 'crud/alert-form', component: AlertFormComponent},
+  { path: 'crud/alert-list', component: AlertListComponent },
+  { path: 'crud/task-form', component: TaskFormComponent},
+  { path: 'crud/center-form', component: CenterFormComponent},
+  { path: 'crud/center-list', component: CenterListComponent },
 
 ];

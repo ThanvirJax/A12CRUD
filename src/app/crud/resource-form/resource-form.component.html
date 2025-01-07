@@ -77,6 +77,26 @@
         </div>
       </div>
 
+      <!-- Resource Status -->
+<div class="mb-3">
+  <label for="resource-status" class="form-label">Resource Status</label>
+  <select 
+    formControlName="status" 
+    class="form-control" 
+    id="resource-status"
+    [ngClass]="{
+      'is-invalid': resourceForm.get('status')?.invalid && resourceForm.get('status')?.touched,
+      'is-valid': resourceForm.get('status')?.valid && resourceForm.get('status')?.touched
+    }">
+    <option value="Available">Available</option>
+    <option value="Unavailable">Unavailable</option>
+  </select>
+  <div *ngIf="resourceForm.get('status')?.invalid && resourceForm.get('status')?.touched" class="alert alert-danger">
+    <span>Resource status is required.</span>
+  </div>
+</div>
+
+
       <!-- Submit Button -->
       <button type="submit" class="btn btn-primary">{{ buttonText }}</button>
     </form>

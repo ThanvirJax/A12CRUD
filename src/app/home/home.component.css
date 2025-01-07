@@ -59,6 +59,13 @@
   color: #ffffff;
 }
 
+.card-title {
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
 .first-content,
 .second-content {
   transition: all 1s;
@@ -140,8 +147,8 @@
 
 @media (min-width: 768px) {
   .card {
-    width: 260px;
-    height: 325px;
+    width: 200px;
+    height: 290px;
   }
 }
 

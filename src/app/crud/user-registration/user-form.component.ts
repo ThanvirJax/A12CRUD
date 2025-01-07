@@ -99,7 +99,7 @@ export class UserFormComponent implements OnInit {
 
 handleResponse(res: any, message: string): void {
     if (res.result === 'success') {
-      this.router.navigate(['/crud/user-list']);
+      this.router.navigate(['/crud/user-details']);
       Swal.fire({
         position: 'top-end',
         icon: 'success',

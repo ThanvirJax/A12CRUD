@@ -1,14 +1,29 @@
-<body>
-<div class="row">
+  <div class="row">
+    <!-- Available Resources Table -->
     <div class="col-12 p-5">
+      <h1><strong>Available Resources</strong></h1>
       <ag-grid-angular
-        style="width: 100%; height: 500px;"
+        style="width: 100%; height: 300px; overflow-y: auto;"
         class="ag-theme-alpine"
-        [rowData]="rowData"
+        [rowData]="rowDataAvailable"
         [columnDefs]="columnDefs"
         (gridReady)="onGridReady($event)"
+        [domLayout]="'autoHeight'"
+      >
+      </ag-grid-angular>
+    </div>
+    
+    <!-- Unavailable Resources Table -->
+    <div class="col-12 p-5">
+      <h1><strong>Unavailable Resources</strong></h1>
+      <ag-grid-angular
+        style="width: 100%; height: 300px; overflow-y: auto;"
+        class="ag-theme-alpine"
+        [rowData]="rowDataUnavailable"
+        [columnDefs]="columnDefs"
+        (gridReady)="onGridReady($event)"
+        [domLayout]="'autoHeight'"
       >
       </ag-grid-angular>
     </div>
   </div>
-</body>

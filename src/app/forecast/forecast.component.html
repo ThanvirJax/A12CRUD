@@ -1,22 +1,39 @@
-<div class="container">
-  <i class="fa-solid fa-sun" *ngIf="weatherdata.isDay; else nightIcon"></i>
-  <ng-template #nightIcon>
-    <i class="fa-solid fa-moon"></i>
-  </ng-template>
+<div class="weather-container">
+  <h1>Weather Forecast</h1>
 
-  <div class="row" style="font-size: 32px; margin-top: 5px">
-    {{ weatherdata.temp_celcius }}°
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading">
+    <i class="fas fa-spinner fa-spin"></i> Loading...
   </div>
-  <div class="row" style="font-size: 12px;">
-    {{ weatherdata.temp_min }}° / {{ weatherdata.temp_max }}°
+
+  <!-- Error state -->
+  <div *ngIf="errorMessage" class="error-message">
+    <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
   </div>
-  <div class="row" style="font-size: 12px;">
-    Feels like: {{ weatherdata.feels_like }}°
-  </div>
-  <div class="row" style="font-size: 25px; margin-top: 10px">
-    {{ weatherdata.name }}
-  </div>
-  <div class="row" style="font-size: 12px;">
-    Humidity: {{ weatherdata.main.humidity }}%
+
+  <!-- Weather data display -->
+  <div *ngIf="weatherData && !isLoading" class="weather-data">
+    <h2>
+      <i class="fas fa-map-marker-alt"></i> 5-Day Forecast for {{ weatherData.city.name }}
+    </h2>
+
+    <div class="forecast-grid">
+      <div *ngFor="let forecast of weatherData.list | slice:0:10" class="forecast-card">
+        <div class="icon">
+          <img
+            [src]="'http://openweathermap.org/img/wn/' + forecast.weather[0].icon + '@2x.png'"
+            alt="{{ forecast.weather[0].description }}"
+          />
+        </div>
+        <div class="details">
+          <p><i class="fas fa-calendar-alt"></i> {{ forecast.dt_txt }}</p>
+          <p><i class="fas fa-thermometer-half"></i> Temp: {{ forecast.main.temp }} °C</p>
+          <p><i class="fas fa-thermometer-full"></i> Feels Like: {{ forecast.main.feels_like }} °C</p>
+          <p><i class="fas fa-cloud"></i> {{ forecast.weather[0].description }}</p>
+          <p><i class="fas fa-wind"></i> Wind: {{ forecast.wind.speed }} m/s</p>
+          <p><i class="fas fa-tint"></i> Humidity: {{ forecast.main.humidity }}%</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

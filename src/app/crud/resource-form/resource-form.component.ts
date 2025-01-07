@@ -50,23 +50,26 @@ export class ResourceFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       quantity: ['', [Validators.required, Validators.min(1), Validators.max(99999999)]],
-      type: ['', Validators.required]
+      type: ['', Validators.required],
+      status: ['Available', Validators.required]
     });
   }
+  
 
   createOrUpdateResource(): void {
     if (this.resourceForm.invalid) {
       this.resourceForm.markAllAsTouched();
       return;
     }
-
+  
     const formData = new FormData();
     const values = this.resourceForm.value;
     formData.append('name', values.name);
     formData.append('description', values.description);
     formData.append('quantity', values.quantity);
     formData.append('resource_type', values.type);
-
+    formData.append('resource_status', values.status);
+  
     if (this.resourceId) {
       // Update resource
       formData.append('resource_id', this.resourceId);
@@ -82,7 +85,7 @@ export class ResourceFormComponent implements OnInit {
       });
     }
   }
-
+  
   // Load resource details for update
   loadResourceDetails(resourceId: any): void {
     this.crudService.loadResourceInfo(resourceId).subscribe((res) => {
@@ -90,11 +93,12 @@ export class ResourceFormComponent implements OnInit {
         name: res.resource_name,
         description: res.resource_description,
         quantity: res.resource_quantity,
-        type: res.resource_type
+        type: res.resource_type,
+        status: res.resource_status 
       });
     });
   }
-
+  
   // Handle navigation and response messages
   handleResponse(res: any, message: string): void {
     if (res.result === 'success') {

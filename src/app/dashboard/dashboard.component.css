@@ -2,7 +2,7 @@
   padding: 20px;
   font-family: 'Poppins', sans-serif;
   text-align: center;
-  background: linear-gradient(135deg, #f0f4ff, #d9e6ff);
+  background: linear-gradient(90deg, #fcfdff, #9cbdf5);
   min-height: 100vh;
 }
 
@@ -78,6 +78,10 @@ h2 {
 }
 
 .cards .orange {
+  background-color: #fc790f;
+}
+
+.cards .yellow {
   background-color: #f8aa19;
 }
 
@@ -91,6 +95,18 @@ h2 {
 
 .cards .lime {
   background-color: #2bbeb7 ;
+}
+
+.cards .red {
+  background-color: #d62e2e ;
+}
+
+.cards .brown {
+  background-color: #352323 ;
+}
+
+.cards .black {
+  background-color: #000000 ;
 }
 
 .user-section .user-actions {
@@ -198,3 +214,221 @@ h2 {
 .card1:hover .front-content1 {
   opacity: 0;
 }
+
+/* User Requests Section */
+.requests-section {
+  background-color: #f7f7f7;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  padding: 15px;
+  border-radius: 5px;
+  color: #721c24;
+  font-weight: bold;
+}
+
+.requests-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.request-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.request-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+.request-card .card-content {
+  font-size: 1.1em;
+  color: #444;
+}
+
+.request-card h4 {
+  font-size: 1.4em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.status {
+  font-weight: bold;
+  padding: 9px 10px;
+  border-radius: 5px;
+  color: white; 
+}
+
+.status.approved {
+  background-color: #28a745; 
+}
+
+.status.rejected {
+  background-color: #dc3545; 
+}
+
+.status.pending {
+  background-color: #ffc107; 
+  color: black; 
+}
+
+
+.request-card ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.request-card ul li {
+  margin: 5px 0;
+  font-size: 1em;
+}
+
+.request-card p {
+  font-size: 1em;
+  line-height: 1.6;
+}
+
+.request-card p strong {
+  color: #007bff;
+}
+
+.tab-container {
+  display: flex;
+  position: relative;
+  margin-bottom: 20px;
+  margin-top: 50px; 
+  font-family: Arial, sans-serif;
+  background: linear-gradient(90deg, #e3fdfd, #ffe6fa);
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+}
+
+.tab {
+  display: none;
+}
+
+.tab_label {
+  flex: 1;
+  text-align: center;
+  padding: 14px 22px;
+  cursor: pointer;
+  background-color: #e8f7ff;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  color: #007580; 
+}
+
+.tab_label:hover {
+  background: linear-gradient(90deg, #b2fef5, #ffe6fa); 
+  transform: translateY(-3px); 
+}
+
+.tab:checked + .tab_label {
+  background: linear-gradient(90deg, #20c997, #00d2ff);
+  color: white;
+  border-color: #1b9aa0; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
+}
+
+.indicator {
+  position: absolute;
+  bottom: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #20c997, #00d2ff); 
+  transition: all 0.3s ease;
+  width: 33.33%;
+  left: 0;
+  border-radius: 10px 10px 0 0; 
+}
+
+.tab--1:checked ~ .indicator {
+  left: 0;
+  width: 33.33%;
+}
+
+.tab--2:checked ~ .indicator {
+  left: 33.33%;
+  width: 33.33%;
+}
+
+.tab--3:checked ~ .indicator {
+  left: 66.66%;
+  width: 33.33%;
+}
+
+.tracking-status-text {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #333;
+}
+
+.tracking-status {
+  font-size: 1.5em;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.tracking-status.delivered {
+  color: #28a745; 
+}
+
+.tracking-status.collected {
+  color: #17a2b8; 
+}
+
+.tracking-status.pending {
+  color: #dc3545; /* Red for Pending */
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollable area for Requests and Tracking */
+.requests-section .requests-list,
+.requests-section .tracking-cards-container {
+  max-height: 400px; /* Adjust the height to your preference */
+  overflow-y: auto;
+  border: 1px solid #ddd; /* Optional: Add a border for better visibility */
+  padding: 10px; /* Add padding for content spacing */
+  background-color: #f9f9f9; /* Optional: Light background for readability */
+  border-radius: 8px; /* Rounded corners */
+}
+
+/* Optional: Add a custom scrollbar style */
+.requests-section .requests-list::-webkit-scrollbar,
+.requests-section .tracking-cards-container::-webkit-scrollbar {
+  width: 8px; /* Scrollbar width */
+}
+
+.requests-section .requests-list::-webkit-scrollbar-thumb,
+.requests-section .tracking-cards-container::-webkit-scrollbar-thumb {
+  background-color: #888; /* Scrollbar thumb color */
+  border-radius: 4px; /* Rounded scrollbar thumb */
+}
+
+.requests-section .requests-list::-webkit-scrollbar-thumb:hover,
+.requests-section .tracking-cards-container::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Thumb color on hover */
+}
+

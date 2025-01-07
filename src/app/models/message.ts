@@ -1,7 +1,9 @@
-export interface ChatMessage {
+export interface Message {
+  message_id: number;
   user_id: number;
   message_content: string;
+  message_created: string | Date;
   user_name?: string; 
-  user_email?: string; 
-  message_created?: string; 
+  role: 'admin' | 'user' | 'center';  
+
 }

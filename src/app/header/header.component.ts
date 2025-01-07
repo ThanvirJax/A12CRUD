@@ -12,9 +12,10 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
+  userId: number | null = null; // Added userId as a number
   userName: string | null = null;
   adminName: string | null = null;
-  centerName: string | null = null;  // For center name
+  centerName: string | null = null; // For center name
   userRole: 'admin' | 'user' | null = null;
   searchQuery: string = '';
 
@@ -27,22 +28,29 @@ export class HeaderComponent implements OnInit {
   private loadUserData(): void {
     const user = this.authService.getUser();
     if (user) {
+      this.userId = user.user_id || null; // Assign the userId here
       this.userName = user.user_name || null;
       this.adminName = user.admin_name || null;
-      this.centerName = user.center_name || null;  
+      this.centerName = user.center_name || null;
       this.userRole = this.authService.getRole() as 'admin' | 'user';
-      console.log('User data loaded:', { userName: this.userName, adminName: this.adminName, centerName: this.centerName, userRole: this.userRole });
+      console.log('User data loaded:', {
+        userId: this.userId,
+        userName: this.userName,
+        adminName: this.adminName,
+        centerName: this.centerName,
+        userRole: this.userRole,
+      });
     } else {
       console.warn('No user data found in localStorage.');
     }
   }
 
-
   onLogout(): void {
     this.authService.logout();
+    this.userId = null; // Reset userId on logout
     this.userName = null;
     this.adminName = null;
-    this.centerName = null;  // Reset centerName on logout
+    this.centerName = null; // Reset centerName on logout
     this.userRole = null;
     this.router.navigate(['/login']);
   }

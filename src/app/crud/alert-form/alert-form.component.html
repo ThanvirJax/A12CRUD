@@ -1,0 +1,64 @@
+<div class="row">
+  <div class="col-6 p-5">
+    <form [formGroup]="alertForm" (ngSubmit)="createOrUpdateAlert()">
+
+      <!-- Alert Message -->
+      <div class="mb-3">
+        <label for="alert-message" class="form-label">Current Alert</label>
+        <input
+          formControlName="alert_message"
+          type="text"
+          class="form-control"
+          id="alert-message"
+          [ngClass]="{
+            'is-invalid': alertForm.get('alert_message')?.invalid && alertForm.get('alert_message')?.touched,
+            'is-valid': alertForm.get('alert_message')?.valid && alertForm.get('alert_message')?.touched
+          }"
+        >
+        <div *ngIf="alertForm.get('alert_message')?.invalid && alertForm.get('alert_message')?.touched" class="alert alert-danger">
+          <span *ngIf="alertForm.get('alert_message')?.errors?.['required']">Alert message is required.</span>
+          <span *ngIf="alertForm.get('alert_message')?.errors?.['minlength']">Minimum 3 characters required.</span>
+          <span *ngIf="alertForm.get('alert_message')?.errors?.['maxlength']">Maximum 255 characters allowed.</span>
+        </div>
+      </div>
+
+      <!-- Alert Description -->
+      <div class="mb-3">
+        <label for="alert-description" class="form-label">Alert Description</label>
+        <textarea
+          formControlName="alert_description"
+          class="form-control"
+          id="alert-description"
+          rows="5"
+          [ngClass]="{
+            'is-invalid': alertForm.get('alert_description')?.invalid && alertForm.get('alert_description')?.touched,
+            'is-valid': alertForm.get('alert_description')?.valid && alertForm.get('alert_description')?.touched
+          }"
+        ></textarea>
+        <div *ngIf="alertForm.get('alert_description')?.invalid && alertForm.get('alert_description')?.touched" class="alert alert-danger">
+          <span *ngIf="alertForm.get('alert_description')?.errors?.['required']">Description is required.</span>
+          <span *ngIf="alertForm.get('alert_description')?.errors?.['minlength']">Minimum 5 characters required.</span>
+          <span *ngIf="alertForm.get('alert_description')?.errors?.['maxlength']">Maximum 1000 characters allowed.</span>
+        </div>
+      </div>
+
+      <!-- Alert Type -->
+      <div class="mb-3">
+        <label for="alert-type" class="form-label">Alert Type</label>
+        <select formControlName="alert_type" class="form-control" id="alert-type">
+          <option value="">Select Type</option>
+          <option value="Info">Info</option>
+          <option value="Warning">Warning</option>
+          <option value="Notice">Notice</option>
+          <option value="Message">Message</option>
+        </select>
+        <div *ngIf="alertForm.get('alert_type')?.invalid && alertForm.get('alert_type')?.touched" class="alert alert-danger">
+          <span>Alert type is required.</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">{{ buttonText }}</button>
+    </form>
+  </div>
+</div>

@@ -210,24 +210,25 @@ export class RequestListComponent implements OnInit, OnDestroy {
     });
   }
   
-  updateRequestStatus(params: any, newStatus: string) {
-    const requestId = params.data.request_id;
-  
-    this.crudService.updateRequestStatus(requestId, newStatus, params.data.requested_quantity).subscribe(
-      () => {
-        params.data.request_status = newStatus;
-        this.gridApi.redrawRows({ rowNodes: [params.node] });
-        Swal.fire(
-          'Success',
-          `Request status has been updated to ${newStatus} successfully.`,
-          'success'
-        );
-      },
-      (error) => {
-        Swal.fire('Error', 'An error occurred while updating the status.', 'error');
-      }
-    );
-  }
+updateRequestStatus(params: any, newStatus: string) {
+  const requestId = params.data.request_id;
+
+  this.crudService.updateRequestStatus(requestId, newStatus, params.data.requested_quantity).subscribe(
+    () => {
+      params.data.request_status = newStatus;
+      this.gridApi.redrawRows({ rowNodes: [params.node] });
+      Swal.fire(
+        'Success',
+        `Request status has been updated to ${newStatus} successfully.`,
+        'success'
+      );
+    },
+    (error) => {
+      Swal.fire('Error', error.message, 'error'); // Show specific error message
+    }
+  );
+}
+
   
   deleteRequest(params: any) {
     Swal.fire({

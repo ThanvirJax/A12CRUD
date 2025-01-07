@@ -38,13 +38,6 @@ export class UserListComponent implements OnInit, OnDestroy {
       headerClass: 'header-cell'
     },
     {
-      field: 'user_password',
-      headerName: 'Password',
-      sortable: true,
-      headerClass: 'header-cell',
-      cellRenderer: this.passwordCellRenderer.bind(this) 
-    },
-    {
       field: 'user_address',
       headerName: 'Address',
       sortable: true,
@@ -96,43 +89,12 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
   }
 
-  passwordCellRenderer(params: any) {
-    const div = document.createElement('div');
-    let isPasswordVisible = false;
-
-    const passwordText = document.createElement('span');
-    passwordText.textContent = '*****'; 
-/*
-    const toggleButton = document.createElement('button');
-    toggleButton.textContent = 'Show';
-    toggleButton.classList.add('btn', 'btn-sm', 'btn-secondary');
-    toggleButton.style.marginLeft = '10px';
-
-    toggleButton.addEventListener('click', () => {
-      isPasswordVisible = !isPasswordVisible;
-      passwordText.textContent = isPasswordVisible ? params.value : '*****';
-      toggleButton.textContent = isPasswordVisible ? 'Hide' : 'Show';
-    });
-    
-
-    div.appendChild(passwordText);
-    //div.appendChild(toggleButton);
-
-    return div;*/
-  }
-
   actionRender(params: any) {
     let div = document.createElement('div');
     let htmlCode = `
-      <button type="button" class="btn btn-success">View</button>
       <button type="button" class="btn btn-danger">Remove</button>
       <button type="button" class="btn btn-warning">Edit</button>`;
     div.innerHTML = htmlCode;
-
-    let viewButton = div.querySelector('.btn-success');
-    viewButton?.addEventListener('click', () => {
-      this.viewUserDetails(params);
-    });
 
     let editButton = div.querySelector('.btn-warning');
     editButton?.addEventListener('click', () => {
@@ -145,10 +107,6 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
 
     return div;
-  }
-
-  viewUserDetails(params: any) {
-    this.router.navigate(['/crud/view-user-details/' + params.data.user_id]);
   }
 
   editUserDetails(params: any) {

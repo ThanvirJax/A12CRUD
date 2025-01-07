@@ -1,14 +1,18 @@
 import { Component } from '@angular/core';
 import L from 'leaflet';
+import { CRUDService } from '../crud/services/crud.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
+
 export class HomeComponent {
+  alert: any = {}; 
   private map!: L.Map;
   private centroid: L.LatLngExpression = [-20.2484, 57.5522]; // Coordinates for Mauritius
 
@@ -52,9 +56,25 @@ export class HomeComponent {
     tiles.addTo(this.map);
   }
 
-  constructor() { }
+  constructor(private crudService: CRUDService) { }
 
   ngOnInit(): void {
     this.initMap();
+    this.getLatestAlert();
   }
+  getLatestAlert(): void {
+    this.crudService.getAlerts().subscribe(
+      (data) => {
+        if (data && data.length > 0) {
+          this.alert = data[0]; 
+        } else {
+          console.log('No alerts available');
+        }
+      },
+      (error) => {
+        console.error('Error fetching alerts:', error);
+      }
+    );
+  }
+  
 }
