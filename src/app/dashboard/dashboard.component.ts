@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching user requests:', err);
-        this.errorMessage = 'Unable to fetch requests. Please try again later.';
+        this.errorMessage = 'No request available. Make a request first !';
       }
     });
   }
