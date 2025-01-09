@@ -15,10 +15,10 @@ export class ForecastComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage: string | null = null;
 
-  latitude: number = -20.348404; 
+  latitude: number = -20.348404;
   longitude: number = 57.552152;
 
-  constructor(private weatherService: WeatherService) {}
+  constructor(private weatherService: WeatherService) { }
 
   ngOnInit(): void {
     this.getWeatherForecast();

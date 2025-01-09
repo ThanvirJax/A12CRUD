@@ -109,65 +109,79 @@ export class RequestListComponent implements OnInit, OnDestroy {
     this.gridApi = params.api;
   }
 
-  getRequestList() {
-    this.crudService.loadUserRequests().subscribe(
-      (res: any[]) => {
-        this.rowData = res.flatMap((request) =>
-          request.resources.map((resource: any) => ({
-            request_id: request.request_id,
-            request_status: request.request_status,
-            request_date: request.request_date,
-            requester_name: request.requester_name,
-            requester_email: request.requester_email,
-            requester_type: request.requester_type,
-            resource_name: resource.resource_name,
-            resource_description: resource.resource_description,
-            requested_quantity: resource.requested_quantity,
-          }))
-        );
-      },
-      (error) => {
-        Swal.fire('Error', 'An error occurred while fetching requests.', 'error');
-      }
+ getRequestList() {
+  this.crudService.loadUserRequests().subscribe(
+    (res: any[]) => {
+      this.rowData = res.flatMap((request) =>
+        request.resources.map((resource: any) => ({
+          request_id: request.request_id,
+          request_status: request.request_status,
+          request_date: request.request_date,
+          requester_name: request.requester_name,
+          requester_email: request.requester_email,
+          requester_type: request.requester_type,
+          resource_name: resource.resource_name,
+          resource_description: resource.resource_description,
+          requested_quantity: resource.requested_quantity,
+        }))
+      );
+
+      // Sort rowData to show "Pending" first
+      this.rowData.sort((a, b) => {
+        if (a.request_status === 'Pending' && b.request_status !== 'Pending') {
+          return -1;
+        } else if (a.request_status !== 'Pending' && b.request_status === 'Pending') {
+          return 1;
+        } else {
+          return 0; // Maintain original order for other statuses
+        }
+      });
+    },
+    (error) => {
+      Swal.fire('Error', 'An error occurred while fetching requests.', 'error');
+    }
+  );
+}
+
+
+actionRender(params: any) {
+  const div = document.createElement('div');
+  const isApprovedOrRejected =
+    params.data.request_status === 'Approved' || params.data.request_status === 'Rejected';
+
+  const htmlCode = `
+    <button type="button" class="btn btn-primary">Status</button>
+    <button type="button" class="btn btn-success" ${
+      isApprovedOrRejected ? 'disabled' : ''
+    }>Approve</button>
+    <button type="button" class="btn btn-danger" ${
+      isApprovedOrRejected ? 'disabled' : ''
+    }>Reject</button>`;
+  
+  div.innerHTML = htmlCode;
+
+  // Status action with dropdown
+  div.querySelector('.btn-primary')?.addEventListener('click', () =>
+    this.showStatusDropdown(params)
+  );
+
+  // Approve action
+  if (!isApprovedOrRejected) {
+    div.querySelector('.btn-success')?.addEventListener('click', () =>
+      this.updateRequestStatus(params, 'Approved')
     );
   }
 
-  actionRender(params: any) {
-    const div = document.createElement('div');
-    const isApproved = params.data.request_status === 'Approved';
-  
-    const htmlCode = `
-      <button type="button" class="btn btn-primary">Status</button>
-      <button type="button" class="btn btn-success" ${
-        isApproved ? 'disabled' : ''
-      }>Approve</button>
-      <button type="button" class="btn btn-danger" ${
-        isApproved ? 'disabled' : ''
-      }>Reject</button>`;
-    
-    div.innerHTML = htmlCode;
-  
-    // Status action with dropdown
-    div.querySelector('.btn-primary')?.addEventListener('click', () =>
-      this.showStatusDropdown(params)
+  // Reject action
+  if (!isApprovedOrRejected) {
+    div.querySelector('.btn-danger')?.addEventListener('click', () =>
+      this.updateRequestStatus(params, 'Rejected')
     );
-  
-    // Approve action
-    if (!isApproved) {
-      div.querySelector('.btn-success')?.addEventListener('click', () =>
-        this.updateRequestStatus(params, 'Approved')
-      );
-    }
-  
-    // Reject action
-    if (!isApproved) {
-      div.querySelector('.btn-danger')?.addEventListener('click', () =>
-        this.updateRequestStatus(params, 'Rejected')
-      );
-    }
-  
-    return div;
   }
+
+  return div;
+}
+
   
   showStatusDropdown(params: any) {
     const currentStatus = params.data.request_status;

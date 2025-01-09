@@ -44,6 +44,12 @@ export class UserListComponent implements OnInit, OnDestroy {
       headerClass: 'header-cell'
     },
     {
+      field: 'user_status',
+      headerName: 'Status',
+      sortable: true,
+      headerClass: 'header-cell',
+    },
+    {
       field: '',
       headerName: 'Actions',
       headerClass: 'header-cell',
@@ -63,7 +69,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   constructor(private crudService: CRUDService, private router: Router) {
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.getUserList(); 
+        this.getUserList();
       }
     });
   }
@@ -89,11 +95,18 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
   }
 
+  statusRenderer(params: any): string {
+    const status = params.data.user_status;
+    const statusClass = status === 'Active' ? 'badge-success' : 'badge-danger';
+    return `<span class="badge ${statusClass}">${status}</span>`;
+  }
+
   actionRender(params: any) {
     let div = document.createElement('div');
     let htmlCode = `
-      <button type="button" class="btn btn-danger">Remove</button>
-      <button type="button" class="btn btn-warning">Edit</button>`;
+      <button type="button" class="btn btn-warning">Edit</button>
+      <button type="button" class="btn btn-secondary" id="update-status-button">${params.data.user_status === 'Active' ? 'Deactivate' : 'Activate'}</button>
+    `;
     div.innerHTML = htmlCode;
 
     let editButton = div.querySelector('.btn-warning');
@@ -101,9 +114,9 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.editUserDetails(params);
     });
 
-    let deleteButton = div.querySelector('.btn-danger');
-    deleteButton?.addEventListener('click', () => {
-      this.deleteUser(params);
+    let updateStatusButton = div.querySelector('.btn-secondary') as HTMLElement;
+    updateStatusButton?.addEventListener('click', () => {
+      this.updateUserStatus(params, updateStatusButton); // Pass the button for dynamic updates
     });
 
     return div;
@@ -113,34 +126,24 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/crud/update-user/' + params.data.user_id], { queryParams: { reload: true } });
   }
 
-  deleteUser(params: any) {
-    const that = this;
-    Swal.fire({
-      title: 'Are you sure you want to remove user?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, remove!'
-    }).then((result: any) => {
-      if (result.isConfirmed) {
-        that.crudService.deleteUser(params.data.user_id).subscribe(
-          res => {
-            if (res.result === 'success') {
-              this.gridApi.applyTransaction({ remove: [params.data] });
+  updateUserStatus(params: any, updateStatusButton: HTMLElement) {
+    const newStatus = params.data.user_status === 'Active' ? 'Inactive' : 'Active';
+    const formData = new FormData();
+    formData.append('user_id', params.data.user_id);
+    formData.append('user_status', newStatus);
 
-              Swal.fire(
-                'Deleted!',
-                'The user has been deleted.',
-                'success'
-              );
-            }
-          },
-          error => {
-            Swal.fire('Error', 'An error occurred while deleting the user.', 'error');
-          }
-        );
+    this.crudService.updateUserStatus(formData).subscribe({
+      next: (res) => {
+        if (res.result === 'success') {
+          updateStatusButton.textContent = newStatus === 'Active' ? 'Deactivate' : 'Activate';
+
+          Swal.fire('Updated!', `User status changed to ${newStatus}.`, 'success').then(() => {
+            window.location.reload();
+          });
+        }
+      },
+      error: () => {
+        Swal.fire('Error', 'Failed to update user status.', 'error');
       }
     });
   }

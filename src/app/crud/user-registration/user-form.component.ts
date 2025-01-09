@@ -45,7 +45,7 @@ export class UserFormComponent implements OnInit {
     this.userForm = this.formBuilder.group({
       user_name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       user_email: ['', [Validators.required, Validators.email]],
-      user_phone: ['', [Validators.required, Validators.pattern('^\\d{8,15}$')]],
+      user_phone: ['', [Validators.required, Validators.pattern('^\\d{7,15}$')]],
       user_password: ['', [Validators.required, Validators.minLength(6)]],
       user_address: ['', [Validators.required, Validators.maxLength(100)]],
     });

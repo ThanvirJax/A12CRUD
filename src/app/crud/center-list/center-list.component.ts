@@ -16,8 +16,7 @@ declare const Swal: any;
 export class CenterListComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) agGrid!: AgGridAngular;
   private gridApi!: GridApi<any>;
-  private routerSubscription!: Subscription;
-  private centerListSubscription: Subscription | null = null; // Option 1: Initialized to null
+  private routerSubscription: Subscription;
 
   columnDefs = [
     {
@@ -45,6 +44,12 @@ export class CenterListComponent implements OnInit, OnDestroy {
       headerClass: 'header-cell'
     },
     {
+      field: 'center_status',
+      headerName: 'Status',
+      sortable: true,
+      headerClass: 'header-cell',
+    },
+    {
       field: '',
       headerName: 'Actions',
       headerClass: 'header-cell',
@@ -58,7 +63,7 @@ export class CenterListComponent implements OnInit, OnDestroy {
     rowHeight: 50
   };
 
-  centerList: any = [];
+  centerListSubscribe: Subscription | undefined;
 
   constructor(private crudService: CRUDService, private router: Router) {
     this.routerSubscription = this.router.events.subscribe(event => {
@@ -76,8 +81,8 @@ export class CenterListComponent implements OnInit, OnDestroy {
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
-    if (this.centerListSubscription) {
-      this.centerListSubscription.unsubscribe();
+    if (this.centerListSubscribe) {
+      this.centerListSubscribe.unsubscribe();
     }
   }
 
@@ -86,16 +91,17 @@ export class CenterListComponent implements OnInit, OnDestroy {
   }
 
   getCenterList() {
-    this.centerListSubscription = this.crudService.loadCenters().subscribe(res => {
-      this.rowData = res; // Directly assign the response to rowData
+    this.centerListSubscribe = this.crudService.loadCenters().subscribe(res => {
+      this.rowData = res;
     });
   }
 
   actionRender(params: any) {
     let div = document.createElement('div');
     let htmlCode = `
-      <button type="button" class="btn btn-danger">Remove</button>
-      <button type="button" class="btn btn-warning">Edit</button>`;
+      <button type="button" class="btn btn-warning">Edit</button>
+      <button type="button" class="btn btn-secondary">${params.data.center_status === 'Active' ? 'Deactivate' : 'Activate'}</button>
+    `;
     div.innerHTML = htmlCode;
 
     let editButton = div.querySelector('.btn-warning');
@@ -103,45 +109,41 @@ export class CenterListComponent implements OnInit, OnDestroy {
       this.editCenterDetails(params);
     });
 
-    let deleteButton = div.querySelector('.btn-danger');
-    deleteButton?.addEventListener('click', () => {
-      this.deleteCenter(params);
+    let updateStatusButton = div.querySelector('.btn-secondary') as HTMLElement;
+    updateStatusButton?.addEventListener('click', () => {
+      this.updateCenterStatus(params, updateStatusButton); // Pass the button for dynamic updates
     });
 
     return div;
   }
 
   editCenterDetails(params: any) {
-    this.router.navigate(['/crud/update-center/' + params.data.center_id]);
+    this.router.navigate(['/crud/update-center/' + params.data.center_id], { queryParams: { reload: true } });
   }
 
-  deleteCenter(params: any) {
-    const that = this;
-    Swal.fire({
-      title: 'Are you sure you want to remove this center?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, remove!'
-    }).then((result: any) => {
-      if (result.isConfirmed) {
-        that.crudService.deleteCenter(params.data.center_id).subscribe(
-          res => {
-            if (res.result === 'success') {
-              this.gridApi.applyTransaction({ remove: [params.data] });
-              Swal.fire(
-                'Deleted!',
-                'The center has been deleted.',
-                'success'
-              );
-            }
-          },
-          error => {
-            Swal.fire('Error', 'An error occurred while deleting the center.', 'error');
-          }
-        );
+  updateCenterStatus(params: any, updateStatusButton: HTMLElement) {
+    const newStatus = params.data.center_status === 'Active' ? 'Inactive' : 'Active';
+    const formData = new FormData();
+    formData.append('center_id', params.data.center_id);
+    formData.append('center_status', newStatus);
+
+    this.crudService.updateCenterStatus(formData).subscribe({
+      next: (res) => {
+        if (res.result === 'success') {
+          // Update the status locally
+          params.data.center_status = newStatus;
+
+          // Update button text dynamically
+          updateStatusButton.textContent = newStatus === 'Active' ? 'Deactivate' : 'Activate';
+
+          // Refresh the row in the grid
+          this.gridApi.refreshCells({ rowNodes: [params.node], force: true });
+
+          Swal.fire('Updated!', `Center status changed to ${newStatus}.`, 'success');
+        }
+      },
+      error: () => {
+        Swal.fire('Error', 'Failed to update center status.', 'error');
       }
     });
   }

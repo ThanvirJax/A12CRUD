@@ -19,14 +19,58 @@ export class DeliveryStatusComponent implements OnInit, OnDestroy {
   private routerSubscription: Subscription;
 
   columnDefs = [
-    { field: 'resource_name', headerName: 'Resource Name', sortable: true, headerClass: 'header-cell' },
-    { field: 'request_status', headerName: 'Request Status', sortable: true, headerClass: 'header-cell' },
-    { field: 'requested_quantity', headerName: 'Requested Quantity', sortable: true, headerClass: 'header-cell' },
-    { field: 'requester_name', headerName: 'Requester Name', sortable: true, headerClass: 'header-cell' },
-    { field: 'tracking_status', headerName: ' Delivery Status', sortable: true, headerClass: 'header-cell', width: 150 },
-    { field: 'remarks', headerName: 'Remarks', sortable: true, headerClass: 'header-cell', width: 250 },
-    { field: 'tracking_created', headerName: 'Created At', sortable: true, headerClass: 'header-cell' },
-    { field: 'tracking_updated', headerName: 'Updated At', sortable: true, headerClass: 'header-cell' },
+    { 
+      field: 'resource_name', 
+      headerName: 'Resource Name', 
+      sortable: true, 
+      headerClass: 'header-cell' 
+    },
+    { 
+      field: 'request_status', 
+      headerName: 'Request Status', 
+      sortable: true, 
+      headerClass: 'header-cell' 
+    },
+    { field: 'requested_quantity', 
+      headerName: 'Requested Quantity', 
+      sortable: true, 
+      headerClass: 'header-cell' 
+    },
+    { 
+      field: 'requester_name', 
+      headerName: 'Requester Name', 
+      sortable: true, 
+      headerClass: 'header-cell' 
+
+    },
+    { 
+      field: 'tracking_status', 
+      headerName: ' Delivery Status', 
+      sortable: true, 
+      headerClass: 'header-cell', 
+      width: 150 
+      
+    },
+    { 
+      field: 'remarks', 
+      headerName: 'Remarks', 
+      sortable: true, 
+      headerClass: 'header-cell', 
+      width: 250 
+      
+    },
+    { 
+      field: 'tracking_created', 
+      headerName: 'Created At', 
+      sortable: true, 
+      headerClass: 'header-cell' },
+    { 
+      field: 'tracking_updated', 
+      headerName: 'Updated At', 
+      sortable: true, 
+      headerClass: 'header-cell' 
+      
+    },
     {
       field: '',
       headerName: 'Actions',
@@ -66,25 +110,34 @@ export class DeliveryStatusComponent implements OnInit, OnDestroy {
     this.crudService.loadTracking().subscribe({
       next: (response) => {
         if (Array.isArray(response)) {
-          this.rowData = response.flatMap((tracking: any) =>
-            tracking.resources.map((resource: any) => ({
-              tracking_id: tracking.tracking_id,
-              tracking_status: tracking.tracking_status,
-              remarks: tracking.remarks,
-              tracking_created: tracking.tracking_created,
-              tracking_updated: tracking.tracking_updated,
-              resource_name: resource.resource_name,
-              requested_quantity: resource.requested_quantity,
-              resource_description: resource.resource_description,
-              request_id: resource.request_id,
-              request_status: resource.request_status,
-              requester_name: resource.requester_name,
-              requester_email: resource.requester_email,
-              requester_type: resource.requester_type,
-              user_id: resource.user_id,
-              center_id: resource.center_id
-            }))
-          );
+          this.rowData = response
+            .flatMap((tracking: any) =>
+              tracking.resources.map((resource: any) => ({
+                tracking_id: tracking.tracking_id,
+                tracking_status: tracking.tracking_status,
+                remarks: tracking.remarks,
+                tracking_created: tracking.tracking_created,
+                tracking_updated: tracking.tracking_updated,
+                resource_name: resource.resource_name,
+                requested_quantity: resource.requested_quantity,
+                resource_description: resource.resource_description,
+                request_id: resource.request_id,
+                request_status: resource.request_status,
+                requester_name: resource.requester_name,
+                requester_email: resource.requester_email,
+                requester_type: resource.requester_type,
+                user_id: resource.user_id,
+                center_id: resource.center_id,
+              }))
+            )
+            .sort((a: any, b: any) => {
+              if (a.tracking_status === 'Pending' && b.tracking_status !== 'Pending') {
+                return -1; // Pending comes first
+              } else if (a.tracking_status !== 'Pending' && b.tracking_status === 'Pending') {
+                return 1; // Non-Pending comes after
+              }
+              return 0; // Otherwise, maintain relative order
+            });
         } else {
           this.rowData = [];
           Swal.fire('Info', 'No tracking data available.', 'info');
@@ -93,44 +146,45 @@ export class DeliveryStatusComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Error loading tracking data:', err);
         Swal.fire('Error', 'Failed to load tracking data.', 'error');
-      }
+      },
     });
   }
   
+  
   actionRender(params: any) {
     const div = document.createElement('div');
-    const isDelivered = params.data.tracking_status === 'Delivered';
+    const isDisabled = ['Delivered', 'Collected'].includes(params.data.tracking_status);
   
     const htmlCode = ` 
       <button type="button" class="btn btn-primary">Status</button>
-      <button type="button" class="btn btn-success" ${isDelivered ? 'disabled' : ''}>Delivered</button>
-      <button type="button" class="btn btn-warning" ${isDelivered ? 'disabled' : ''}>Collected</button>
+      <button type="button" class="btn btn-success" ${isDisabled ? 'disabled' : ''}>Delivered</button>
+      <button type="button" class="btn btn-warning" ${isDisabled ? 'disabled' : ''}>Collected</button>
     `;
-    
+  
     div.innerHTML = htmlCode;
-
+  
     // Status action with dropdown
     div.querySelector('.btn-primary')?.addEventListener('click', () =>
       this.showStatusDropdown(params)
     );
-
+  
     // Delivered action
-    if (!isDelivered) {
+    if (!isDisabled) {
       div.querySelector('.btn-success')?.addEventListener('click', () =>
         this.updateTrackingStatus(params, 'Delivered')
       );
     }
-
+  
     // Collected action
-    if (!isDelivered) {
+    if (!isDisabled) {
       div.querySelector('.btn-warning')?.addEventListener('click', () =>
         this.updateTrackingStatus(params, 'Collected')
       );
     }
-
+  
     return div;
   }
-
+  
   showStatusDropdown(params: any) {
     const currentStatus = params.data.tracking_status;
     const statusOptions = ['Pending', 'Delivered', 'Collected', 'Cancelled'];

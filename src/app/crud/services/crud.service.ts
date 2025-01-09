@@ -24,7 +24,7 @@ export class CRUDService {
   private readonly API_ENDPOINT = environment.API_EndPoint;
   private readonly LOGIN_URL = `${this.API_ENDPOINT}login.php`;
 
-  constructor(private httpClient: HttpClient, private authService: AuthService) {}
+  constructor(private httpClient: HttpClient, private authService: AuthService) { }
 
   // Load all resources
   loadResources(): Observable<Resource[]> {
@@ -91,49 +91,65 @@ export class CRUDService {
     return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
   }
 
+  // Update user status
+  updateUserStatus(data: any): Observable<HttpResponse> {
+    const url = `${this.API_ENDPOINT}update_user_status.php`;
+    return this.httpClient.post<HttpResponse>(url, data).pipe(
+      map(response => response)
+    );
+  }
+
   // Delete a user by ID
   deleteUser(userId: any): Observable<HttpResponse> {
     const url = `${this.API_ENDPOINT}delete_user.php?user_id=${userId}`;
     return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
   }
 
-    // Load single center details by ID
-    loadCenterInfo(centerId: any): Observable<Center> {
-      const url = `${this.API_ENDPOINT}view_center.php?center_id=${centerId}`;
-      return this.httpClient.get<Center>(url).pipe(map(data => data));
-    }
+  // Load single center details by ID
+  loadCenterInfo(centerId: any): Observable<Center> {
+    const url = `${this.API_ENDPOINT}view_center.php?center_id=${centerId}`;
+    return this.httpClient.get<Center>(url).pipe(map(data => data));
+  }
 
-    loadCenters(): Observable<Center[]> {
-      const url = `${this.API_ENDPOINT}view_all_centers.php`;
-      return this.httpClient.get<{ result: string; centers: Center[] }>(url).pipe(
-        map((response) => {
-          if (response.result === 'success') {
-            return response.centers;
-          } else {
-            throw new Error('Failed to fetch centers');
-          }
-        }),
-        catchError((error) => {
-          console.error('Error fetching centers:', error);
-          return throwError(() => new Error('Failed to fetch centers'));
-        })
-      );
-    }
-    
-  
-    // Create new center
-    createCenter(data: any): Observable<HttpResponse> {
-      const url = `${this.API_ENDPOINT}create_center.php`;
-      return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
-    }
-  
-    // Update center details
-    updateCenterDetails(data: any): Observable<HttpResponse> {
-      const url = `${this.API_ENDPOINT}update_center.php`;
-      return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
-    }
+  loadCenters(): Observable<Center[]> {
+    const url = `${this.API_ENDPOINT}view_all_centers.php`;
+    return this.httpClient.get<{ result: string; centers: Center[] }>(url).pipe(
+      map((response) => {
+        if (response.result === 'success') {
+          return response.centers;
+        } else {
+          throw new Error('Failed to fetch centers');
+        }
+      }),
+      catchError((error) => {
+        console.error('Error fetching centers:', error);
+        return throwError(() => new Error('Failed to fetch centers'));
+      })
+    );
+  }
 
-    // Delete a user by ID
+
+  // Create new center
+  createCenter(data: any): Observable<HttpResponse> {
+    const url = `${this.API_ENDPOINT}create_center.php`;
+    return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
+  }
+
+  // Update center details
+  updateCenterDetails(data: any): Observable<HttpResponse> {
+    const url = `${this.API_ENDPOINT}update_center.php`;
+    return this.httpClient.post<HttpResponse>(url, data).pipe(map(data => data));
+  }
+
+  // Update center status
+  updateCenterStatus(data: any): Observable<HttpResponse> {
+    const url = `${this.API_ENDPOINT}update_center_status.php`;
+    return this.httpClient.post<HttpResponse>(url, data).pipe(
+      map(response => response)
+    );
+  }
+
+  // Delete a user by ID
   deleteCenter(centerId: any): Observable<HttpResponse> {
     const url = `${this.API_ENDPOINT}delete_center.php?user_id=${centerId}`;
     return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
@@ -163,14 +179,19 @@ export class CRUDService {
             console.log('User logged in:', data.user);
             console.log('Role:', data.role);
             return data;
+          } else if (data.result === 'fail' && data.message?.includes('inactive')) {
+            // Handle the case when the account is inactive
+            console.error('Login failed: Account is inactive');
+            throw new Error('Your account is inactive. Please contact support.');
           } else {
-            // Handle the case when login fails
-            console.error('Login failed:', data.message);
+            // Handle other login failures
+            console.error('Login failed:', data.message || 'Unknown error');
             throw new Error(data.message || 'Login failed');
           }
         })
       );
   }
+
 
   // Load single resource details by ID
   loadRequestInfo(requestId: any): Observable<UserRequest> {
@@ -203,7 +224,7 @@ export class CRUDService {
       request_status: newStatus,
       requested_quantity: requestedQuantity,
     };
-  
+
     return this.httpClient.post(url, body, {
       headers: { 'Content-Type': 'application/json' },
     }).pipe(
@@ -221,7 +242,7 @@ export class CRUDService {
       })
     );
   }
-  
+
 
   viewSpecificUserStatus(userId: number): Observable<UserRequest[]> {
     const url = `${this.API_ENDPOINT}view_specific_user_request.php?user_id=${encodeURIComponent(userId)}`;
@@ -387,32 +408,32 @@ export class CRUDService {
       headers: new HttpHeaders()
     });
   }
-  
-    // Handle errors
-    private handleError(error: any): Observable<never> {
-      console.error('HTTP error', error);
-      return throwError(() => new Error('An error occurred while processing your request.'));
-    }
-  
+
+  // Handle errors
+  private handleError(error: any): Observable<never> {
+    console.error('HTTP error', error);
+    return throwError(() => new Error('An error occurred while processing your request.'));
+  }
+
   // Update resource details
   updateAlert(data: any): Observable<any> {
     const url = `${this.API_ENDPOINT}update_alert.php`;
     return this.httpClient.post<any>(url, data);
   }
-  
+
   // Load single resource details by ID
   loadAlertInfo(alertId: any): Observable<Alert> {
-    const url = `${this.API_ENDPOINT}view_one_alert.php?alert_id=${alertId}`; 
+    const url = `${this.API_ENDPOINT}view_one_alert.php?alert_id=${alertId}`;
     return this.httpClient.get<Alert>(url);
   }
-  
+
 
   // Method to fetch all alerts
   getAlerts(): Observable<Alert[]> {
     const url = `${this.API_ENDPOINT}view_alerts.php`;
     return this.httpClient.get<Alert[]>(url);
   }
-  
+
 
   // Delete a resource by ID
   deleteAlert(alertId: any): Observable<HttpResponse> {
@@ -422,89 +443,89 @@ export class CRUDService {
 
   createTask(taskData: string): Observable<any> {
     const url = `${this.API_ENDPOINT}create_task.php`;
-  
+
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
       }),
     };
-  
+
     return this.httpClient.post<any>(url, taskData, httpOptions);
   }
-  
+
   updateTaskDetails(taskData: string): Observable<any> {
     const url = `${this.API_ENDPOINT}update_task.php`;
-  
+
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/x-www-form-urlencoded',
       }),
     };
-  
+
     return this.httpClient.post<any>(url, taskData, httpOptions);
   }
-  
+
   loadTaskInfo(taskId: any): Observable<any> {
     const url = `${this.API_ENDPOINT}get_task.php?taskId=${taskId}`;
     return this.httpClient.get<any>(url);
   }
-    // Load all tasks
-    loadTasks(): Observable<Task[]> {
-      const url = `${this.API_ENDPOINT}view_tasks.php`;
-      return this.httpClient.get<Task[]>(url).pipe(
-        map((data) => data),
-        catchError((error: HttpErrorResponse) => {
-          console.error('Error fetching tasks:', error.message);
-          return throwError(() => new Error('Failed to fetch tasks'));
-        })
-      );
-    }
-
-    deleteTask(taskId: any): Observable<HttpResponse> {
-      const url = `${this.API_ENDPOINT}delete_task.php?id=${taskId}`;
-      return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
-    }
-
-// Update task status and volunteer statuses
-updateTaskStatus(taskId: any, status: string): Observable<any> {
-  const url = `${this.API_ENDPOINT}update_task_status.php`;
-
-  // Prepare the payload with task_id and task_status
-  const payload = new FormData();
-  payload.append('task_id', taskId);
-  payload.append('task_status', status);
-
-  return this.httpClient
-    .post<any>(url, payload) // POST request to PHP endpoint
-    .pipe(
-      map((response) => {
-        // Handle the response
-        if (response.message) {
-          console.log('Task status updated successfully:', response.message);
-        }
-        return response;
-      }),
+  // Load all tasks
+  loadTasks(): Observable<Task[]> {
+    const url = `${this.API_ENDPOINT}view_tasks.php`;
+    return this.httpClient.get<Task[]>(url).pipe(
+      map((data) => data),
       catchError((error: HttpErrorResponse) => {
-        console.error('Error updating task status:', error.message);
-        return throwError(() => new Error('Failed to update task status'));
+        console.error('Error fetching tasks:', error.message);
+        return throwError(() => new Error('Failed to fetch tasks'));
       })
     );
-}
+  }
+
+  deleteTask(taskId: any): Observable<HttpResponse> {
+    const url = `${this.API_ENDPOINT}delete_task.php?id=${taskId}`;
+    return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
+  }
+
+  // Update task status and volunteer statuses
+  updateTaskStatus(taskId: any, status: string): Observable<any> {
+    const url = `${this.API_ENDPOINT}update_task_status.php`;
+
+    // Prepare the payload with task_id and task_status
+    const payload = new FormData();
+    payload.append('task_id', taskId);
+    payload.append('task_status', status);
+
+    return this.httpClient
+      .post<any>(url, payload) // POST request to PHP endpoint
+      .pipe(
+        map((response) => {
+          // Handle the response
+          if (response.message) {
+            console.log('Task status updated successfully:', response.message);
+          }
+          return response;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error updating task status:', error.message);
+          return throwError(() => new Error('Failed to update task status'));
+        })
+      );
+  }
 
 
-updateVolunteerStatus(taskId: number, status: string): Observable<any> {
-  const url = `${this.API_ENDPOINT}update_volunteer_status.php`;
+  updateVolunteerStatus(taskId: number, status: string): Observable<any> {
+    const url = `${this.API_ENDPOINT}update_volunteer_status.php`;
 
-  const user = this.authService.getUser();
-  const userId = user?.user_id;
+    const user = this.authService.getUser();
+    const userId = user?.user_id;
 
-  const payload = new FormData();
-  payload.append('task_id', taskId.toString());
-  payload.append('user_id', userId?.toString() || ''); 
-  payload.append('volunteer_status', status);
+    const payload = new FormData();
+    payload.append('task_id', taskId.toString());
+    payload.append('user_id', userId?.toString() || '');
+    payload.append('volunteer_status', status);
 
-  return this.httpClient.post<any>(url, payload);
-}
+    return this.httpClient.post<any>(url, payload);
+  }
 
   // Fetch tasks accepted by a specific user
   fetchAcceptedTasks(userId: number): Observable<Task[]> {
@@ -517,5 +538,5 @@ updateVolunteerStatus(taskId: number, status: string): Observable<any> {
       })
     );
   }
-  
+
 }

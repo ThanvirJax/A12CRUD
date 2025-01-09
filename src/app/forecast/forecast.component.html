@@ -20,10 +20,8 @@
     <div class="forecast-grid">
       <div *ngFor="let forecast of weatherData.list | slice:0:10" class="forecast-card">
         <div class="icon">
-          <img
-            [src]="'http://openweathermap.org/img/wn/' + forecast.weather[0].icon + '@2x.png'"
-            alt="{{ forecast.weather[0].description }}"
-          />
+          <img [src]="'http://openweathermap.org/img/wn/' + forecast.weather[0].icon + '@2x.png'"
+            alt="{{ forecast.weather[0].description }}" />
         </div>
         <div class="details">
           <p><i class="fas fa-calendar-alt"></i> {{ forecast.dt_txt }}</p>

@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location, NgIf } from '@angular/common'; 
-import { FormsModule } from '@angular/forms'; 
+import { Location, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CRUDService } from '../crud/services/crud.service';
 import { LoginResponse } from '../models/login-response';
-import { AuthService } from '../auth.service'; 
-import Swal from 'sweetalert2';  
+import { AuthService } from '../auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, HttpClientModule, NgIf], 
+  imports: [FormsModule, HttpClientModule, NgIf],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -24,11 +24,11 @@ export class LoginComponent {
   loading = false;
 
   constructor(
-    private crudService: CRUDService, 
+    private crudService: CRUDService,
     private router: Router,
     private location: Location,
     private authService: AuthService
-  ) {}
+  ) { }
 
   onLogin() {
     if (!this.loginObj.user_email || !this.loginObj.user_password) {
@@ -57,12 +57,19 @@ export class LoginComponent {
               token: res.token,
             };
 
-            this.authService.login(loginData);  
+            this.authService.login(loginData);
 
             this.router.navigate(['/dashboard']).then(() => {
               this.location.go('/dashboard');
               window.location.reload();
             });
+          });
+        } else if (res.result === 'fail' && res.message?.includes('inactive')) {
+          // Handle inactive account error
+          Swal.fire({
+            icon: 'error',
+            title: 'Account Inactive',
+            text: 'Your account is inactive. Please contact support.',
           });
         } else {
           Swal.fire({
@@ -74,19 +81,33 @@ export class LoginComponent {
       },
       (error) => {
         this.loading = false;
+
+        // Handle network error
         if (error.status === 0) {
           Swal.fire({
             icon: 'error',
             title: 'Network Error',
             text: 'Please check your internet connection.',
           });
-        } else if (error.status === 401) {
+        }
+        // Handle 401 Unauthorized error
+        else if (error.status === 401) {
           Swal.fire({
             icon: 'error',
             title: 'Unauthorized',
             text: 'Invalid credentials, please try again.',
           });
-        } else {
+        }
+        // Handle 403 Forbidden error (e.g., account inactive or permission issue)
+        else if (error.status === 403) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Access Denied',
+            text: 'You do not have permission to access this resource. Please check your account status or contact support.',
+          });
+        }
+        // Handle other errors
+        else {
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -96,8 +117,8 @@ export class LoginComponent {
       }
     );
   }
-  
+
   onCreateAccount() {
-    this.router.navigate(['/crud/user-form']); 
+    this.router.navigate(['/crud/user-form']);
   }
 }
