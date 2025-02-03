@@ -2,25 +2,27 @@
   <div class="col-6 p-5">
     <form [formGroup]="userForm" (ngSubmit)="createOrUpdateUser()">
 
-      <!-- User Name -->
-      <div class="mb-3">
-        <label for="user-name" class="form-label">User Name</label>
-        <input
-          formControlName="user_name"
-          type="text"
-          class="form-control"
-          id="user-name"
-          [ngClass]="{
-            'is-invalid': userForm.get('user_name')?.invalid && userForm.get('user_name')?.touched,
-            'is-valid': userForm.get('user_name')?.valid && userForm.get('user_name')?.touched
-          }"
-        >
-        <div *ngIf="userForm.get('user_name')?.invalid && userForm.get('user_name')?.touched" class="alert alert-danger">
-          <span *ngIf="userForm.get('user_name')?.errors?.['required']">Name is required.</span>
-          <span *ngIf="userForm.get('user_name')?.errors?.['minlength']">Minimum 3 characters required.</span>
-          <span *ngIf="userForm.get('user_name')?.errors?.['maxlength']">Maximum 50 characters allowed.</span>
-        </div>
-      </div>
+ <!-- User Name -->
+<div class="mb-3">
+  <label for="user-name" class="form-label">User Name</label>
+  <input
+    formControlName="user_name"
+    type="text"
+    class="form-control"
+    id="user-name"
+    [ngClass]="{
+      'is-invalid': userForm.get('user_name')?.invalid && userForm.get('user_name')?.touched,
+      'is-valid': userForm.get('user_name')?.valid && userForm.get('user_name')?.touched
+    }"
+  >
+  <div *ngIf="userForm.get('user_name')?.invalid && userForm.get('user_name')?.touched" class="alert alert-danger">
+    <span *ngIf="userForm.get('user_name')?.errors?.['required']">Name is required.</span>
+    <span *ngIf="userForm.get('user_name')?.errors?.['minlength']">Minimum 3 characters required.</span>
+    <span *ngIf="userForm.get('user_name')?.errors?.['maxlength']">Maximum 50 characters allowed.</span>
+    <span *ngIf="userForm.get('user_name')?.errors?.['duplicate']">Username is already taken. Please choose a different one.</span> 
+  </div>
+</div>
+
 
       <!-- User Email -->
       <div class="mb-3">
@@ -41,6 +43,47 @@
         </div>
       </div>
 
+      <!-- User NIC -->
+      <div class="mb-3">
+        <label for="user-nic" class="form-label">NIC</label>
+        <input
+          formControlName="user_nic"
+          type="text"
+          class="form-control"
+          id="user-nic"
+          [ngClass]="{
+            'is-invalid': userForm.get('user_nic')?.invalid && userForm.get('user_nic')?.touched,
+            'is-valid': userForm.get('user_nic')?.valid && userForm.get('user_nic')?.touched
+          }"
+        >
+        <div *ngIf="userForm.get('user_nic')?.invalid && userForm.get('user_nic')?.touched" class="alert alert-danger">
+          <span *ngIf="userForm.get('user_nic')?.errors?.['required']">NIC is required.</span>
+          <span *ngIf="userForm.get('user_nic')?.errors?.['minlength']">Minimum 14 characters required.</span>
+          <span *ngIf="userForm.get('user_nic')?.errors?.['maxlength']">Maximum 14 characters required. </span>
+          <span *ngIf="userForm.get('user_nic')?.errors?.['pattern']">Invalid NIC.</span>
+        </div>
+      </div>
+
+         <!-- NIC Image Upload -->
+<div class="mb-3" *ngIf="!userId">
+  <label for="nic-image" class="form-label">NIC Image</label>
+  <input
+    formControlName="nic_image"
+    type="file"
+    class="form-control"
+    id="nic-image"
+    (change)="onFileChange($event)"
+  >
+  <!-- Display required message when NIC image is required (on create mode) -->
+  <div *ngIf="userForm.get('nic_image')?.hasError('required') && userForm.get('nic_image')?.touched" class="alert alert-danger">
+    NIC image is required.
+  </div>
+  <div *ngIf="nicImageError" class="alert alert-danger">
+    <span>{{ nicImageError }}</span>
+  </div>
+</div>
+
+
       <!-- User Phone -->
       <div class="mb-3">
         <label for="user-phone" class="form-label">Phone Number</label>
@@ -60,24 +103,50 @@
         </div>
       </div>
 
-      <!-- User Password -->
-      <div class="mb-3">
-        <label for="user-password" class="form-label">Password</label>
-        <input
-          formControlName="user_password"
-          type="password"
-          class="form-control"
-          id="user-password"
-          [ngClass]="{
-            'is-invalid': userForm.get('user_password')?.invalid && userForm.get('user_password')?.touched,
-            'is-valid': userForm.get('user_password')?.valid && userForm.get('user_password')?.touched
-          }"
-        >
-        <div *ngIf="userForm.get('user_password')?.invalid && userForm.get('user_password')?.touched" class="alert alert-danger">
-          <span *ngIf="userForm.get('user_password')?.errors?.['required']">Password is required.</span>
-          <span *ngIf="userForm.get('user_password')?.errors?.['minlength']">Minimum 6 characters required.</span>
-        </div>
-      </div>
+   <!-- User Password -->
+<div class="mb-3">
+  <label for="user-password" class="form-label">Password</label>
+  <input
+    formControlName="user_password"
+    type="password"
+    class="form-control"
+    id="user-password"
+    [ngClass]="{
+      'is-invalid': userForm.get('user_password')?.invalid && userForm.get('user_password')?.touched,
+      'is-valid': userForm.get('user_password')?.valid && userForm.get('user_password')?.touched
+    }"
+  >
+  <div *ngIf="userForm.get('user_password')?.invalid && userForm.get('user_password')?.touched" class="alert alert-danger">
+    <span *ngIf="userForm.get('user_password')?.errors?.['required']">Password is required.</span>
+    <span *ngIf="userForm.get('user_password')?.errors?.['minlength']">Minimum 8 characters required.</span>
+    <span *ngIf="userForm.get('user_password')?.errors?.['pattern']">Password must include at least one uppercase letter, one lowercase letter, and one number.</span>
+  </div>
+  <small class="text-muted">
+    Tip: Use a strong password with at least one uppercase, one lowercase, and one number.
+  </small>
+</div>
+<!-- Confirm Password -->
+<div class="mb-3">
+  <label for="confirm-password" class="form-label">Confirm Password</label>
+  <input
+    formControlName="confirm_password"
+    type="password"
+    class="form-control"
+    id="confirm-password"
+    [ngClass]="{
+      'is-invalid': userForm.get('confirm_password')?.invalid && userForm.get('confirm_password')?.touched,
+      'is-valid': userForm.get('confirm_password')?.valid && userForm.get('confirm_password')?.touched
+    }"
+  >
+  <div *ngIf="userForm.hasError('passwordMismatch')" class="alert alert-danger">
+    Passwords do not match.
+  </div>
+  <div *ngIf="userForm.get('confirm_password')?.invalid && userForm.get('confirm_password')?.touched" class="alert alert-danger">
+    <span *ngIf="userForm.get('confirm_password')?.errors?.['required']">Confirm Password is required.</span>
+  </div>
+</div>
+
+
 
       <!-- User Address -->
       <div class="mb-3">

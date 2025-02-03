@@ -70,7 +70,6 @@ export class DashboardComponent implements OnInit {
       console.error('No center ID available for the logged-in user.');
     }
   }
-  
 
   onCreateCenter() {
     this.router.navigate(['/crud/center-form']); 
@@ -85,7 +84,7 @@ export class DashboardComponent implements OnInit {
 
   // Fetch user requests from the API
   private fetchUserRequests(userId: string): void {
-    this.crudService.viewSpecificUserStatus(Number(userId)).subscribe({
+    this.crudService.viewSpecificUserRequestStatus(Number(userId)).subscribe({
       next: (requests: UserRequest[]) => {
         this.userRequests = requests;
         this.errorMessage = this.userRequests.length === 0 ? 'No requests found.' : null;
@@ -125,6 +124,7 @@ export class DashboardComponent implements OnInit {
   get hasNoAcceptedTasks(): boolean {
     return this.acceptedTasks.length === 0;
   }
+
   markTaskComplete(task: Task): void {
     Swal.fire({
       title: 'Are you sure?',
@@ -147,5 +147,34 @@ export class DashboardComponent implements OnInit {
         });
       }
     });
+  }
+
+  // Handle Image Upload Action
+  handleImageUpload(request: UserRequest): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+
+    input.addEventListener('change', () => {
+      const file = input.files?.[0];
+      if (file) {
+        this.crudService.uploadImage(request.tracking.tracking_id, file).subscribe({
+          next: (response) => {
+            if (response?.status === 'success') {
+              Swal.fire('Success', 'Image uploaded successfully.', 'success');
+              this.fetchUserRequests(this.userId!); 
+            } else {
+              Swal.fire('Error', response.message || 'Failed to upload image.', 'error');
+            }
+          },
+          error: (err) => {
+            console.error('Error uploading image:', err);
+            Swal.fire('Error', 'Failed to upload image.', 'error');
+          },
+        });
+      }
+    });
+
+    input.click();
   }
 }

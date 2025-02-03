@@ -11,14 +11,13 @@
   border-radius: 8px;
 }
 
-/* Alert Box Styling */
 .alert-box {
-  background-color: #c64e4e;
+  background-color: #e32828;
   color: #ffffff;
   padding: 15px;
-  margin: 20px 0;
+  margin: 20px 10px;
   border: 1px solid #a94442;
-  border-radius: 10px;
+  border-radius: 20px;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
@@ -111,7 +110,7 @@
 .map-title {
   font-size: 1.5rem;
   color: #f0c63d;
-  background-color: #ff0000;
+  background-color: #2f3b68;
   margin-bottom: 0px;
   text-align: center;
   border-radius: 10px;   

@@ -19,20 +19,23 @@
             </button>
           </li>
           <li class="nav-item">
-            <button type="button" class="btn btn-outline-light rounded-pill px-3 py-2 me-3 transition"
-              [routerLinkActive]="'active'" [routerLink]="'/crud/request-resource'">
+            <button
+              type="button"
+              class="btn btn-outline-light rounded-pill px-3 py-2 me-3 transition"
+              (click)="navigateToRequestForm()"
+            >
               Requests
             </button>
           </li>
           <li class="nav-item">
             <button type="button" class="btn btn-outline-light rounded-pill px-3 py-2 me-3 transition"
-              [routerLinkActive]="'active'" [routerLink]="'../center-locations'">
-              Centers
+              [routerLinkActive]="'active'" [routerLink]="'forum'">
+              Chat Forum
             </button>
           </li>
           <li class="nav-item">
             <button type="button" class="btn btn-outline-light rounded-pill px-3 py-2 me-3 transition"
-              [routerLinkActive]="'active'" [routerLink]="'/crud/donation-form'">
+            (click)="navigateToDonationForm()">
               Donation
             </button>
           </li>
@@ -44,14 +47,13 @@
               More
             </a>
             <ul class="dropdown-menu shadow-lg rounded border-0">
+              <li><a class="dropdown-item" [routerLink]="'/emergency-contacts'">Emergency Contacts</a></li>
+              <li><a class="dropdown-item" [routerLink]="'../center-locations'">Relief Center locations</a></li>
               <li><a class="dropdown-item" href="/precaution">Safety Precautions</a></li>
-              <li><a class="dropdown-item" [routerLink]="'forum'">Forum</a></li>
-              
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" [routerLink]="'/crud/resource-list'">Available Resource</a></li>
-              <li><a class="dropdown-item" [routerLink]="'/center-actions'">Centers Resource Actions</a></li>
+         
             </ul>
           </li>
         </ul>
@@ -78,21 +80,18 @@
   <!-- Check if user is logged in -->
   <ng-container *ngIf="isLoggedIn(); else loginButton">
     
-    <!-- Center Profile (if centerName exists) -->
     <button *ngIf="centerName" type="button" class="btn btn-info rounded-pill px-3 py-2 me-3 transition" 
       [routerLinkActive]="'active'" [routerLink]="'/crud/center-details'"
       title="Center: {{ centerName }}">
       {{ centerName }}
     </button>
 
-    <!-- Admin Profile (if the user is admin and centerName doesn't exist) -->
     <button *ngIf="isAdmin() && !centerName" type="button" class="btn btn-primary rounded-pill px-3 py-2 me-3 transition" 
       [routerLinkActive]="'active'" [routerLink]="'/crud/user-details'"
       title="Admin: {{ adminName }}">
       {{ adminName ? adminName.charAt(0).toUpperCase() : '' }} (Admin)
     </button>
 
-    <!-- User Profile (if the user is not admin and centerName doesn't exist) -->
     <button *ngIf="!isAdmin() && !centerName" type="button" class="btn btn-success rounded-pill px-3 py-2 me-3 transition" 
       [routerLinkActive]="'active'" [routerLink]="'/crud/user-details'"
       title="{{ userName }}">

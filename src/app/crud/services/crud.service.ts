@@ -68,11 +68,11 @@ export class CRUDService {
   }
 
   // Load all users
-  loadUser(): Observable<User[]> {
+  loadUser(): Observable<HttpResponse> {
     const url = `${this.API_ENDPOINT}view_users.php`;
-    return this.httpClient.get<User[]>(url).pipe(map(data => data));
+    return this.httpClient.get<HttpResponse>(url).pipe(map(data => data));
   }
-
+  
   // Load single user details by ID
   loadUserInfo(userId: any): Observable<User> {
     const url = `${this.API_ENDPOINT}view_user.php?user_id=${userId}`;
@@ -192,7 +192,6 @@ export class CRUDService {
       );
   }
 
-
   // Load single resource details by ID
   loadRequestInfo(requestId: any): Observable<UserRequest> {
     const url = `${this.API_ENDPOINT}view_single_request.php?request_id=${requestId}`;
@@ -243,18 +242,36 @@ export class CRUDService {
     );
   }
 
-
-  viewSpecificUserStatus(userId: number): Observable<UserRequest[]> {
+  viewSpecificUserRequestStatus(userId: number): Observable<UserRequest[]> {
     const url = `${this.API_ENDPOINT}view_specific_user_request.php?user_id=${encodeURIComponent(userId)}`;
+  
     return this.httpClient.get<UserRequest[]>(url).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.error('Error fetching user request:', error.message);
-        const errorMessage = error.error?.message || 'Failed to fetch user request';
+        console.error('Error fetching user request status:', error.message);
+  
+        // Handle error response
+        const errorMessage = error.error?.message || 'Failed to fetch user request status';
+        
         return throwError(() => new Error(errorMessage));
       })
     );
   }
-
+  
+  viewSpecificUserResourceTracking(userId: number): Observable<any[]> {
+    const url = `${this.API_ENDPOINT}view_specific_user_tracking.php?user_id=${encodeURIComponent(userId)}`;
+  
+    return this.httpClient.get<any[]>(url).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error fetching resource tracking:', error.message);
+  
+        // Handle error response
+        const errorMessage = error.error?.message || 'Failed to fetch resource tracking';
+        
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+  
   getUserIdByEmail(email: string): Observable<UserIdResponse> {
     const url = `${this.API_ENDPOINT}get_user_id.php?email=${email}`;
     return this.httpClient.get<UserIdResponse>(url).pipe(map(data => data));
@@ -372,14 +389,24 @@ export class CRUDService {
     );
   }
 
-  // Updated CRUD Service returning status and data
   loadTracking(): Observable<{ status: string; data: Tracking[] }> {
     const url = `${this.API_ENDPOINT}view_status.php`;
+  
     return this.httpClient.get<{ status: string; data: Tracking[] }>(url).pipe(
+      map(response => {
+        if (response.status === 'success' && response.data) {
+          response.data.forEach(tracking => {
+            if (tracking.benefits_image) {
+              tracking.benefits_image = tracking.benefits_image; 
+            }
+          });
+        }
+        return response;
+      }),
       catchError(this.handleError)
     );
   }
-
+  
   loadTrackingInfo(trackingId: number): Observable<Tracking> {
     const url = `${this.API_ENDPOINT}view_status.php?tracking_id=${trackingId}`;
     return this.httpClient.get<{ status: string; data: Tracking }>(url).pipe(
@@ -388,20 +415,59 @@ export class CRUDService {
     );
   }
 
-  // Update tracking status
-  updateTrackingStatus(trackingId: number, trackingStatus: string, remarks: string): Observable<any> {
-    const url = `${this.API_ENDPOINT}update_tracking_status.php`;
-    const payload = { tracking_id: trackingId, tracking_status: trackingStatus, remarks: remarks };
+// Update tracking status
+updateTrackingStatus(trackingId: number, deliveryStatus: string, remarks: string): Observable<any> {
+  const url = `${this.API_ENDPOINT}update_tracking_status.php`;
+  const payload = { tracking_id: trackingId, delivery_status: deliveryStatus, remarks: remarks };
 
-    return this.httpClient.post<any>(url, payload, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }).pipe(
-      catchError(err => {
-        console.error('Update Tracking Status Error:', err);
-        return throwError(() => new Error('Failed to update tracking status.'));
-      })
-    );
-  }
+  return this.httpClient.post<any>(url, payload, {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  }).pipe(
+    catchError((err) => {
+      console.error('Update Tracking Status Error:', err);
+      return throwError(() => new Error('Failed to update delivery status.'));
+    })
+  );
+}
+
+scheduleDelivery(trackingId: number, deliveryDate: string): Observable<any> {
+  const url = `${this.API_ENDPOINT}schedule_delivery.php`;
+  const payload = { tracking_id: trackingId, delivery_date: deliveryDate };
+
+  console.log('Payload:', payload); // Log the payload to check if it's correct.
+
+  return this.httpClient.put<any>(url, payload, {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  }).pipe(
+    catchError((err) => {
+      console.error('Schedule Delivery Error:', err);
+      return throwError(() => new Error('Failed to schedule delivery date.'));
+    })
+  );
+}
+
+
+uploadImage(trackingId: number, file: File): Observable<any> {
+  const url = `${this.API_ENDPOINT}upload_beneficiary_image.php`; 
+
+  // Create FormData object and append the image and trackingId
+  const formData = new FormData();
+  formData.append('benefits_image', file, file.name);  
+  formData.append('tracking_id', trackingId.toString());  
+
+  // Log the FormData for debugging (remove this in production)
+  console.log('Uploading image with FormData:', formData);
+
+  // Make the POST request to upload the image
+  return this.httpClient.post<any>(url, formData).pipe(
+    catchError((err) => {
+      // Log and handle any error that occurs during the image upload
+      console.error('Image Upload Error:', err);
+      return throwError(() => new Error('Failed to upload the image.'));
+    })
+  );
+}
+
 
   createAlert(payload: any): Observable<any> {
     return this.httpClient.post(`${this.API_ENDPOINT}create_alert.php`, payload, {

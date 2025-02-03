@@ -64,7 +64,7 @@ export class CenterFormComponent implements OnInit {
     formData.append('center_email', values.center_email);
     formData.append('center_phone', values.center_phone);
     formData.append('center_address', values.center_address);
-    formData.append('center_password', values.center_password); // Added password field for both create and update
+    formData.append('center_password', values.center_password); 
     
     if (this.centerId) {
       formData.append('center_id', this.centerId);

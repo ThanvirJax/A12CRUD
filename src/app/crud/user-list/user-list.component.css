@@ -1,19 +1,21 @@
 .row {
-    margin-bottom: 0;  /* Remove bottom margin */
+    margin-bottom: 0;  
   }
   
   .col-12 {
-    padding: 15px;  /* Reduce padding if needed */
+    padding: 15px;  
   }
   .ag-theme-alpine {
-    max-height: 500px; /* Set the maximum height */
+    max-height: 500px; 
   }
   .row {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Adjust gap between the tables */
+    gap: 20px; 
   }
     
     h1 strong{
     color: #286cd3;
   }
+
+  

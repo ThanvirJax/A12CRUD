@@ -71,6 +71,13 @@ export class LoginComponent {
             title: 'Account Inactive',
             text: 'Your account is inactive. Please contact support.',
           });
+        } else if (res.result === 'fail' && res.message?.includes('under review')) {
+          // Handle under review account error
+          Swal.fire({
+            icon: 'error',
+            title: 'Account Under Review',
+            text: 'Your account is under review. Please wait for approval.',
+          });
         } else {
           Swal.fire({
             icon: 'error',
@@ -98,12 +105,12 @@ export class LoginComponent {
             text: 'Invalid credentials, please try again.',
           });
         }
-        // Handle 403 Forbidden error (e.g., account inactive or permission issue)
+        // Handle 403 Forbidden error (account inactive or permission issue)
         else if (error.status === 403) {
           Swal.fire({
             icon: 'error',
             title: 'Access Denied',
-            text: 'You do not have permission to access this resource. Please check your account status or contact support.',
+            text: 'You do not have permission to access this page. Your account is under review or has been disactivated! Please contact the admin for support',
           });
         }
         // Handle other errors

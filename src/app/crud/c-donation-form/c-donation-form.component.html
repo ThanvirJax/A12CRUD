@@ -12,6 +12,7 @@
             type="text"
             class="form-control"
             id="center-name"
+            readonly
             [ngClass]="{
               'is-invalid': donationForm.get('center_name')?.invalid && donationForm.get('center_name')?.touched,
               'is-valid': donationForm.get('center_name')?.valid && donationForm.get('center_name')?.touched
@@ -107,6 +108,25 @@
             <span *ngIf="donationForm.get('donation_quantity')?.errors?.['max']">Maximum quantity is 99,999,999.</span>
           </div>
         </div>
+
+            <!-- Expiry Date -->
+      <div class="mb-3">
+        <label for="expiry-date" class="form-label">Expiry Date</label>
+        <input 
+        formControlName="expiry_date" 
+        type="datetime-local" 
+        class="form-control" 
+        id="expiry-date" 
+        [ngClass]="{
+      'is-invalid': donationForm.get('expiry_date')?.invalid && donationForm.get('expiry_date')?.touched,
+      'is-valid': donationForm.get('expiry_date')?.valid && donationForm.get('expiry_date')?.touched
+    }">
+        <small id="expiry-date-help" class="form-text text-muted">Enter the expiry date for the resource.</small>
+        <div *ngIf="donationForm.get('expiry_date')?.invalid && donationForm.get('expiry_date')?.touched"
+          class="alert alert-danger">
+          <span *ngIf="donationForm.get('expiry_date')?.errors?.['required']">Expiry date is required.</span>
+        </div>
+      </div>
   
         <!-- Submit Button -->
         <button type="submit" class="btn btn-primary w-100" [disabled]="donationForm.invalid">

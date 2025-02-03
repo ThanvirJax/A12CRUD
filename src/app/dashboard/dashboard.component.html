@@ -48,7 +48,7 @@
         <p class="tip">Create a Task</p>
         <p class="second-text">Create New Task</p>
       </div>
-      <div class="card black" [routerLink]="'/crud/task-list'">
+      <div class="card pink" [routerLink]="'/crud/task-list'">
         <p class="tip">Task List</p>
         <p class="second-text">List of tasks</p>
       </div>
@@ -212,51 +212,60 @@
       <p>No approved requests available for tracking.</p>
     </div>
   
-    <!-- List of approved requests with tracking info (displayed side by side) -->
-    <div class="requests-list">
-      <div *ngFor="let request of approvedRequests" class="request-card">
-        <div class="card-content">
-          <h4>Request ID: {{ request.request_id }}</h4>
-          <p><strong>Date:</strong> {{ request.request_date | date: 'short' }}</p>
-          <p><strong>Resource:</strong> {{ request.resource_name }}</p>
-          <p><strong>Quantity:</strong> {{ request.requested_quantity }}</p>
-  
-          <!-- Tracking Details -->
-          <div *ngIf="request.tracking?.tracking_status; else noTracking">
-            <p class="tracking-status-text">
-              <span
-                class="tracking-status"
-                [ngClass]="{
-                  'delivered': request.tracking.tracking_status === 'Delivered',
-                  'collected': request.tracking.tracking_status === 'Collected',
-                  'pending': request.tracking.tracking_status === 'Pending'
-                }"
-              >
-                {{ request.tracking.tracking_status }}
-              </span>
-            </p>
-            <p *ngIf="request.tracking.remarks"><strong>Remarks:</strong> {{ request.tracking.remarks }}</p>
-            <p><strong>Created At:</strong> {{ request.tracking.tracking_created_at | date: 'short' }}</p>
-            <p><strong>Updated At:</strong> {{ request.tracking.tracking_updated_at | date: 'short' }}</p>
-          </div>
-  
-          <!-- No tracking available message -->
-          <ng-template #noTracking>
-            <p><strong>Tracking:</strong> Not available</p>
-          </ng-template>
-        </div>
+<!-- List of approved requests with tracking info -->
+<div class="requests-list">
+  <div *ngFor="let request of approvedRequests" class="request-card">
+    <div class="card-content">
+      <h4>Request ID: {{ request.request_id }}</h4>
+       <p><strong>Tracking ID:</strong> {{ request.tracking.tracking_id || 'Not assigned' }}</p>
+      <p><strong>Date:</strong> {{ request.request_date | date: 'short' }}</p>
+      <p><strong>Resource:</strong> {{ request.resource_name }}</p>
+      <p><strong>Quantity:</strong> {{ request.requested_quantity }}</p>
+
+      <!-- Tracking Details -->
+      <div *ngIf="request.tracking?.delivery_status; else noTracking">
+        <p class="tracking-status-text">
+          <span
+            class="tracking-status"
+            [ngClass]="{
+              'delivered': request.tracking.delivery_status === 'Delivered',
+              'collected': request.tracking.delivery_status === 'Collected',
+              'inprogress': request.tracking.delivery_status === 'In Progress',
+              'pending': request.tracking.delivery_status === 'Pending'
+            }"
+          >Status:
+            {{ request.tracking.delivery_status }}
+          </span>
+        </p>
+        <p *ngIf="request.tracking.remarks"><strong>Remarks:</strong> {{ request.tracking.remarks }}</p>
+        <p><strong>Created At:</strong> {{ request.tracking.tracking_created_at | date: 'short' }}</p>
+        <p><strong>Updated At:</strong> {{ request.tracking.tracking_updated_at | date: 'short' }}</p>
+        
+        <!-- Display Delivery Date -->
+        <p *ngIf="request.tracking.delivery_date"><strong>Delivery Date:</strong> {{ request.tracking.delivery_date | date: 'short' }}</p>
+        <p *ngIf="!request.tracking.delivery_date"><strong>Delivery Date:</strong> Not added yet</p>
+        <button
+        *ngIf="request.tracking.delivery_status === 'Delivered'"
+        (click)="handleImageUpload(request)"
+        class="btn btn-primary"
+      >
+        Upload Image
+      </button>
       </div>
+
+      <!-- No tracking available message -->
+       <ng-template #noTracking>
+        <p><strong>Tracking:</strong> Not available</p>
+      </ng-template>
     </div>
+   </div>
   </div>
+</div>
   
   <!-- Accepted Tasks Section -->
   <div *ngIf="selectedTab === 'acceptedTasks'" class="tasks-section">
     <h3>Your Accepted Tasks</h3>
   
-    <!-- Error message -->
-    <div *ngIf="errorMessage" class="error-message">
-      <p>{{ errorMessage }}</p>
-    </div>
   
     <!-- Tasks List -->
     <div *ngIf="acceptedTasks.length > 0" class="requests-list">

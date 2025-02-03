@@ -51,7 +51,8 @@ export class ResourceFormComponent implements OnInit {
       description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       quantity: ['', [Validators.required, Validators.min(1), Validators.max(99999999)]],
       type: ['', Validators.required],
-      status: ['Available', Validators.required]
+      status: ['Available', Validators.required],
+      expiryDate: [null]  // Add expiry date control (null initially)
     });
   }
   
@@ -69,6 +70,11 @@ export class ResourceFormComponent implements OnInit {
     formData.append('quantity', values.quantity);
     formData.append('resource_type', values.type);
     formData.append('resource_status', values.status);
+  
+    // Handle expiry date if provided
+    if (values.expiryDate) {
+      formData.append('expiry_date', values.expiryDate);
+    }
   
     if (this.resourceId) {
       // Update resource
@@ -111,7 +117,7 @@ export class ResourceFormComponent implements OnInit {
         timer: 1500
       });
     } else {
-      Swal.fire('Error', res.message || 'An unexpected error occurred.', 'error');
+      Swal.fire('Error', res.message || 'Resource Name Already Exists!', 'error');
     }
   }
 }

@@ -10,5 +10,7 @@ export interface Donation {
   donation_date: any;
   resource_description: string;
   resource_quantity: number;  
-  resource_type: string;      
+  resource_type: string;
+  resource_expiry_date: string | Date; 
+
 }

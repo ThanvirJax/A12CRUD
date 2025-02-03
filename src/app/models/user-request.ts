@@ -5,6 +5,10 @@ interface RequestResource {
 
 export interface UserRequest {
   request_id: number;
+  resources: {
+    resource_name: string;
+    requested_quantity: number;
+  }[];
   resource_id: number;
   user_id: number;
   user_name: string;       
@@ -13,15 +17,17 @@ export interface UserRequest {
   resource_description: string;  
   requested_quantity: number;
   center_name: string;
-  tracking_status:string;
+  delivery_status: string;
   request_resources: RequestResource[];  
   request_status: string;
   request_date: Date;  
+  delivery_location: string; 
   tracking: {
-    tracking_status: string;
+    tracking_id:number;
+    delivery_status: string;
     remarks?: string;
+    delivery_date?: string | null;
     tracking_created_at: string;
     tracking_updated_at: string;
   };
 }
-

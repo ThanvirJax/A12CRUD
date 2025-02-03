@@ -1,7 +1,7 @@
 .chat-list {
-    max-height: 400px; /* Limit the height of the chat box */
+    max-height: 400px; 
     overflow-y: auto; /* Enable vertical scrolling */
-    padding-right: 15px; /* Prevent scroll bar from overlapping content */
+    padding-right: 15px; 
   }
   
   .card {
@@ -29,11 +29,11 @@
   }
   
   .align-self-end {
-    align-self: flex-end; /* Align user's messages to the right */
+    align-self: flex-end;
   }
   
   .align-self-start {
-    align-self: flex-start; /* Align other user's messages to the left */
+    align-self: flex-start; 
   }
   
   .card-text {

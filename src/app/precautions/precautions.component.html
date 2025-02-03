@@ -1,25 +1,35 @@
 <div class="search-container">
-  <div class="wrapper">
-    <div class="cloud">
-      <div class="cloud_left"></div>
-      <div class="cloud_right"></div>
-    </div>
-    <div class="rain">
-      <div class="drop"></div>
-      <div class="drop"></div>
-      <div class="drop"></div>
-      <div class="drop"></div>
-      <div class="drop"></div>
-    </div>
-    <div class="surface">
-      <div class="hit"></div>
-      <div class="hit"></div>
-      <div class="hit"></div>
-      <div class="hit"></div>
-      <div class="hit"></div>
-    </div>
+<input [(ngModel)]="searchQuery" placeholder="Search precautions..." class="search-bar" />
+<div class="wrapper">
+    
+  <div class="cloud">
+    <div class="cloud_left"></div>
+    <div class="cloud_right"></div>
   </div>
-  <input [(ngModel)]="searchQuery" placeholder="Search precautions..." class="search-bar" />
+  <div class="rain">
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+  </div>
+  <div class="surface">
+    <div class="hit"></div>
+    <div class="hit"></div>
+    <div class="hit"></div>
+    <div class="hit"></div>
+    <div class="hit"></div>
+  </div>
+</div>
+  <div class="alert-box" *ngIf="alert">
+    
+     <h4>⚠ Important {{ alert.alert_type }} ⚠</h4>
+    <h1 *ngIf="alert.alert_message"><strong>{{ alert.alert_message }}</strong></h1>
+    <p *ngIf="alert.alert_description">Description: {{ alert.alert_description }}</p>
+    <p *ngIf="alert.alert_created">Updated On: {{ alert.alert_created | date:'medium' }}</p> 
+    <p>Basic Safety guidelines are as follows</p>
+  </div>
+ 
 </div>
 
 <div *ngFor="let precaution of filteredPrecautions" class="container noselect">

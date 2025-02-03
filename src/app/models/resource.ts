@@ -7,4 +7,5 @@ export interface Resource {
   resource_status: any;  
   resource_created: string | Date; 
   resource_modified: string | Date; 
+  resource_expiry_date: string | Date; 
 }

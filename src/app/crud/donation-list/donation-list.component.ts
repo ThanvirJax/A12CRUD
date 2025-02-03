@@ -100,7 +100,6 @@ export class DonationListComponent implements OnInit, OnDestroy {
   getDonationList() {
     this.crudService.loadDonation().subscribe(
       (res: any[]) => {
-        // Flatten resource data if each donation has multiple resources
         this.rowData = res.flatMap(donation => 
           donation.resources.map((resource: any) => ({
             donor_name: donation.donor_name,
@@ -125,14 +124,12 @@ export class DonationListComponent implements OnInit, OnDestroy {
     const div = document.createElement('div');
     const htmlCode = `
       <button type="button" class="btn btn-success">View</button>
-      <button type="button" class="btn btn-warning">Edit</button>
-      <button type="button" class="btn btn-danger">Delete</button>`;
+      <button type="button" class="btn btn-warning">Edit</button>`
+      ;
     div.innerHTML = htmlCode;
 
     div.querySelector('.btn-success')?.addEventListener('click', () => this.viewDonationDetails(params));
     div.querySelector('.btn-warning')?.addEventListener('click', () => this.editDonationDetails(params));
-    div.querySelector('.btn-danger')?.addEventListener('click', () => this.deleteDonation(params));
-
     return div;
   }
 
@@ -157,27 +154,4 @@ export class DonationListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/crud/update-donation/' + params.data.donation_id], { queryParams: { reload: true } });
   }
 
-  deleteDonation(params: any) {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result: any) => {
-      if (result.isConfirmed) {
-        this.crudService.deleteDonation(params.data.donation_id).subscribe(
-          (res: any) => {
-            if (res.result === 'success') {
-              this.gridApi.applyTransaction({ remove: [params.data] });
-              Swal.fire('Deleted!', 'The donation has been deleted.', 'success');
-            }
-          },
-          (error) => Swal.fire('Error', 'An error occurred while deleting the donation.', 'error')
-        );
-      }
-    });
-  }
 }

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CRUDService } from '../services/crud.service';
 import { HttpClientModule } from '@angular/common/http';
 import { NgIf, NgClass } from '@angular/common';
+import { AuthService } from '../../auth.service';
 declare const Swal: any;
 
 @Component({
@@ -19,11 +20,13 @@ declare const Swal: any;
   ]
 })
 export class DonationFormComponent implements OnInit {
+  userEmail: string | null = null;
   donationForm!: FormGroup;
   donationId: any; 
   buttonText = 'Create Donation'; 
 
   constructor(
+    private authService: AuthService, 
     private crudService: CRUDService,
     private formBuilder: FormBuilder,
     private router: Router,
@@ -32,6 +35,12 @@ export class DonationFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.createDonationForm();
+    const user = this.authService.getUser();
+    this.userEmail = user ? user.user_email : null; 
+
+    if (this.userEmail) {
+      this.donationForm.get('user_email')?.setValue(this.userEmail);
+    }
 
     this.donationId = this.activatedRoute.snapshot.params['donationId'];
     if (this.donationId) {
@@ -40,14 +49,15 @@ export class DonationFormComponent implements OnInit {
     }
   }
 
-  // Create the donation form with validation rules
+  // Initialize the form with validation
   createDonationForm(): void {
     this.donationForm = this.formBuilder.group({
       user_email: ['', [Validators.required, Validators.email]],
       resource_name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       resource_description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       resource_type: ['', Validators.required],
-      donation_quantity: ['', [Validators.required, Validators.min(1), Validators.max(99999999)]], 
+      donation_quantity: ['', [Validators.required, Validators.min(1), Validators.max(99999999)]],
+      expiry_date: [''], 
     });
   }
 
@@ -63,7 +73,6 @@ export class DonationFormComponent implements OnInit {
     const formData = new FormData();
     const values = this.donationForm.value;
   
-    // Append user email
     formData.append('user_email', values.user_email);
   
     // Prepare resources array to be sent in the correct format
@@ -71,7 +80,8 @@ export class DonationFormComponent implements OnInit {
       resource_name: values.resource_name,
       resource_description: values.resource_description,
       resource_type: values.resource_type,
-      donation_quantity: values.donation_quantity
+      donation_quantity: values.donation_quantity,
+      expiry_date: values.expiry_date || '' 
     }];
   
     resources.forEach((resource, index) => {
@@ -79,6 +89,7 @@ export class DonationFormComponent implements OnInit {
       formData.append(`resources[${index}][resource_description]`, resource.resource_description);
       formData.append(`resources[${index}][resource_type]`, resource.resource_type);
       formData.append(`resources[${index}][donation_quantity]`, resource.donation_quantity.toString());
+      formData.append(`resources[${index}][expiry_date]`, resource.expiry_date); 
     });
   
     // Update or Create donation
@@ -110,21 +121,23 @@ export class DonationFormComponent implements OnInit {
     }
   }
   
-  // Load donation details for editing
-  loadDonationDetails(donationId: number): void {
-    this.crudService.loadDonationInfo(donationId).subscribe(
-      (data) => {
-        this.donationForm.patchValue({
-          user_email: data.user_email,
-          resource_name: data.resource_name,
-          resource_description: data.resource_description,
-          resource_type: data.resource_type,
-          donation_quantity: data.donation_quantity,
-        });
-      },
-      (error) => {
-        Swal.fire('Error', 'Failed to load donation details.', 'error');
-      }
-    );
-  }
+  // Load donation details 
+loadDonationDetails(donationId: number): void {
+  this.crudService.loadDonationInfo(donationId).subscribe(
+    (data) => {
+      this.donationForm.patchValue({
+        user_email: data.user_email,
+        resource_name: data.resource_name,
+        resource_description: data.resource_description,
+        resource_type: data.resource_type,
+        donation_quantity: data.donation_quantity,
+        expiry_date: data.resource_expiry_date || ''
+      });
+    },
+    (error) => {
+      Swal.fire('Error', 'Failed to load donation details.', 'error');
+    }
+  );
+}
+
 }

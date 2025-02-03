@@ -243,24 +243,4 @@ updateRequestStatus(params: any, newStatus: string) {
   );
 }
 
-  
-  deleteRequest(params: any) {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "This action cannot be undone.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.crudService.deleteRequest(params.data.request_id).subscribe(
-          () => {
-            this.gridApi.applyTransaction({ remove: [params.data] });
-            Swal.fire('Deleted!', 'The request has been deleted.', 'success');
-          },
-          () => Swal.fire('Error', 'An error occurred while deleting the request.', 'error')
-        );
-      }
-    });
-  }
 }

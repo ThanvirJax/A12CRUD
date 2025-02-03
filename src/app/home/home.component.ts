@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import L from 'leaflet';
 import { CRUDService } from '../crud/services/crud.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home',
@@ -56,7 +59,11 @@ export class HomeComponent {
     tiles.addTo(this.map);
   }
 
-  constructor(private crudService: CRUDService) { }
+  constructor(
+    private crudService: CRUDService,
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.initMap();
@@ -76,5 +83,31 @@ export class HomeComponent {
       }
     );
   }
+
+  navigateToRequestForm(): void {
+    const userRole = this.authService.getRole();
+    const centerName = this.authService.getUser()?.center_name;
+
+    if (userRole === 'user') {
+      this.router.navigate(['/crud/request-resource']);
+    } else if (centerName) {
+      this.router.navigate(['/crud/c-request-form']);
+    } else {
+      Swal.fire('Error', 'Please log in to access this feature.', 'error');
+    }
+  }
+  navigateToDonationForm(): void {
+    const userRole = this.authService.getRole();
+    const centerName = this.authService.getUser()?.center_name;
+
+    if (userRole === 'user') {
+      this.router.navigate(['/crud/donation-form']);
+    } else if (centerName) {
+      this.router.navigate(['/crud/c-donation-form']);
+    } else {
+      Swal.fire('Error', 'Please log in to access this feature.', 'error');
+    }
+  }
   
 }
+  

@@ -44,17 +44,16 @@
 <!-- Alert Box Section -->
 <div class="alert-box" *ngIf="alert">
   <h4>⚠ Important {{ alert.alert_type }} ⚠</h4>
-  <p>Stay tuned for the latest updates on disaster relief efforts and safety guidelines.</p>
-  <p *ngIf="alert.alert_message">Current Alert: {{ alert.alert_message }}</p>
+  <h1 *ngIf="alert.alert_message"><strong>{{ alert.alert_message }}</strong></h1>
   <p *ngIf="alert.alert_description">Description: {{ alert.alert_description }}</p>
   <p *ngIf="alert.alert_created">Updated On: {{ alert.alert_created | date:'medium' }}</p> 
+  <p>Stay tuned for the latest updates on disaster relief efforts and safety guidelines.</p>
 </div>
-
 
   <!-- Cards Section -->
   <div class="cards-section">
     <!-- Donation Card -->
-    <a href="/crud/donation-form" class="card">
+    <a (click)="navigateToDonationForm()" class="card">
       <div class="card-title">Donation</div>
       <div class="first-content">
         <img src="assets/icon/donate.png" alt="Donation Icon">
@@ -64,8 +63,7 @@
       </div>
     </a>
     <!-- Request Help Card -->
-     
-    <a href="/crud/request-resource" class="card">
+    <a (click)="navigateToRequestForm()" class="card">
       <div class="card-title">Request Help</div>
       <div class="first-content">
         <img src="assets/icon/help.png" alt="Request Help Icon">
@@ -120,7 +118,7 @@
         <li><strong>During Flood:</strong> Avoid walking or driving through flood waters, and move to higher ground if safe to do so.</li>
         <li><strong>After Flood:</strong> Avoid flood-affected areas, disinfect items that were in contact with floodwater, and listen for emergency information.</li>
         <li><strong>Stay Informed:</strong> Monitor weather alerts and updates from local authorities.</li>
-        <li><strong>Note: </strong><p>The darker the colour is, the riskier these areas</p></li>
+        <li><strong>Note: </strong><p>The darker the colour is, the riskier the area</p></li>
       </ul>
     </div>
   </div>

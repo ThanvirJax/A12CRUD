@@ -95,6 +95,23 @@
     <span>Resource status is required.</span>
   </div>
 </div>
+<!-- Resource Expiry Date -->
+<div class="mb-3">
+  <label for="resource-expiry" class="form-label">Expiry Date (Optional)</label>
+  <input
+    formControlName="expiryDate"
+    type="datetime-local"
+    class="form-control"
+    id="resource-expiry"
+    [ngClass]="{
+      'is-invalid': resourceForm.get('expiryDate')?.invalid && resourceForm.get('expiryDate')?.touched,
+      'is-valid': resourceForm.get('expiryDate')?.valid && resourceForm.get('expiryDate')?.touched
+    }"
+  >
+  <div *ngIf="resourceForm.get('expiryDate')?.invalid && resourceForm.get('expiryDate')?.touched" class="alert alert-danger">
+    <span *ngIf="resourceForm.get('expiryDate')?.errors?.['required']">Expiry Date is required.</span>
+  </div>
+</div>
 
 
       <!-- Submit Button -->

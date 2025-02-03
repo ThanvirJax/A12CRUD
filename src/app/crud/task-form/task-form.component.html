@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-6 p-5">
     <form [formGroup]="taskForm" (ngSubmit)="createOrUpdateTask()">
-      <h1>Welcome, <span class="highlight">{{ adminEmail }}</span></h1>
+      <h1>Create a new task</h1>
 
       <!-- Task Name -->
       <div class="mb-3">
@@ -64,7 +64,6 @@
     <span *ngIf="taskForm.get('admin_email')?.errors?.['email']">Enter a valid email.</span>
   </div>
 </div>
-
 
       <!-- Task Deadline -->
       <div class="mb-3">

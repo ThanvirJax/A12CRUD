@@ -3,6 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-header',
@@ -12,10 +13,10 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  userId: number | null = null; // Added userId as a number
+  userId: number | null = null; 
   userName: string | null = null;
   adminName: string | null = null;
-  centerName: string | null = null; // For center name
+  centerName: string | null = null; 
   userRole: 'admin' | 'user' | null = null;
   searchQuery: string = '';
 
@@ -44,6 +45,27 @@ export class HeaderComponent implements OnInit {
       console.warn('No user data found in localStorage.');
     }
   }
+
+  navigateToRequestForm(): void {
+    if (this.userRole === 'user') {
+      this.router.navigate(['/crud/request-resource']);
+    } else if (this.centerName) {
+      this.router.navigate(['/crud/c-request-form']);
+    } else {
+      Swal.fire('Error', 'Please Log in and try again', 'error');
+    }
+  }
+
+  navigateToDonationForm(): void {
+    if (this.userRole === 'user') {
+      this.router.navigate(['/crud/donation-form']);
+    } else if (this.centerName) {
+      this.router.navigate(['/crud/c-donation-form']);
+    } else {
+      Swal.fire('Error', 'Please log in and try again', 'error');
+    }
+  }
+
 
   onLogout(): void {
     this.authService.logout();

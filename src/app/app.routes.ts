@@ -25,6 +25,7 @@ import { TaskFormComponent } from './crud/task-form/task-form.component';
 import { TaskListComponent } from './crud/task-list/task-list.component';
 import { CenterFormComponent } from './crud/center-form/center-form.component';
 import { CenterListComponent } from './crud/center-list/center-list.component';
+import { EmergencyContactsComponent } from './emergency-contacts/emergency-contacts.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent},
@@ -51,6 +52,7 @@ export const routes: Routes = [
   { path: 'center-locations', component: CenterLocationsComponent },
   { path: 'forum', component: ForumMessageFormComponent },
   { path: 'precaution', component: PrecautionsComponent },
+  { path: 'emergency-contacts', component: EmergencyContactsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'center-actions', component: CenterActionsComponent },
   { path: 'dashboard', component: DashboardComponent },

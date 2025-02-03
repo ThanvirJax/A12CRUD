@@ -5,11 +5,14 @@
     <div *ngIf="messages.length > 0; else noMessages" class="chat-list" style="max-height: 400px; overflow-y: auto;">
       <!-- Reverse the order of messages -->
       <div *ngFor="let message of messages.reverse()" class="card mb-3 shadow-sm"
-           [ngClass]="{'align-self-start': message.user_id !== userId, 'align-self-end': message.user_id === userId}">
+           [ngClass]="{'align-self-start': message.admin_id !== userId, 'align-self-end': message.admin_id === userId}">
         <div class="card-body">
           <div class="d-flex flex-column">
-            <h5 class="card-title text-primary">{{ message.user_name }}</h5>
-            <p class="card-text" [ngClass]="{'bg-primary text-white': message.user_id === userId, 'bg-light text-dark': message.user_id !== userId}">
+            <h5 class="card-title text-primary">
+              <!-- Display the sender's name based on their ID or role -->
+              {{ message.admin_id === userId ? 'You' : message.sender_name || 'Admin' }}
+            </h5>
+            <p class="card-text" [ngClass]="{'bg-primary text-white': message.admin_id === userId, 'bg-light text-dark': message.user_id !== userId}">
               {{ message.message_content }}
             </p>
             <p class="card-text text-muted text-right">
@@ -23,12 +26,11 @@
       <p class="text-muted text-center">No messages available.</p>
     </ng-template>
   </div>
-  
 
   <!-- Form for Message -->
   <div class="col-6">
     <h3 class="text-center mb-4">{{ buttonText }} a Message</h3>
-    <form [formGroup]="messageForm" (ngSubmit)="createOrUpdateMessage()" class="p-4 border rounded shadow-sm">
+    <form [formGroup]="messageForm" (ngSubmit)="createOrUpdateMessage()">
       <!-- Hidden User ID Field -->
       <input type="hidden" formControlName="user_id" [value]="userId" />
 

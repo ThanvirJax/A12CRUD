@@ -18,7 +18,8 @@ export class ForumMessageFormComponent implements OnInit {
   messageForm!: FormGroup;
   messageId: any;
   buttonText = 'Create Message';
-  userId: number | null = null; // Ensure this matches the type from AuthService
+  userId: number | null = null; // User ID from AuthService
+  userName: string = ''; // User name from AuthService
   messages: Message[] = [];
 
   constructor(
@@ -31,6 +32,7 @@ export class ForumMessageFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = this.authService.getUser()?.user_id || null; // Get the logged-in user ID
+    this.userName = this.authService.getUser()?.user_name || 'Unknown User'; // Get the user name (if available)
     this.createMessageForm();
     this.loadMessages();
 
@@ -44,13 +46,14 @@ export class ForumMessageFormComponent implements OnInit {
   loadMessages(): void {
     this.crudService.loadChatMessages().subscribe({
       next: (data) => {
+        console.log(data); // Check the message structure in the console
         this.messages = data;
-        this.scrollToBottom();  // Scroll to the bottom after messages are loaded
+        this.scrollToBottom();
       },
       error: () => Swal.fire('Error', 'Failed to load messages.', 'error')
     });
   }
-  
+
   createMessageForm(): void {
     this.messageForm = this.formBuilder.group({
       user_id: [{ value: this.userId, disabled: true }, Validators.required], // Set user_id as readonly
@@ -60,25 +63,25 @@ export class ForumMessageFormComponent implements OnInit {
       ]
     });
   }
+
   scrollToBottom(): void {
     const chatList = document.querySelector('.chat-list');
     if (chatList) {
       chatList.scrollTop = chatList.scrollHeight; // Scroll to the bottom of the chat
     }
   }
-  
-  
+
   createOrUpdateMessage(): void {
     if (this.messageForm.invalid) {
       this.messageForm.markAllAsTouched();
       return;
     }
-  
+
     const formData = new FormData();
     const values = this.messageForm.getRawValue(); // Get all form values, including disabled fields
     formData.append('user_id', values.user_id);
     formData.append('message_content', values.message_content);
-  
+
     if (this.messageId) {
       formData.append('message_id', this.messageId);
       this.crudService.updateMessage(formData).subscribe({
@@ -93,22 +96,20 @@ export class ForumMessageFormComponent implements OnInit {
         next: (res) => {
           this.handleResponse(res, 'Message Created!');
           this.loadMessages(); // Reload the messages
-  
+
           // Reset the form after message creation is successful
           this.messageForm.reset({
             user_id: this.authService.getUser().user_id, // Keep user ID after reset
             message_content: '' // Clear message content field
           });
-  
+
           this.scrollToBottom();  // Scroll to the bottom after new message
         },
         error: () => Swal.fire('Error', 'Failed to create the message.', 'error')
       });
     }
   }
-  
-  
-  
+
   loadMessageDetails(messageId: any): void {
     this.crudService.loadMessageInfo(messageId).subscribe((res) => {
       this.messageForm.patchValue({

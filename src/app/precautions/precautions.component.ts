@@ -1,15 +1,17 @@
-import { NgFor } from '@angular/common';
+import { CommonModule, NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CRUDService } from '../crud/services/crud.service';
 
 @Component({
   selector: 'app-precautions',
   standalone: true,
   templateUrl: './precautions.component.html',
   styleUrls: ['./precautions.component.css'],
-  imports: [FormsModule, NgFor]
+  imports: [FormsModule, NgFor, CommonModule]
 })
 export class PrecautionsComponent {
+  alert: any = {}; 
   searchQuery: string = '';
   precautions = [
     {
@@ -49,6 +51,27 @@ export class PrecautionsComponent {
       ],
     },
   ];
+    constructor(private crudService: CRUDService) { }
+  
+
+  ngOnInit(): void {
+    this.getLatestAlert();
+  }
+  getLatestAlert(): void {
+    this.crudService.getAlerts().subscribe(
+      (data) => {
+        if (data && data.length > 0) {
+          this.alert = data[0]; 
+        } else {
+          console.log('No alerts available');
+        }
+      },
+      (error) => {
+        console.error('Error fetching alerts:', error);
+      }
+    );
+  }
+  
 
   get filteredPrecautions() {
     if (!this.searchQuery) return this.precautions;

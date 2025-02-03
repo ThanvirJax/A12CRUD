@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CRUDService } from '../services/crud.service';
 import { HttpClientModule } from '@angular/common/http';
 import { NgIf, NgClass, CommonModule } from '@angular/common';
+import { AuthService } from '../../auth.service'; 
 
 declare const Swal: any;
 
@@ -24,27 +25,31 @@ export class RequestResourceComponent implements OnInit {
   requestForm!: FormGroup;
   requestId: any;
   buttonText = 'Create Request';
-  availableResources: any[] = []; // Store the available resource names
+  availableResources: any[] = [];
+  userEmail: string | null = null;
 
   constructor(
     private crudService: CRUDService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private authService: AuthService 
   ) {}
 
   ngOnInit(): void {
     this.createRequestForm();
     this.fetchAvailableResources();
 
-    // Retrieve the user email from the query parameters
-    this.activatedRoute.queryParams.subscribe(params => {
-      const userEmail = params['email'];
-      if (userEmail) {
-        this.requestForm.patchValue({ user_email: userEmail });
-      }
-    });
+    // Get the user email from the AuthService
+    const user = this.authService.getUser();
+    this.userEmail = user ? user.user_email : null;
 
+    // Check if email exists and autofill the user_email field
+    if (this.userEmail) {
+      this.requestForm.patchValue({ user_email: this.userEmail });
+    }
+
+    // Check if we are updating an existing request
     this.requestId = this.activatedRoute.snapshot.params['requestId'];
     if (this.requestId) {
       this.loadRequestDetails(this.requestId);
@@ -55,9 +60,28 @@ export class RequestResourceComponent implements OnInit {
   createRequestForm(): void {
     this.requestForm = this.formBuilder.group({
       user_email: ['', [Validators.required, Validators.email]],
+      delivery_location: ['', [Validators.required]], 
+      resources: this.formBuilder.array([]),
+    });
+
+    // Initialize with one empty resource
+    this.addResource();
+  }
+
+  get resources(): FormArray {
+    return this.requestForm.get('resources') as FormArray;
+  }
+
+  addResource(): void {
+    const resourceGroup = this.formBuilder.group({
       resource_name: ['', [Validators.required]],
       requested_quantity: ['', [Validators.required, Validators.min(1), Validators.max(99999999)]],
     });
+    this.resources.push(resourceGroup);
+  }
+
+  removeResource(index: number): void {
+    this.resources.removeAt(index);
   }
 
   fetchAvailableResources(): void {
@@ -73,35 +97,28 @@ export class RequestResourceComponent implements OnInit {
 
   createOrUpdateRequest(): void {
     this.requestForm.markAllAsTouched();
-  
+
     if (this.requestForm.invalid) {
       Swal.fire('Error', 'Please fill all required fields correctly.', 'error');
       return;
     }
-  
+
     const formData = new FormData();
-    const values = this.requestForm.value;
-    const resources = [
-      {
-        resource_name: values.resource_name,
-        requested_quantity: values.requested_quantity,
-      },
-    ];
-  
-    formData.append('user_email', values.user_email);
-    resources.forEach((resource, index) => {
+    formData.append('user_email', this.requestForm.value.user_email);
+    formData.append('delivery_location', this.requestForm.value.delivery_location); 
+    this.resources.value.forEach((resource: any, index: number) => {
       formData.append(`resources[${index}][resource_name]`, resource.resource_name);
       formData.append(`resources[${index}][requested_quantity]`, resource.requested_quantity.toString());
     });
-  
+
     if (this.requestId) {
       formData.append('request_id', this.requestId);
       this.crudService.updateRequest(formData).subscribe(
-        (response) => {
+        () => {
           Swal.fire('Success', 'Request updated successfully!', 'success');
           this.router.navigate(['/requests-resource']);
         },
-        (error) => {
+        () => {
           Swal.fire('Error', 'Failed to update request.', 'error');
         }
       );
@@ -115,24 +132,30 @@ export class RequestResourceComponent implements OnInit {
             this.router.navigate(['home']);
           }
         },
-        (error) => {
+        () => {
           Swal.fire('Error', 'Failed to create request. Please try again.', 'error');
         }
       );
     }
   }
-  
 
   loadRequestDetails(requestId: number): void {
     this.crudService.loadRequestInfo(requestId).subscribe(
       (data) => {
         this.requestForm.patchValue({
           user_email: data.user_email,
-          resource_name: data.resource_name,
-          requested_quantity: data.requested_quantity,
+          delivery_location: data.delivery_location,
+        });
+        this.resources.clear();
+        data.resources.forEach((resource: any) => {
+          const resourceGroup = this.formBuilder.group({
+            resource_name: [resource.resource_name, [Validators.required]],
+            requested_quantity: [resource.requested_quantity, [Validators.required, Validators.min(1), Validators.max(99999999)]],
+          });
+          this.resources.push(resourceGroup);
         });
       },
-      (error) => {
+      () => {
         Swal.fire('Error', 'Failed to load request details.', 'error');
       }
     );

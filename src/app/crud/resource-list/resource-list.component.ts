@@ -50,6 +50,12 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       headerClass: 'header-cell',
     },
     {
+      field: 'resource_expiry_date',
+      headerName: 'Expiry Date',
+      sortable: true,
+      headerClass: 'header-cell',
+    },
+    {
       field: '',
       headerName: 'Actions',
       headerClass: 'header-cell',
@@ -129,7 +135,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     let toggleStatusButton = div.querySelector('.btn-secondary') as HTMLElement;
 
     toggleStatusButton?.addEventListener('click', () => {
-      this.toggleResourceStatus(params, toggleStatusButton); // Pass the button for dynamic updates
+      this.toggleResourceStatus(params, toggleStatusButton);  
     });
   
     return div;
@@ -142,32 +148,6 @@ export class ResourceListComponent implements OnInit, OnDestroy {
 
   editResourceDetails(params: any) {
     this.router.navigate(['/crud/update-resource/' + params.data.resource_id]);
-  }
-
-  deleteResource(params: any) {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result: any) => {
-      if (result.isConfirmed) {
-        this.crudService.deleteResource(params.data.resource_id).subscribe({
-          next: (res) => {
-            if (res.result === 'success') {
-              this.gridApi.applyTransaction({ remove: [params.data] });
-              Swal.fire('Deleted!', 'The resource has been deleted.', 'success');
-            }
-          },
-          error: () => {
-            Swal.fire('Error', 'An error occurred while deleting the resource.', 'error');
-          }
-        });
-      }
-    });
   }
 
   toggleResourceStatus(params: any, toggleStatusButton: HTMLElement) {
@@ -192,5 +172,4 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
 }

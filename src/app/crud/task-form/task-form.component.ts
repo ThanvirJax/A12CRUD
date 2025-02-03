@@ -52,14 +52,13 @@ export class TaskFormComponent implements OnInit {
     }
   }
   
-
   // Initialize the form with validation
   createTaskForm(): void {
     this.taskForm = this.formBuilder.group({
       task_name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       task_description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       admin_email: ['', [Validators.required, Validators.email]],
-      task_deadline: ['', [Validators.required]] // Added task_deadline with validation
+      task_deadline: ['', [Validators.required]]
     });
   }
 
@@ -79,7 +78,7 @@ export class TaskFormComponent implements OnInit {
     encodedFormData.set('task_name', values.task_name);
     encodedFormData.set('task_description', values.task_description);
     encodedFormData.set('admin_email', values.admin_email);
-    encodedFormData.set('task_deadline', deadline); // Set the formatted deadline
+    encodedFormData.set('task_deadline', deadline); 
   
     if (this.taskId) {
       // Update task
@@ -97,7 +96,6 @@ export class TaskFormComponent implements OnInit {
     }
   }
   
-
   // Load task details for update
   loadTaskDetails(taskId: any): void {
     this.crudService.loadTaskInfo(taskId).subscribe((res) => {
@@ -106,7 +104,7 @@ export class TaskFormComponent implements OnInit {
           task_name: res.task_name,
           task_description: res.task_description,
           admin_email: res.admin_email,
-          task_deadline: res.task_deadline // Added task_deadline field
+          task_deadline: res.task_deadline 
         });
       } else {
         Swal.fire('Error', 'Failed to load task details.', 'error');

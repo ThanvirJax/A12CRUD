@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgIf, NgClass } from '@angular/common';
 import { CRUDService } from '../services/crud.service';
+import { AuthService } from '../../auth.service'; // Import AuthService
 declare const Swal: any;
 
 @Component({
@@ -16,27 +17,39 @@ declare const Swal: any;
     HttpClientModule,
     NgIf,
     NgClass,
-  ]
+  ],
 })
 export class CDonationFormComponent implements OnInit {
   donationForm!: FormGroup;
-  donationId: any; 
-  buttonText = 'Create Donation'; 
+  donationId: any;
+  buttonText = 'Create Donation';
+  centerName: string | null = null;
 
   constructor(
     private crudService: CRUDService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private authService: AuthService 
   ) {}
 
   ngOnInit(): void {
     this.createDonationForm();
 
+    // Get center name from AuthService
+    const center = this.authService.getUser();
+    this.centerName = center ? center.center_name : null;
+
+    // Autofill the center name field
+    if (this.centerName) {
+      this.donationForm.patchValue({ center_name: this.centerName });
+    }
+
+    // Check if updating an existing donation
     this.donationId = this.activatedRoute.snapshot.params['donationId'];
     if (this.donationId) {
       this.loadDonationDetails(this.donationId);
-      this.buttonText = 'Update Donation'; 
+      this.buttonText = 'Update Donation';
     }
   }
 
@@ -47,13 +60,14 @@ export class CDonationFormComponent implements OnInit {
       resource_name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       resource_description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       resource_type: ['', Validators.required],
-      donation_quantity: ['', [Validators.required, Validators.min(1), Validators.max(99999999)]], 
+      donation_quantity: ['', [Validators.required, Validators.min(1), Validators.max(99999999)]],
+      expiry_date: ['', Validators.required], 
     });
   }
 
   // Create or update the donation entry
   createOrUpdateDonation(): void {
-    this.donationForm.markAllAsTouched(); 
+    this.donationForm.markAllAsTouched();
 
     if (this.donationForm.invalid) {
       Swal.fire('Error', 'Please fill all required fields correctly.', 'error');
@@ -63,44 +77,49 @@ export class CDonationFormComponent implements OnInit {
     const formData = new FormData();
     const values = this.donationForm.value;
 
-    // Prepare resources array to be sent in the correct format (matching Postman request)
-    const resources = [{
-      resource_name: values.resource_name,
-      resource_description: values.resource_description,
-      resource_type: values.resource_type,
-      donation_quantity: values.donation_quantity
-    }];
+    // Prepare resources array to be sent in the correct format
+    const resources = [
+      {
+        resource_name: values.resource_name,
+        resource_description: values.resource_description,
+        resource_type: values.resource_type,
+        donation_quantity: values.donation_quantity,
+        expiry_date: values.expiry_date 
 
-    // Append the user email and the resources array to formData
+      },
+    ];
+
+    // Append the center name and resources to formData
     formData.append('center_name', values.center_name);
 
-    // Dynamically append the resources array to FormData
     resources.forEach((resource, index) => {
       formData.append(`resources[${index}][resource_name]`, resource.resource_name);
       formData.append(`resources[${index}][resource_description]`, resource.resource_description);
       formData.append(`resources[${index}][resource_type]`, resource.resource_type);
       formData.append(`resources[${index}][donation_quantity]`, resource.donation_quantity.toString());
+      formData.append(`resources[${index}][expiry_date]`, resource.expiry_date); 
+
     });
 
-    // Proceed with API call based on whether this is an update or a new donation
+    // Call the appropriate API method
     if (this.donationId) {
       formData.append('donation_id', this.donationId);
       this.crudService.updateDonationDetails(formData).subscribe(
-        (response) => {
+        () => {
           Swal.fire('Success', 'Donation updated successfully!', 'success');
           this.router.navigate(['/donations']);
         },
-        (error) => {
+        () => {
           Swal.fire('Error', 'Failed to update donation.', 'error');
         }
       );
     } else {
       this.crudService.createDonation(formData).subscribe(
-        (response) => {
+        () => {
           Swal.fire('Success', 'Donation created successfully!', 'success');
           this.router.navigate(['/dashboard']);
         },
-        (error) => {
+        () => {
           Swal.fire('Error', 'Failed to create donation.', 'error');
         }
       );
@@ -117,9 +136,10 @@ export class CDonationFormComponent implements OnInit {
           resource_description: data.resource_description,
           resource_type: data.resource_type,
           donation_quantity: data.donation_quantity,
+          resource_expiry_date: data.resource_expiry_date 
         });
       },
-      (error) => {
+      () => {
         Swal.fire('Error', 'Failed to load donation details.', 'error');
       }
     );
