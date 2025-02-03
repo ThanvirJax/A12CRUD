@@ -1,0 +1,121 @@
+<div class="row">
+  <div class="col-6 p-5">
+    <form [formGroup]="resourceForm" (ngSubmit)="createOrUpdateResource()">
+
+      <!-- Resource Name -->
+      <div class="mb-3">
+        <label for="resource-name" class="form-label">Resource Name</label>
+        <input
+          formControlName="name"
+          type="text"
+          class="form-control"
+          id="resource-name"
+          [ngClass]="{
+            'is-invalid': resourceForm.get('name')?.invalid && resourceForm.get('name')?.touched,
+            'is-valid': resourceForm.get('name')?.valid && resourceForm.get('name')?.touched
+          }"
+        >
+        <div *ngIf="resourceForm.get('name')?.invalid && resourceForm.get('name')?.touched" class="alert alert-danger">
+          <span *ngIf="resourceForm.get('name')?.errors?.['required']">Name is required.</span>
+          <span *ngIf="resourceForm.get('name')?.errors?.['minlength']">Minimum 3 characters required.</span>
+          <span *ngIf="resourceForm.get('name')?.errors?.['maxlength']">Maximum 50 characters allowed.</span>
+        </div>
+      </div>
+
+      <!-- Resource Description -->
+      <div class="mb-3">
+        <label for="resource-desc" class="form-label">Resource Description</label>
+        <textarea
+          formControlName="description"
+          class="form-control"
+          id="resource-desc"
+          rows="5"
+          [ngClass]="{
+            'is-invalid': resourceForm.get('description')?.invalid && resourceForm.get('description')?.touched,
+            'is-valid': resourceForm.get('description')?.valid && resourceForm.get('description')?.touched
+          }"
+        ></textarea>
+        <div *ngIf="resourceForm.get('description')?.invalid && resourceForm.get('description')?.touched" class="alert alert-danger">
+          <span *ngIf="resourceForm.get('description')?.errors?.['required']">Description is required.</span>
+          <span *ngIf="resourceForm.get('description')?.errors?.['minlength']">Minimum 3 characters required.</span>
+          <span *ngIf="resourceForm.get('description')?.errors?.['maxlength']">Maximum 500 characters allowed.</span>
+        </div>
+      </div>
+
+      <!-- Resource Quantity -->
+      <div class="mb-3">
+        <label for="resource-quantity" class="form-label">Quantity</label>
+        <input
+          formControlName="quantity"
+          type="number"
+          class="form-control"
+          id="resource-quantity"
+          [ngClass]="{
+            'is-invalid': resourceForm.get('quantity')?.invalid && resourceForm.get('quantity')?.touched,
+            'is-valid': resourceForm.get('quantity')?.valid && resourceForm.get('quantity')?.touched
+          }"
+        >
+        <div *ngIf="resourceForm.get('quantity')?.invalid && resourceForm.get('quantity')?.touched" class="alert alert-danger">
+          <span *ngIf="resourceForm.get('quantity')?.errors?.['required']">Quantity is required.</span>
+          <span *ngIf="resourceForm.get('quantity')?.errors?.['min']">Minimum value is 1.</span>
+          <span *ngIf="resourceForm.get('quantity')?.errors?.['max']">Maximum value is 99,999,999.</span>
+        </div>
+      </div>
+
+      <!-- Resource Type -->
+      <div class="mb-3">
+        <label for="resource-type" class="form-label">Resource Type</label>
+        <select formControlName="type" class="form-control" id="resource-type">
+          <option value="">Select Type</option>
+          <option value="material">Material</option>
+          <option value="equipment">Equipment</option>
+          <option value="personnel">Personnel</option>
+          <option value="food">Food</option>
+        </select>
+        <div *ngIf="resourceForm.get('type')?.invalid && resourceForm.get('type')?.touched" class="alert alert-danger">
+          <span>Resource type is required.</span>
+        </div>
+      </div>
+
+      <!-- Resource Status -->
+<div class="mb-3">
+  <label for="resource-status" class="form-label">Resource Status</label>
+  <select 
+    formControlName="status" 
+    class="form-control" 
+    id="resource-status"
+    [ngClass]="{
+      'is-invalid': resourceForm.get('status')?.invalid && resourceForm.get('status')?.touched,
+      'is-valid': resourceForm.get('status')?.valid && resourceForm.get('status')?.touched
+    }">
+    <option value="Available">Available</option>
+    <option value="Unavailable">Unavailable</option>
+  </select>
+  <div *ngIf="resourceForm.get('status')?.invalid && resourceForm.get('status')?.touched" class="alert alert-danger">
+    <span>Resource status is required.</span>
+  </div>
+</div>
+<!-- Resource Expiry Date -->
+<div class="mb-3">
+  <label for="resource-expiry" class="form-label">Expiry Date (Optional)</label>
+  <input
+    formControlName="expiryDate"
+    type="datetime-local"
+    class="form-control"
+    id="resource-expiry"
+    [ngClass]="{
+      'is-invalid': resourceForm.get('expiryDate')?.invalid && resourceForm.get('expiryDate')?.touched,
+      'is-valid': resourceForm.get('expiryDate')?.valid && resourceForm.get('expiryDate')?.touched
+    }"
+  >
+  <div *ngIf="resourceForm.get('expiryDate')?.invalid && resourceForm.get('expiryDate')?.touched" class="alert alert-danger">
+    <span *ngIf="resourceForm.get('expiryDate')?.errors?.['required']">Expiry Date is required.</span>
+  </div>
+</div>
+
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">{{ buttonText }}</button>
+    </form>
+  </div>
+</div>

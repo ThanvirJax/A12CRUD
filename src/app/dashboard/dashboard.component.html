@@ -1,0 +1,307 @@
+<div class="dashboard-container">
+  <!-- Admin Section -->
+  <div *ngIf="isAdmin()" class="admin-section">
+    <h1>Welcome, <span class="highlight">{{ adminName }}</span></h1>
+    <h2>Admin Dashboard</h2>
+    <div class="cards">
+      <div class="card orange" [routerLink]="'/crud/center-form'">
+        <p class="tip">Add center</p>
+        <p class="second-text">Add a new center</p>
+      </div>
+      <div class="card grey" [routerLink]="'/crud/center-list'">
+        <p class="tip">Manage Centers</p>
+        <p class="second-text">Manage Centers list</p>
+      </div>
+      <div class="card blue" [routerLink]="'/crud/create-resource'">
+        <p class="tip">Create Resources</p>
+        <p class="second-text">Add a new item</p>
+      </div>
+      <div class="card cyan" [routerLink]="'/crud/resource-list'">
+        <p class="tip">Manage Resources</p>
+        <p class="second-text">Manage resource list</p>
+      </div>
+      <div class="card yellow" [routerLink]="'/crud/request-list'">
+        <p class="tip">Manage Requests</p>
+        <p class="second-text">View list of requests</p>
+      </div>
+      <div class="card green" [routerLink]="'/crud/donation-list'">
+        <p class="tip">Manage Donations</p>
+        <p class="second-text">View list of donations</p>
+      </div>
+      <div class="card lime" [routerLink]="'/crud/delivery-status'">
+        <p class="tip">Manage Deliveries</p>
+        <p class="second-text">View list of resource deliveries</p>
+      </div>
+      <div class="card grey" [routerLink]="'/crud/user-list'">
+        <p class="tip">Manage Users</p>
+        <p class="second-text">View list of users</p>
+      </div>
+      <div class="card red" [routerLink]="'/crud/alert-form'">
+        <p class="tip">Alert</p>
+        <p class="second-text">Make Alert</p>
+      </div>
+      <div class="card brown" [routerLink]="'/crud/alert-list'">
+        <p class="tip">Manage Alerts</p>
+        <p class="second-text">List Alerts</p>
+      </div>
+      <div class="card black" [routerLink]="'/crud/task-form'">
+        <p class="tip">Create a Task</p>
+        <p class="second-text">Create New Task</p>
+      </div>
+      <div class="card pink" [routerLink]="'/crud/task-list'">
+        <p class="tip">Task List</p>
+        <p class="second-text">List of tasks</p>
+      </div>
+    </div>
+  </div>
+
+    <!-- Center Section -->
+    <div *ngIf="isCenter()" class="center-section">
+      <h1>Welcome, <span class="highlight">{{ centerName }}</span></h1>
+      <h2>Center Dashboard</h2>
+      <div class="cards user-actions">
+        <div class="card1"  [routerLink]="'/center-actions'">
+          <div class="front-content1">
+            <p>Center actions</p>
+          </div>
+          <div class="content1">
+            <p class="heading1">Aids or Requests From Center</p>
+            <p>Center can donate or request resources</p>
+          </div>
+        </div>
+        <div class="card1" [routerLink]="'/center-locations'">
+          <div class="front-content1">
+            <p>Center Location</p>
+          </div>
+          <div class="content1">
+            <p class="heading1">Locations of centers</p>
+            <p>Provide essential resources to aid in disaster recovery efforts.</p>
+          </div>
+        </div>
+        <div class="card1" (click)="editCenterInfo()">
+          <div class="front-content1">
+            <p>Update Center Info</p>
+          </div>
+          <div class="content1">
+            <p class="heading1">Center Management</p>
+            <p>Update center details and manage information.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- User Section -->
+<div *ngIf="!isAdmin() && !isCenter()" class="user-section">
+  <h1>Welcome, <span class="highlight">{{ userName }}</span></h1>
+  <h2>User Dashboard</h2>
+  <div class="cards user-actions">
+    <div class="card1" (click)="requestResource()">
+      <div class="front-content1">
+        <p>Make a Request</p>
+      </div>
+      <div class="content1">
+        <p class="heading1">Request Resources</p>
+        <p>Submit a request for the resources you need in disaster management.</p>
+      </div>
+    </div>
+    <div class="card1" [routerLink]="'/crud/donation-form'">
+      <div class="front-content1">
+        <p>Donate Resources</p>
+      </div>
+      <div class="content1">
+        <p class="heading1">Contribute to Relief</p>
+        <p>Provide essential resources to aid in disaster recovery efforts.</p>
+      </div>
+    </div>
+    <div class="card1" [routerLink]="'/crud/task-list'">
+      <div class="front-content1">
+        <p>Tasks</p>
+      </div>
+      <div class="content1">
+        <p class="heading1">Serve others</p>
+        <p>Volunteer for task to help others in need</p>
+      </div>
+    </div>
+    <div class="card1" (click)="editProfile()">
+      <div class="front-content1">
+        <p>Update Profile</p>
+      </div>
+      <div class="content1">
+        <p class="heading1">Profile Management</p>
+        <p>Update your personal details and manage your profile information.</p>
+      </div>
+    </div>
+    <div class="card1" [routerLink]="'../donate-fund'">
+      <div class="front-content1">
+        <p>Donate Fund</p>
+      </div>
+      <div class="content1">
+        <p class="heading1">Offer your contribution</p>
+        <p>Provide essential funds to aid in disaster recovery efforts.</p>
+      </div>
+    </div>
+  </div>
+  <div class="tab-container">
+    <input type="radio" name="tab" id="tab1" class="tab tab--1" [(ngModel)]="selectedTab" value="requests" />
+    <label class="tab_label" for="tab1">Requests Status</label>
+    <input type="radio" name="tab" id="tab2" class="tab tab--2" [(ngModel)]="selectedTab" value="tracking" />
+    <label class="tab_label" for="tab2">Resource Tracking</label>
+    <input type="radio" name="tab" id="tab3" class="tab tab--3" [(ngModel)]="selectedTab" value="acceptedTasks" />
+    <label class="tab_label" for="tab3">Accepted Tasks</label>
+    <div class="indicator"></div>
+  </div>
+  
+  <!-- User Requests Section (Visible when "Requests Status" tab is selected) -->
+  <div *ngIf="selectedTab === 'requests'" class="requests-section">
+    <h3>Your Requests</h3>
+    
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+  
+    <!-- List of user requests -->
+    <div *ngIf="userRequests.length > 0" class="requests-list">
+      <div *ngFor="let request of userRequests" class="request-card">
+        <div class="card-content">
+          <h4>Request ID: {{ request.request_id }}</h4>
+          <p><strong>Resources:</strong></p>
+          <ul>
+            <li *ngIf="request.resource_name">
+              <h4>{{ request.resource_name }} - {{ request.requested_quantity }} units</h4>
+            </li>
+            <li *ngIf="!request.resource_name">No specific resource requested</li>
+          </ul>
+          <p><strong>Status:</strong>
+            <span
+              class="status"
+              [ngClass]="{
+                'approved': request.request_status === 'Approved',
+                'rejected': request.request_status === 'Rejected',
+                'pending': request.request_status === 'Pending'
+              }"
+            >
+              {{ request.request_status }}
+            </span>
+          </p>
+          <p *ngIf="request.resource_description">
+            <strong>Description:</strong> {{ request.resource_description }}
+          </p>
+          <p><strong>Date Created:</strong> {{ request.request_date | date: 'short' }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Message if no requests are found -->
+    <div *ngIf="userRequests.length === 0 && !errorMessage">
+      <p>No requests found.</p>
+    </div>
+  </div>
+  
+  <!-- Resource Tracking Section (Visible when "Resource Tracking" tab is selected) -->
+  <div *ngIf="selectedTab === 'tracking'" class="requests-section">
+    <h3>Approved Requests Tracking</h3>
+  
+    <!-- Error message -->
+    <div *ngIf="errorMessage" class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+  
+    <!-- Message if no approved requests are found -->
+    <div *ngIf="hasNoApprovedRequests && !errorMessage">
+      <p>No approved requests available for tracking.</p>
+    </div>
+  
+<!-- List of approved requests with tracking info -->
+<div class="requests-list">
+  <div *ngFor="let request of approvedRequests" class="request-card">
+    <div class="card-content">
+      <h4>Request ID: {{ request.request_id }}</h4>
+       <p><strong>Tracking ID:</strong> {{ request.tracking.tracking_id || 'Not assigned' }}</p>
+      <p><strong>Date:</strong> {{ request.request_date | date: 'short' }}</p>
+      <p><strong>Resource:</strong> {{ request.resource_name }}</p>
+      <p><strong>Quantity:</strong> {{ request.requested_quantity }}</p>
+
+      <!-- Tracking Details -->
+      <div *ngIf="request.tracking?.delivery_status; else noTracking">
+        <p class="tracking-status-text">
+          <span
+            class="tracking-status"
+            [ngClass]="{
+              'delivered': request.tracking.delivery_status === 'Delivered',
+              'collected': request.tracking.delivery_status === 'Collected',
+              'inprogress': request.tracking.delivery_status === 'In Progress',
+              'pending': request.tracking.delivery_status === 'Pending'
+            }"
+          >Status:
+            {{ request.tracking.delivery_status }}
+          </span>
+        </p>
+        <p *ngIf="request.tracking.remarks"><strong>Remarks:</strong> {{ request.tracking.remarks }}</p>
+        <p><strong>Created At:</strong> {{ request.tracking.tracking_created_at | date: 'short' }}</p>
+        <p><strong>Updated At:</strong> {{ request.tracking.tracking_updated_at | date: 'short' }}</p>
+        
+        <!-- Display Delivery Date -->
+        <p *ngIf="request.tracking.delivery_date"><strong>Delivery Date:</strong> {{ request.tracking.delivery_date | date: 'short' }}</p>
+        <p *ngIf="!request.tracking.delivery_date"><strong>Delivery Date:</strong> Not added yet</p>
+        <button
+        *ngIf="request.tracking.delivery_status === 'Delivered'"
+        (click)="handleImageUpload(request)"
+        class="btn btn-primary"
+      >
+        Upload Image
+      </button>
+      </div>
+
+      <!-- No tracking available message -->
+       <ng-template #noTracking>
+        <p><strong>Tracking:</strong> Not available</p>
+      </ng-template>
+    </div>
+   </div>
+  </div>
+</div>
+  
+  <!-- Accepted Tasks Section -->
+  <div *ngIf="selectedTab === 'acceptedTasks'" class="tasks-section">
+    <h3>Your Accepted Tasks</h3>
+  
+  
+    <!-- Tasks List -->
+    <div *ngIf="acceptedTasks.length > 0" class="requests-list">
+      <div *ngFor="let task of acceptedTasks" class="request-card">
+        <div class="card-content">
+          <h4>Task Name: {{ task.task_name }}</h4>
+          <p><strong>Status:</strong>
+            <span
+              class="status"
+              [ngClass]="{
+                'approved': task.task_status === 'Completed',
+                'pending': task.task_status === 'In Progress',
+              }"
+            >
+              {{ task.task_status }}
+            </span>
+          </p>
+          <p><strong>Description:</strong> {{ task.task_description }}</p>
+          <p><strong>Deadline:</strong> {{ task.task_deadline | date: 'short' }}</p>
+          <p><strong>Assigned Date:</strong> {{ task.task_created | date: 'short' }}</p>
+
+        <!-- Mark as Complete Button -->
+        <button
+        class="btn btn-success"
+        *ngIf="task.task_status !== 'Completed'"
+        (click)="markTaskComplete(task)"
+      >
+        Mark as Complete
+      </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Message if no accepted tasks are found -->
+    <div *ngIf="acceptedTasks.length === 0 && !errorMessage">
+      <p>No accepted tasks found.</p>
+    </div>
+  </div>
+  

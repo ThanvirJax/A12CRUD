@@ -1,0 +1,52 @@
+<div class="search-container">
+<input [(ngModel)]="searchQuery" placeholder="Search precautions..." class="search-bar" />
+<div class="wrapper">
+    
+  <div class="cloud">
+    <div class="cloud_left"></div>
+    <div class="cloud_right"></div>
+  </div>
+  <div class="rain">
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+  </div>
+  <div class="surface">
+    <div class="hit"></div>
+    <div class="hit"></div>
+    <div class="hit"></div>
+    <div class="hit"></div>
+    <div class="hit"></div>
+  </div>
+</div>
+  <div class="alert-box" *ngIf="alert">
+    
+     <h4>⚠ Important {{ alert.alert_type }} ⚠</h4>
+    <h1 *ngIf="alert.alert_message"><strong>{{ alert.alert_message }}</strong></h1>
+    <p *ngIf="alert.alert_description">Description: {{ alert.alert_description }}</p>
+    <p *ngIf="alert.alert_created">Updated On: {{ alert.alert_created | date:'medium' }}</p> 
+    <p>Basic Safety guidelines are as follows</p>
+  </div>
+ 
+</div>
+
+<div *ngFor="let precaution of filteredPrecautions" class="container noselect">
+  <div class="canvas">
+    <!-- Trackers for 3D hover effect -->
+    <div *ngFor="let tracker of [].constructor(25); let i = index" [class]="'tracker tr-' + (i + 1)"></div>
+
+    <!-- Precaution Card -->
+    <div class="card" [style.backgroundColor]="precaution.color">
+      <p class="prompt">{{ precaution.title }}</p>
+      <div class="title">
+        <ul>
+          <li *ngFor="let item of precaution.items">{{ item }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+

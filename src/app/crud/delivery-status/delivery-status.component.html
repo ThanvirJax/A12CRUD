@@ -1,0 +1,40 @@
+<div class="row">
+  <div class="col-12 p-5">
+    <h1><strong>Delivery Status</strong></h1>
+    <div class="card-wrapper">
+      <div class="card" *ngFor="let tracking of rowData">
+        <div class="card-body">
+          <h5 class="card-title">{{ tracking.resource_name }}</h5>
+          <p class="card-text"><strong>Request Status:</strong> {{ tracking.request_status }}</p>
+          <p class="card-text"><strong>Requested Quantity:</strong> {{ tracking.requested_quantity }}</p>
+          <p class="card-text"><strong>Requester Name:</strong> {{ tracking.requester_name }}</p>
+          <p class="card-text"><strong>Delivery Status:</strong> 
+            <span [ngClass]="{'status-pending': tracking.delivery_status === 'Pending', 'status-in-progress': tracking.delivery_status === 'In Progress', 'status-delivered': tracking.delivery_status === 'Delivered'}">
+              {{ tracking.delivery_status }}
+            </span>
+          </p>
+          <p class="card-text"><strong>Delivery Location:</strong> {{ tracking.delivery_location }}</p>
+          <p class="card-text"><strong>Delivery Date:</strong> {{ tracking.delivery_date }}</p>
+          <p class="card-text"><strong>Remarks:</strong> {{ tracking.remarks }}</p>
+          <p class="card-text"><strong>Created At:</strong> {{ tracking.tracking_created }}</p>
+          <p class="card-text"><strong>Updated At:</strong> {{ tracking.tracking_updated }}</p>
+  <!-- Use of Resource Title -->
+  <h6 class="use-of-resource-title">Use of Resource:</h6>
+          <!-- Image Preview -->
+          <div class="image-preview mb-3">
+            <img *ngIf="tracking.benefits_image" [src]="'data:image/jpeg;base64,' + tracking.benefits_image" alt="Tracking Image" class="img-fluid" />
+            <img *ngIf="!tracking.benefits_image" src="assets/icon/no-image.png" alt="No Image" class="img-fluid" />
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="actions mt-2">
+            <button type="button" class="btn btn-info" (click)="scheduleDelivery(tracking)">Schedule Delivery</button>
+            <button type="button" class="btn btn-success" [disabled]="tracking.delivery_status !== 'In Progress'" (click)="updateTrackingStatus(tracking, 'Delivered')">Delivered</button>
+            <button type="button" class="btn btn-primary" (click)="showStatusDropdown(tracking)">Status</button>
+            <button type="button" class="btn btn-secondary" (click)="handleImageUpload(tracking)">Upload Image</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="container">
+    <h1 class="title">Emergency Contacts in Mauritius</h1>
+    <p class="subtitle">Contact these services during a disaster:</p>
+  
+    <div class="contacts">
+      <div class="card" *ngFor="let contact of emergencyContacts">
+        <div class="content">
+          <p class="heading">{{ contact.name }}</p>
+          <p class="para"><strong>Phone:</strong> {{ contact.phone }}</p>
+          <p *ngIf="contact.email"><strong>Email:</strong> {{ contact.email }}</p>
+          <p *ngIf="contact.website">
+            <strong>Website:</strong>
+            <a [href]="contact.website" target="_blank">{{ contact.website }}</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  

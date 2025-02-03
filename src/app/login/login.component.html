@@ -1,0 +1,67 @@
+<div class="parent">
+  <div class="wrapper">
+    <form class="form-signin" (ngSubmit)="onLogin()" #form="ngForm">
+      <h2 class="form-signin-heading text-center">Login</h2>
+
+      <!-- Email Input Field -->
+      <div class="form-group">
+        <input 
+          type="email" 
+          class="form-control" 
+          name="user_email" 
+          [(ngModel)]="loginObj.user_email" 
+          placeholder="Email Address" 
+          required 
+          autofocus 
+          #email="ngModel"
+        />
+        <div *ngIf="email.invalid && email.touched" class="text-danger">
+          Please enter a valid email address.
+        </div>
+      </div>
+
+      <!-- Password Input Field -->
+      <div class="form-group">
+        <input 
+          type="password" 
+          class="form-control" 
+          name="user_password" 
+          [(ngModel)]="loginObj.user_password" 
+          placeholder="Password" 
+          required 
+          #password="ngModel"
+        />
+        <div *ngIf="password.invalid && password.touched" class="text-danger">
+          Please enter a password.
+        </div>
+      </div>
+
+      <!-- Remember Me Checkbox -->
+      <div class="form-group form-check">
+        <input 
+          type="checkbox" 
+          class="form-check-input" 
+          id="rememberMe" 
+          name="rememberMe"
+        />
+        <label class="form-check-label" for="rememberMe">Remember me</label>
+      </div>
+
+      <!-- Submit Button (disabled when loading) -->
+      <button class="btn btn-lg btn-primary btn-block mb-3" type="submit" [disabled]="loading || form.invalid">
+        Login
+      </button>
+
+      <!-- Create Account Button -->
+      <button class="btn btn-lg btn-outline-secondary btn-block" type="button" (click)="onCreateAccount()">
+        Create Account
+      </button>
+      
+
+      <!-- Forgot Password Link -->
+      <div class="text-center mt-4">
+        <a href="#" class="forgot-password">Forgot your password?</a>
+      </div>
+    </form>
+  </div>
+</div>

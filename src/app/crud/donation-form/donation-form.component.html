@@ -1,0 +1,131 @@
+<div class="d-flex justify-content-center align-items-center">
+
+  <div class="col-6 p-5">
+    <!-- Title -->
+    <h2 class="mb-4">Donate Resource</h2>
+    <form [formGroup]="donationForm" (ngSubmit)="createOrUpdateDonation()">
+
+      <!-- User Email -->
+      <div class="mb-3">
+        <label for="user-email" class="form-label">User Email</label>
+        <input formControlName="user_email" type="email" class="form-control" id="user-email" readonly [ngClass]="{
+            'is-invalid': donationForm.get('user_email')?.invalid && donationForm.get('user_email')?.touched,
+            'is-valid': donationForm.get('user_email')?.valid && donationForm.get('user_email')?.touched
+          }">
+        <small id="user-email-help" class="form-text text-muted">Enter your registered email address.</small>
+        <div *ngIf="donationForm.get('user_email')?.invalid && donationForm.get('user_email')?.touched"
+          class="alert alert-danger">
+          <span *ngIf="donationForm.get('user_email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="donationForm.get('user_email')?.errors?.['email']">Invalid email format.</span>
+        </div>
+      </div>
+
+      <!-- Resource Name -->
+      <div class="mb-3">
+        <label for="resource-name" class="form-label">Resource Name</label>
+        <input formControlName="resource_name" type="text" class="form-control" id="resource-name" [ngClass]="{
+            'is-invalid': donationForm.get('resource_name')?.invalid && donationForm.get('resource_name')?.touched,
+            'is-valid': donationForm.get('resource_name')?.valid && donationForm.get('resource_name')?.touched
+          }">
+        <small id="resource-name-help" class="form-text text-muted">Enter the name of resource to donate</small>
+        <div *ngIf="donationForm.get('resource_name')?.invalid && donationForm.get('resource_name')?.touched"
+          class="alert alert-danger">
+          <span *ngIf="donationForm.get('resource_name')?.errors?.['required']">Name is required.</span>
+          <span *ngIf="donationForm.get('resource_name')?.errors?.['minlength']">Minimum 3 characters required.</span>
+          <span *ngIf="donationForm.get('resource_name')?.errors?.['maxlength']">Maximum 50 characters allowed.</span>
+        </div>
+      </div>
+
+      <!-- Resource Description -->
+      <div class="mb-3">
+        <label for="resource-desc" class="form-label">Resource Description</label>
+        <textarea formControlName="resource_description" class="form-control" id="resource-desc" rows="5" [ngClass]="{
+            'is-invalid': donationForm.get('resource_description')?.invalid && donationForm.get('resource_description')?.touched,
+            'is-valid': donationForm.get('resource_description')?.valid && donationForm.get('resource_description')?.touched
+          }"></textarea>
+        <small id="resource-desc-help" class="form-text text-muted">Enter the description of the resource you want to
+          donate</small>
+        <div
+          *ngIf="donationForm.get('resource_description')?.invalid && donationForm.get('resource_description')?.touched"
+          class="alert alert-danger">
+          <span *ngIf="donationForm.get('resource_description')?.errors?.['required']">Description is required.</span>
+          <span *ngIf="donationForm.get('resource_description')?.errors?.['minlength']">Minimum 3 characters
+            required.</span>
+          <span *ngIf="donationForm.get('resource_description')?.errors?.['maxlength']">Maximum 500 characters
+            allowed.</span>
+        </div>
+      </div>
+
+      <!-- Resource Type -->
+      <div class="mb-3">
+        <label for="resource-type" class="form-label">Resource Type</label>
+        <select 
+        formControlName="resource_type" 
+        class="form-select" 
+        id="resource-type" 
+        [ngClass]="{
+            'is-invalid': donationForm.get('resource_type')?.invalid && donationForm.get('resource_type')?.touched,
+            'is-valid': donationForm.get('resource_type')?.valid && donationForm.get('resource_type')?.touched
+          }">
+          <option value="" disabled selected>Select a type</option>
+          <option value="Others">Others</option>
+          <option value="Material">Material</option>
+          <option value="Equipment">Equipment</option>
+          <option value="Personnel">Personnel</option>
+          <option value="Food">Food</option>
+        </select>
+        <div *ngIf="donationForm.get('resource_type')?.invalid && donationForm.get('resource_type')?.touched"
+          class="alert alert-danger">
+          <span *ngIf="donationForm.get('resource_type')?.errors?.['required']">Resource type is required.</span>
+        </div>
+      </div>
+
+      <!-- Donation Quantity -->
+      <div class="mb-3">
+        <label for="donation-quantity" class="form-label">Donation Quantity</label>
+        <input 
+        formControlName="donation_quantity" 
+        type="number" 
+        class="form-control" 
+        id="donation-quantity" 
+        [ngClass]="{
+            'is-invalid': donationForm.get('donation_quantity')?.invalid && donationForm.get('donation_quantity')?.touched,
+            'is-valid': donationForm.get('donation_quantity')?.valid && donationForm.get('donation_quantity')?.touched
+          }">
+        <small id="resource-quantity-help" class="form-text text-muted">Enter the amount of the resource you want to
+          donate</small>
+
+        <div *ngIf="donationForm.get('donation_quantity')?.invalid && donationForm.get('donation_quantity')?.touched"
+          class="alert alert-danger">
+          <span *ngIf="donationForm.get('donation_quantity')?.errors?.['required']">Quantity is required.</span>
+          <span *ngIf="donationForm.get('donation_quantity')?.errors?.['min']">Minimum quantity should be 1.</span>
+          <span *ngIf="donationForm.get('donation_quantity')?.errors?.['max']">Maximum quantity is 99,999,999.</span>
+        </div>
+      </div>
+
+      <!-- Expiry Date -->
+      <div class="mb-3">
+        <label for="expiry-date" class="form-label">Expiry Date</label>
+        <input 
+        formControlName="expiry_date" 
+        type="datetime-local" 
+        class="form-control" 
+        id="expiry-date" 
+        [ngClass]="{
+      'is-invalid': donationForm.get('expiry_date')?.invalid && donationForm.get('expiry_date')?.touched,
+      'is-valid': donationForm.get('expiry_date')?.valid && donationForm.get('expiry_date')?.touched
+    }">
+        <small id="expiry-date-help" class="form-text text-muted">Enter the expiry date for the resource.</small>
+        <div *ngIf="donationForm.get('expiry_date')?.invalid && donationForm.get('expiry_date')?.touched"
+          class="alert alert-danger">
+          <span *ngIf="donationForm.get('expiry_date')?.errors?.['required']">Expiry date is required.</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary w-100" [disabled]="donationForm.invalid">
+        {{ buttonText }}
+      </button>
+    </form>
+  </div>
+</div>

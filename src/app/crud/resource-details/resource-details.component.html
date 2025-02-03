@@ -1,0 +1,16 @@
+<body>
+<div class="row">
+  <div class="col-6 p-5">
+    <div class="card" style="width: 25rem;">
+      <img src="assets/angular-12.png" class="card-img-top" alt="Resource Image">
+      <div class="card-body">
+        <h5 class="card-title">{{resourceDetails?.resource_name || 'Resource Name'}}</h5>
+        <p class="card-text">{{resourceDetails?.resource_description || 'No description available'}}</p>
+        <p class="card-text">Type: {{resourceDetails?.resource_type || 'Unknown'}}</p>
+        <p class="card-text">Quantity: {{resourceDetails?.resource_quantity || 'N/A'}}</p>
+        <a href="#" class="btn btn-primary">Take Action</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>

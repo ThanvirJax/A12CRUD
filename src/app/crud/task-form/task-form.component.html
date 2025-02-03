@@ -1,0 +1,90 @@
+<div class="row">
+  <div class="col-6 p-5">
+    <form [formGroup]="taskForm" (ngSubmit)="createOrUpdateTask()">
+      <h1>Create a new task</h1>
+
+      <!-- Task Name -->
+      <div class="mb-3">
+        <label for="task_name" class="form-label">Task Name</label>
+        <input
+          formControlName="task_name"
+          type="text"
+          class="form-control"
+          id="task_name"
+          placeholder="Enter task name"
+          [ngClass]="{
+            'is-invalid': taskForm.get('task_name')?.invalid && taskForm.get('task_name')?.touched,
+            'is-valid': taskForm.get('task_name')?.valid && taskForm.get('task_name')?.touched
+          }"
+        >
+        <div *ngIf="taskForm.get('task_name')?.invalid && taskForm.get('task_name')?.touched" class="alert alert-danger">
+          <span *ngIf="taskForm.get('task_name')?.errors?.['required']">Task name is required.</span>
+          <span *ngIf="taskForm.get('task_name')?.errors?.['minlength']">Minimum 3 characters required.</span>
+          <span *ngIf="taskForm.get('task_name')?.errors?.['maxlength']">Maximum 50 characters allowed.</span>
+        </div>
+      </div>
+
+      <!-- Task Description -->
+      <div class="mb-3">
+        <label for="task_description" class="form-label">Task Description</label>
+        <textarea
+          formControlName="task_description"
+          class="form-control"
+          id="task_description"
+          rows="5"
+          placeholder="Enter task description"
+          [ngClass]="{
+            'is-invalid': taskForm.get('task_description')?.invalid && taskForm.get('task_description')?.touched,
+            'is-valid': taskForm.get('task_description')?.valid && taskForm.get('task_description')?.touched
+          }"
+        ></textarea>
+        <div *ngIf="taskForm.get('task_description')?.invalid && taskForm.get('task_description')?.touched" class="alert alert-danger">
+          <span *ngIf="taskForm.get('task_description')?.errors?.['required']">Description is required.</span>
+          <span *ngIf="taskForm.get('task_description')?.errors?.['minlength']">Minimum 3 characters required.</span>
+          <span *ngIf="taskForm.get('task_description')?.errors?.['maxlength']">Maximum 500 characters allowed.</span>
+        </div>
+      </div>
+
+<!-- Admin Email -->
+<div class="mb-3">
+  <label for="admin_email" class="form-label">Admin Email</label>
+  <input
+    formControlName="admin_email"
+    type="email"
+    class="form-control"
+    id="admin_email"
+    readonly
+    [ngClass]="{
+      'is-invalid': taskForm.get('admin_email')?.invalid && taskForm.get('admin_email')?.touched,
+      'is-valid': taskForm.get('admin_email')?.valid && taskForm.get('admin_email')?.touched
+    }"
+  >
+  <div *ngIf="taskForm.get('admin_email')?.invalid && taskForm.get('admin_email')?.touched" class="alert alert-danger">
+    <span *ngIf="taskForm.get('admin_email')?.errors?.['required']">Email is required.</span>
+    <span *ngIf="taskForm.get('admin_email')?.errors?.['email']">Enter a valid email.</span>
+  </div>
+</div>
+
+      <!-- Task Deadline -->
+      <div class="mb-3">
+        <label for="task_deadline" class="form-label">Task Deadline</label>
+        <input
+          formControlName="task_deadline"
+          type="datetime-local"
+          class="form-control"
+          id="task_deadline"
+          [ngClass]="{
+            'is-invalid': taskForm.get('task_deadline')?.invalid && taskForm.get('task_deadline')?.touched,
+            'is-valid': taskForm.get('task_deadline')?.valid && taskForm.get('task_deadline')?.touched
+          }"
+        >
+        <div *ngIf="taskForm.get('task_deadline')?.invalid && taskForm.get('task_deadline')?.touched" class="alert alert-danger">
+          <span *ngIf="taskForm.get('task_deadline')?.errors?.['required']">Deadline is required.</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary" [disabled]="taskForm.invalid">{{ buttonText }}</button>
+    </form>
+  </div>
+</div>

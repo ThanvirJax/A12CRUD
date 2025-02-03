@@ -1,0 +1,8 @@
+.ag-theme-alpine {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  h1 strong{
+    color: #286cd3;
+  }
